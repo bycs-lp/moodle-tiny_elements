@@ -106,7 +106,7 @@ export default class Data {
                 name: category.displayname,
                 categoryname: category.name,
                 type: category.id,
-                displayorder: category.displayorder,
+                displayorder: 1000 - category.displayorder,
                 flavors: categoryFlavors,
                 hasFlavors: hasFlavors,
                 active: '',
