@@ -96,17 +96,24 @@ export default class Data {
      */
     getCategories() {
         const cats = [];
+        const flexbasis = this.setFlexbasis();
         // Iterate over contexts.
         this.categories.forEach((category) => {
             let categoryFlavors = this.getCategoryFlavors(category.name);
             categoryFlavors.sort((a, b) => a.displayorder - b.displayorder);
             let hasFlavors = Array.isArray(categoryFlavors) && categoryFlavors.length;
+            let flexbasisrng = flexbasis;
+            if (category.displayorder % 2 == 0) {
+                // Set flexbases minus 1,2 or 3 for visual purposes.
+                flexbasisrng = flexbasis - (Math.floor(Math.random() * 3) + 1);
+            }
             cats.push({
                 categoryid: category.id,
                 name: category.displayname,
                 categoryname: category.name,
                 type: category.id,
-                displayorder: 1000 - category.displayorder,
+                displayorder: this.categories.length - category.displayorder,
+                flexbasis: flexbasisrng,
                 flavors: categoryFlavors,
                 hasFlavors: hasFlavors,
                 active: '',
@@ -262,5 +269,18 @@ export default class Data {
         this.variants = indexedVariants;
         this.categories = indexedCategories;
         this.flavors = data.flavors;
+    }
+
+    /**
+     * Calculates flex-basis to space elements evenly.
+     */
+    setFlexbasis() {
+        // 5 elements should fit in one row.
+        let rows = Math.round(this.categories.length / 5);
+        if (rows < 1) {
+            rows = 1;
+        }
+        let elementsPerRow = Math.ceil(this.categories.length / rows);
+        return 100 / elementsPerRow;
     }
 }
