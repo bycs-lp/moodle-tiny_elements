@@ -107,6 +107,18 @@ class exporter {
             foreach ($files as $file) {
                 $exportfiles[$compcat->name . '/' . $file->get_filepath() . $file->get_filename()] = $file;
             }
+
+            // Write xml file with metadata.
+            $filerecord = [
+                'contextid' => $this->contextid,
+                'component' => 'tiny_elements',
+                'filearea' => 'export',
+                'itemid' => time(),
+                'filepath' => '/',
+                'filename' => 'tiny_elements_filemetadata.xml',
+            ];
+            $exportxmlfile = $fs->create_file_from_string($filerecord, $this->exportxml_filemetadata($compcat->id));
+            $exportfiles[$compcat->name . '/' . $filerecord['filename']] = $exportxmlfile;
         }
 
         return $exportfiles;
@@ -250,5 +262,48 @@ class exporter {
             $xmlwriter->end_tag(constants::ITEMNAME);
         }
         $xmlwriter->end_tag($table);
+    }
+
+     /**
+     * Export files metadata to XML.
+     * 
+     * @param int $compcatid Category ID.
+     * @return string XML string.
+     */
+    public function exportxml_filemetadata(int $compcatid): string {
+        global $DB;
+
+        // Start.
+        $xmloutput = new memory_xml_output();
+        $xmlwriter = new xml_writer($xmloutput);
+        $xmlwriter->start();
+        $xmlwriter->begin_tag('tiny_elements_files_with_license');
+        $compcatname = $DB->get_record(constants::TABLES['compcat'], ['id' => $compcatid], 'name');
+        $xmlwriter->begin_tag($compcatname->name, ['id' => $compcatid]);
+
+        $fs = get_file_storage();
+        $files = $fs->get_area_files(\context_system::instance()->id, 'tiny_elements', 'images', $compcatid, "itemid, filepath, filename", false);
+        
+        foreach ($files as $file) {
+          
+            $xmlwriter->begin_tag(constants::ITEMNAME);
+
+            $xmlwriter->full_tag('id', $file->get_id() ?? '');
+            $xmlwriter->full_tag('filepath', $file->get_filepath() ?? '');
+            $xmlwriter->full_tag('filename', $file->get_filename() ?? '');
+            $xmlwriter->full_tag('source', $file->get_source() ?? '');
+            $xmlwriter->full_tag('author', $file->get_author() ?? '');
+            $xmlwriter->full_tag('license', $file->get_license() ?? '');
+
+            $xmlwriter->end_tag(constants::ITEMNAME);
+        }
+
+        // End.
+        $xmlwriter->end_tag($compcatname->name);
+        $xmlwriter->end_tag('tiny_elements_files_with_license');
+        $xmlwriter->stop();
+        $xmlstr = $xmloutput->get_allcontents();
+
+        return $xmlstr;
     }
 }

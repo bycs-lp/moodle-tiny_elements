@@ -15,7 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+<<<<<<< HEAD
  * Generate a list of image URLs for the tiny_elements plugin.
+=======
+ * Page to show urls for symbols.
+>>>>>>> 497b9bb (MBS-9847: metadata for symbol files)
  *
  * @package    tiny_elements
  * @copyright  2024 ISB Bayern
