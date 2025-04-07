@@ -79,6 +79,14 @@ export const init = async(params) => {
         });
     });
 
+    // Add listener to edit licenses of icons.
+    let editlicenses = document.querySelectorAll('.editlicenses');
+    editlicenses.forEach(element => {
+        element.addEventListener('click', async(e) => {
+            editlicensesModal(e, element.dataset.id);
+        });
+    });
+
     // Add listener to manage component flavor relation.
     let buttonicons = document.querySelectorAll('.buttonicons');
     buttonicons.forEach(element => {
@@ -244,6 +252,24 @@ const compflavorModal = async(event) => {
 
     await modalForm.show();
 };
+
+/**
+ * Load modal to edit licenses of icons.
+ * @param {*} e
+ * @param {*} id
+ */
+function editlicensesModal(e, id) {
+    e.preventDefault();
+    let title = getString('editlicenses', 'tiny_elements');
+    const modalForm = new ModalForm({
+        formClass: "tiny_elements\\form\\management_editlicense_form",
+        args: {
+            id: id,
+        },
+        modalConfig: {title: title},
+    });
+    modalForm.show();
+}
 
 /**
  * Load modal to edit displaynames.
