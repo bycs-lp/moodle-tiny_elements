@@ -24,15 +24,23 @@
 import {
     findById,
     findByName
-} from './helper';
+} from 'tiny_elements/helper';
 
 let variantPreferences = {};
-let DATA = {};
+let data = {};
 
-export const setData = (data) => {
-    DATA = data;
+/**
+ * Set the data object.
+ * @param {object} values
+ */
+export const setData = (values) => {
+    data = values;
 };
 
+/**
+ * Get the variant preferences.
+ * @returns {object}
+ */
 export const getVariantPreferences = () => {
     return variantPreferences;
 };
@@ -57,8 +65,8 @@ export const loadVariantPreferences = (preferences) => {
  * @returns
  */
 export const getVariantPreference = (component, flavor = '') => {
-    let componentObj = findByName(DATA.getComponents(), component);
-    let flavorObj = findByName(DATA.getFlavors(), flavor);
+    let componentObj = findByName(data.getComponents(), component);
+    let flavorObj = findByName(data.getFlavors(), flavor);
 
     if (componentObj === undefined) {
         return [];
@@ -92,7 +100,7 @@ export const getVariantPreference = (component, flavor = '') => {
  * @returns {bool}
  */
 export const variantExists = (component, variant, flavor = '') => {
-    let variantObj = findByName(DATA.getVariants(), variant);
+    let variantObj = findByName(data.getVariants(), variant);
     return getVariantPreference(component, flavor).indexOf(variantObj.id) !== -1;
 };
 
@@ -106,7 +114,7 @@ export const variantExists = (component, variant, flavor = '') => {
 export const getVariantsClass = (component, flavor = '') => {
     let variants = [];
     getVariantPreference(component, flavor).forEach(variant => {
-        let variantObj = findById(DATA.getVariants(), variant);
+        let variantObj = findById(data.getVariants(), variant);
         if (variantObj !== undefined) {
             variants.push((variantObj.c4lcompatibility ? 'c4l' : 'elements') + '-' + variantObj.name + '-variant');
         }
@@ -125,9 +133,9 @@ export const getVariantsHtml = (component) => {
     let variantsHtml = '';
     let variantObj = {};
 
-    let componentObj = findByName(DATA.getComponents(), component);
+    let componentObj = findByName(data.getComponents(), component);
     componentObj.variants.forEach(variant => {
-        variantObj = findByName(DATA.getVariants(), variant);
+        variantObj = findByName(data.getVariants(), variant);
         if (variantObj != undefined) {
             variantsHtml += variantObj.content;
         }
@@ -146,7 +154,7 @@ export const getVariantHtml = (variant) => {
     let variantHtml = [];
     let variantObj = {};
 
-    variantObj = findByName(DATA.getVariants(), variant);
+    variantObj = findByName(data.getVariants(), variant);
     if (variantObj != undefined) {
         variantHtml = variantObj.html;
     }
@@ -161,9 +169,9 @@ export const getVariantHtml = (variant) => {
  * @param {string} flavor Flavor name
  */
 export const addVariant = (component, variant, flavor = '') => {
-    let componentObj = findByName(DATA.getComponents(), component);
-    let variantObj = findByName(DATA.getVariants(), variant);
-    let flavorObj = findByName(DATA.getFlavors(), flavor);
+    let componentObj = findByName(data.getComponents(), component);
+    let variantObj = findByName(data.getVariants(), variant);
+    let flavorObj = findByName(data.getFlavors(), flavor);
 
     if (flavor == '') {
         if (!variantPreferences[componentObj.id]) {
@@ -190,9 +198,9 @@ export const addVariant = (component, variant, flavor = '') => {
  * @param {string} flavor Flavor name
  */
 export const removeVariant = (component, variant, flavor = '') => {
-    let componentObj = findByName(DATA.getComponents(), component);
-    let variantObj = findByName(DATA.getVariants(), variant);
-    let flavorObj = findByName(DATA.getFlavors(), flavor);
+    let componentObj = findByName(data.getComponents(), component);
+    let variantObj = findByName(data.getVariants(), variant);
+    let flavorObj = findByName(data.getFlavors(), flavor);
 
     if (flavor != '') {
         let index = variantPreferences[componentObj.id + '-' + flavorObj.id].indexOf(variantObj.id);

@@ -21,7 +21,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {component as elementsButtonName} from './common';
+import {component as elementsButtonName} from 'tiny_elements/common';
 import {addMenubarItem} from 'editor_tiny/utils';
 
 const configureMenu = (menu) => {

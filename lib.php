@@ -72,7 +72,12 @@ function tiny_elements_pluginfile(
     bool $forcedownload,
     array $options
 ): bool {
-    // Special case, sending a question bank export.
+    global $CFG;
+
+    if ($CFG->forcelogin) {
+        require_login();
+    }
+
     if ($filearea === 'export') {
         require_capability('tiny/elements:manage', $context);
 

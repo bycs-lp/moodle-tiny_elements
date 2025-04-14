@@ -19,11 +19,11 @@
  *
  * @module     tiny_elements/category_form_helper
  * @copyright  2025 ISB Bayern
- * @authors    Stefan Hanauska <stefan.hanauska@csg-in.de>
+ * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notification) {
+define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
 
     return {
         /**

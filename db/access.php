@@ -42,4 +42,13 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
+    'tiny/elements:showteachercomponents' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        ],
+    ],
 ];

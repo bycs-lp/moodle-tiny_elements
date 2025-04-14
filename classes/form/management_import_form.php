@@ -23,7 +23,8 @@ use core\exception\moodle_exception;
  * Class management_import_form
  *
  * @package    tiny_elements
- * @copyright  2024 YOUR NAME <your@email.com>
+ * @copyright  2024 ISB Bayern
+ * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class management_import_form extends base_form {
@@ -41,8 +42,8 @@ class management_import_form extends base_form {
             constants::IMPORT_FILE_OPTIONS
         );
 
-        $mform->addElement('advcheckbox', 'whatif', get_string('whatif', 'tiny_elements'));
-        $mform->addHelpButton('whatif', 'whatif', 'tiny_elements');
+        $mform->addElement('advcheckbox', 'dryrun', get_string('dryrun', 'tiny_elements'));
+        $mform->addHelpButton('dryrun', 'dryrun', 'tiny_elements');
     }
 
     /**
@@ -88,9 +89,9 @@ class management_import_form extends base_form {
         if ($file === null) {
             throw new moodle_exception('errorbackupfile', 'tiny_elements');
         }
-        $whatif = !empty($data->whatif);
+        $dryrun = !empty($data->dryrun);
 
-        $importer = new \tiny_elements\importer($context->id, $whatif);
+        $importer = new \tiny_elements\importer($context->id, $dryrun);
 
         if ($file->get_mimetype() == 'application/zip') {
             $importer->import($file);
@@ -99,9 +100,9 @@ class management_import_form extends base_form {
             $importer->importxml($xmlcontent);
         }
 
-        $return = ['update' => !$whatif];
+        $return = ['update' => !$dryrun];
 
-        if ($whatif) {
+        if ($dryrun) {
             $results = $importer->get_importresults();
             $return['results'] = $results;
         }

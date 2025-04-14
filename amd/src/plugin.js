@@ -24,10 +24,10 @@
 import {getTinyMCE} from 'editor_tiny/loader';
 import {getPluginMetadata} from 'editor_tiny/utils';
 
-import {component, pluginName} from './common';
-import {register as registerOptions} from './options';
-import {getSetup as getCommandSetup} from './commands';
-import * as Configuration from './configuration';
+import {component, pluginName} from 'tiny_elements/common';
+import {register as registerOptions} from 'tiny_elements/options';
+import {getSetup as getCommandSetup} from 'tiny_elements/commands';
+import * as Configuration from 'tiny_elements/configuration';
 
 // Setup the tiny_elements Plugin.
 // eslint-disable-next-line no-async-promise-executor

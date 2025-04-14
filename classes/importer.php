@@ -30,10 +30,10 @@ use core\exception\moodle_exception;
  */
 class importer {
     /** @var int $contextid */
-    protected int $contextid = 1;
+    protected int $contextid;
 
-    /** @var bool $whatif */
-    protected bool $whatif = false;
+    /** @var bool $dryrun If set to true, importer does a dry run and doesn't change anything in the database.*/
+    protected bool $dryrun = false;
 
     /** @var array $importresults */
     protected array $importresults = [];
@@ -42,11 +42,11 @@ class importer {
      * Constructor.
      *
      * @param int $contextid
-     * @param bool $whatif If true, the import process is simulated without any changes (default is false).
+     * @param bool $dryrun If true, the import process is simulated without any changes (default is false).
      */
-    public function __construct(int $contextid = SYSCONTEXTID, bool $whatif = false) {
+    public function __construct(int $contextid = SYSCONTEXTID, bool $dryrun = false) {
         $this->contextid = $contextid;
-        $this->whatif = $whatif;
+        $this->dryrun = $dryrun;
     }
 
     /**
@@ -56,7 +56,7 @@ class importer {
      * and imports the relevant XML and related category files. It also handles
      * the cleanup of temporary files and rebuilds the system caches (CSS and JS).
      *
-     * @param stored_file|string $zip The zip file to import, either as a file object or path.
+     * @param \stored_file|string $zip The zip file to import, either as a file object or path.
      * @param int $draftitemid The draft item ID associated with the import process (default is 0).
 
      * @return void
@@ -118,7 +118,7 @@ class importer {
                 )
             ) {
                 if ($oldfile->get_contenthash() != $file->get_contenthash()) {
-                    if (!$this->whatif) {
+                    if (!$this->dryrun) {
                         $oldfile->replace_file_with($file);
                     }
                     $this->importresults[] = get_string('replacefile', 'tiny_elements', $newfilepath . $file->get_filename());
@@ -126,7 +126,7 @@ class importer {
                     $this->importresults[] = get_string('unchangedfile', 'tiny_elements', $newfilepath . $file->get_filename());
                 }
             } else {
-                if (!$this->whatif) {
+                if (!$this->dryrun) {
                     $newfile = $fs->create_file_from_storedfile([
                         'contextid' => $this->contextid,
                         'component' => 'tiny_elements',
@@ -222,7 +222,7 @@ class importer {
 
         self::update_flavor_variant_category();
 
-        if (!$this->whatif) {
+        if (!$this->dryrun) {
             local\utils::purge_and_rebuild_caches();
         }
 
@@ -264,12 +264,12 @@ class importer {
         $current = $DB->get_record('tiny_elements_compcat', ['name' => $record['name']]);
         if ($current) {
             $record['id'] = $current->id;
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $DB->update_record('tiny_elements_compcat', $record);
             }
             $this->importresults[] = get_string('replacecategory', 'tiny_elements', $record['name']);
         } else {
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $record['id'] = $DB->insert_record('tiny_elements_compcat', $record);
             } else {
                 $record['id'] = rand(1, PHP_INT_MAX);
@@ -277,7 +277,7 @@ class importer {
             $this->importresults[] = get_string('newcategory', 'tiny_elements', $record['name']);
         }
         // Update pluginfile tags in css if the id has changed.
-        if ($oldid != $record['id'] && !$this->whatif) {
+        if ($oldid != $record['id'] && !$this->dryrun) {
             $record['css'] = utils::update_pluginfile_tags($oldid, $record['id'], $record['css']);
             $DB->update_record('tiny_elements_compcat', $record);
         }
@@ -308,13 +308,13 @@ class importer {
         $current = $DB->get_record('tiny_elements_component', ['name' => $record['name']]);
         if ($current) {
             $record['id'] = $current->id;
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $DB->update_record('tiny_elements_component', $record);
             }
             $this->importresults[] = get_string('replacecomponent', 'tiny_elements', $record['name']);
         } else {
             try {
-                if (!$this->whatif) {
+                if (!$this->dryrun) {
                     $record['id'] = $DB->insert_record('tiny_elements_component', $record);
                 } else {
                     $record['id'] = rand(1, PHP_INT_MAX);
@@ -325,7 +325,7 @@ class importer {
             }
         }
 
-        if (!$this->whatif) {
+        if (!$this->dryrun) {
             if (!empty($record['flavors'])) {
                 foreach (explode(',', $record['flavors']) as $flavor) {
                     if ($flavor == '') {
@@ -379,12 +379,12 @@ class importer {
 
         if ($current) {
             $record['id'] = $current->id;
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $DB->update_record('tiny_elements_flavor', $record);
             }
             $this->importresults[] = get_string('replaceflavor', 'tiny_elements', $record['name']);
         } else {
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $record['id'] = $DB->insert_record('tiny_elements_flavor', $record);
             } else {
                 $record['id'] = rand(1, PHP_INT_MAX);
@@ -412,12 +412,12 @@ class importer {
 
         if ($current) {
             $record['id'] = $current->id;
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $DB->update_record('tiny_elements_variant', $record);
             }
             $this->importresults[] = get_string('replacevariant', 'tiny_elements', $record['name']);
         } else {
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $record['id'] = $DB->insert_record('tiny_elements_variant', $record);
             } else {
                 $record['id'] = rand(1, PHP_INT_MAX);
@@ -446,7 +446,7 @@ class importer {
 
         if ($current) {
             $record['id'] = $current->id;
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $DB->update_record('tiny_elements_comp_flavor', $record);
             }
             $this->importresults[] = get_string(
@@ -455,7 +455,7 @@ class importer {
                 $record['componentname'] . ' - ' . $record['flavorname']
             );
         } else {
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $record['id'] = $DB->insert_record('tiny_elements_comp_flavor', $record);
             } else {
                 $record['id'] = rand(1, PHP_INT_MAX);
@@ -498,7 +498,7 @@ class importer {
             ['componentname' => $record['componentname'], 'variant' => $record['variant']]
         );
         if (!$current) {
-            if (!$this->whatif) {
+            if (!$this->dryrun) {
                 $record['id'] = $DB->insert_record('tiny_elements_comp_variant', $record);
             } else {
                 $record['id'] = rand(1, PHP_INT_MAX);

@@ -27,7 +27,7 @@ use core_external\external_value;
  *
  * @package    tiny_elements
  * @copyright  2024 ISB Bayern
- * @author     Stefan Hanauska
+ * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_flavors extends external_api {
@@ -52,11 +52,14 @@ class get_flavors extends external_api {
      * @return array associative array containing the aggregated information for all elements data.
      */
     public static function execute(int $contextid, string $categoryname, string $query = ''): array {
-        self::validate_parameters(self::execute_parameters(), [
+        $params = self::validate_parameters(self::execute_parameters(), [
             'contextid' => $contextid,
             'categoryname' => $categoryname,
             'query' => $query,
         ]);
+        $contextid = $params['contextid'];
+        $categoryname = $params['categoryname'];
+        $query = $params['query'];
         $context = \core\context::instance_by_id($contextid);
         self::validate_context($context);
 

@@ -21,14 +21,14 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import ElementsModal from './modal';
+import ElementsModal from 'tiny_elements/modal';
 import ModalFactory from 'core/modal_factory';
 import {
     isStudent,
     showPreview,
     canManage,
     markComponents
-} from './options';
+} from 'tiny_elements/options';
 import ModalEvents from 'core/modal_events';
 import {
     addVariant,
@@ -39,21 +39,21 @@ import {
     loadVariantPreferences,
     removeVariant,
     setData as setVariantsData
-} from './variantslib';
+} from 'tiny_elements/variantslib';
 import {
     savePreferences,
     loadPreferences,
     Preferences
-} from './preferencelib';
+} from 'tiny_elements/preferencelib';
 import {getContextId} from 'editor_tiny/options';
-import Data from './data';
+import Data from 'tiny_elements/data';
 
 let currentFlavor = '';
 let currentFlavorId = 0;
 let currentCategoryId = 1;
 let currentCategoryName = '';
 let lastFlavor = [];
-let sel = '';
+let selection = '';
 let data = {};
 
 /**
@@ -62,7 +62,7 @@ let data = {};
  * @param {TinyMCE} editor
  */
 export const handleAction = async(editor) => {
-    sel = editor.selection.getContent();
+    selection = editor.selection.getContent();
     data = new Data(
         getContextId(editor),
         isStudent(editor),
@@ -72,17 +72,17 @@ export const handleAction = async(editor) => {
     await data.loadData();
     setVariantsData(data);
 
-    currentCategoryId = await loadPreferences(Preferences.category);
-    lastFlavor = await loadPreferences(Preferences.category_flavors);
+    currentCategoryId = loadPreferences(Preferences.category);
+    lastFlavor = loadPreferences(Preferences.category_flavors);
     if (lastFlavor === null) {
         lastFlavor = [];
     }
-    let componentVariants = await loadPreferences(Preferences.component_variants);
+    let componentVariants = loadPreferences(Preferences.component_variants);
     if (componentVariants === null) {
         componentVariants = {};
     }
     loadVariantPreferences(componentVariants);
-    displayDialogue(editor);
+    await displayDialogue(editor);
 };
 
 /**
@@ -343,7 +343,7 @@ const handleButtonClick = async(event, editor, modal) => {
     // Component button.
     if (comp) {
         let componentCode = comp.code;
-        const placeholder = (sel.length > 0 ? sel : comp.text);
+        const placeholder = (selection.length > 0 ? selection : comp.text);
 
         let flavor = comp.flavors.length > 0 ? currentFlavor : '';
 
@@ -385,7 +385,7 @@ const handleButtonMouseEvent = (event, modal, show) => {
 
     let flavor = comp.flavors.length > 0 ? currentFlavor : '';
 
-    const placeholder = (sel.length > 0 ? sel : comp.text);
+    const placeholder = (selection.length > 0 ? selection : comp.text);
 
     node.innerHTML = updateComponentCode(comp.code, selectedButton, placeholder, flavor);
 

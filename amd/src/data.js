@@ -18,11 +18,12 @@
  *
  * @module     tiny_elements/data
  * @copyright  2025 ISB Bayern
+ * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import {get_strings as getStrings} from 'core/str';
-import {component as pluginname} from './common';
+import {component as pluginname} from 'tiny_elements/common';
 import {
     variantExists,
     setData as setVariantsData

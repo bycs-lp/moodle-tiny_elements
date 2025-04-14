@@ -20,7 +20,8 @@ namespace tiny_elements\admin;
  * Class setting_customtext to show a link.
  *
  * @package    tiny_elements
- * @copyright  2024 Tobias Garske
+ * @copyright  2025 ISB Bayern
+ * @author     Tobias Garske
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class setting_customtext extends \admin_setting {

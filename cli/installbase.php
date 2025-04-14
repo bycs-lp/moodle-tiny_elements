@@ -19,6 +19,7 @@
  *
  * @package    tiny_elements
  * @copyright  2025 ISB Bayern
+ * @author     Stefan Hanauska
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define('CLI_SCRIPT', true);

@@ -70,11 +70,9 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
         array $fpoptions,
         ?\editor_tiny\editor $editor = null
     ): array {
-
-        $config = get_config('tiny_elements');
         $viewelements = has_capability('tiny/elements:viewplugin', $context);
         $showpreview = get_config('tiny_elements', 'enablepreview');
-        $isstudent = !has_capability('gradereport/grader:view', $context);
+        $isstudent = !has_capability('tiny/elements:showteachercomponents', $context);
         $canmanage = has_capability('tiny/elements:manage', $context);
         $markcomponents = !empty(get_config('tiny_elements', 'markinserted'));
 

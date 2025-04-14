@@ -39,7 +39,7 @@ use xml_writer;
  */
 class exporter {
     /** @var int $contextid */
-    protected int $contextid = 1;
+    protected int $contextid;
 
     /**
      * Constructor.

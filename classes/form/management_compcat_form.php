@@ -21,7 +21,8 @@ use tiny_elements\local\constants;
  * Class management_compcat_form
  *
  * @package    tiny_elements
- * @copyright  2024 Tobias Garske, ISB Bayern
+ * @copyright  2024 ISB Bayern
+ * @author     Tobias Garske
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class management_compcat_form extends base_form {

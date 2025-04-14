@@ -23,14 +23,14 @@
 
 import {getButtonImage} from 'editor_tiny/utils';
 import {get_string as getString} from 'core/str';
-import {handleAction} from './ui';
+import {handleAction} from 'tiny_elements/ui';
 import {
     component,
     elementsButtonName,
     elementsMenuItemName,
     icon,
-} from './common';
-import {isElementsVisible} from './options';
+} from 'tiny_elements/common';
+import {isElementsVisible} from 'tiny_elements/options';
 
 export const getSetup = async() => {
     const [

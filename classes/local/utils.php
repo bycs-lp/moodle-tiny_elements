@@ -25,9 +25,6 @@ namespace tiny_elements\local;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class utils {
-    /** @var array $flavors */
-    private static array $flavors;
-
     /**
      * Get all components.
      * @param bool $isstudent
@@ -58,12 +55,11 @@ class utils {
 
     /**
      * Get all variants.
-     * @param bool $isstudent
      * @param string $categoryname
      * @param string $query
      * @return array all variants
      */
-    public static function get_all_variants(bool $isstudent = false, string $categoryname = '', string $query = ''): array {
+    public static function get_all_variants(string $categoryname = '', string $query = ''): array {
         global $DB;
         $where = '';
         $params = [];
@@ -95,10 +91,9 @@ class utils {
     /**
      * Get all component variants.
      *
-     * @param bool $isstudent
      * @return array all component variants
      */
-    public static function get_all_comp_variants(bool $isstudent = false): array {
+    public static function get_all_comp_variants(): array {
         global $DB;
         $compvariants = $DB->get_records('tiny_elements_comp_variant', null, '');
         // Sort all variants to the component. key: component name, value: array of variant names.
@@ -114,10 +109,9 @@ class utils {
 
     /**
      * Get all component categories.
-     * @param bool $isstudent
      * @return array all component categories
      */
-    public static function get_all_compcats(bool $isstudent = false): array {
+    public static function get_all_compcats(): array {
         global $DB;
         $categories = $DB->get_records('tiny_elements_compcat', null, 'displayorder');
         return array_values($categories);
@@ -125,10 +119,9 @@ class utils {
 
     /**
      * Get all component flavors.
-     * @param bool $isstudent
      * @return array all component flavors
      */
-    public static function get_all_comp_flavors(bool $isstudent = false): array {
+    public static function get_all_comp_flavors(): array {
         global $DB;
         $compflavors = $DB->get_records('tiny_elements_comp_flavor', [], '');
         $components = [];
@@ -198,11 +191,11 @@ class utils {
      */
     public static function get_elements_data(bool $isstudent = false): array {
         $components = self::get_all_components($isstudent);
-        $compcats = self::get_all_compcats($isstudent);
+        $compcats = self::get_all_compcats();
         $flavors = self::get_all_flavors($isstudent);
-        $variants = self::get_all_variants($isstudent);
-        $componentflavors = self::get_all_comp_flavors($isstudent);
-        $componentvariants = self::get_all_comp_variants($isstudent);
+        $variants = self::get_all_variants();
+        $componentflavors = self::get_all_comp_flavors();
+        $componentvariants = self::get_all_comp_variants();
 
         foreach ($components as $key => $component) {
             // Add flavors to components structure.
@@ -267,7 +260,7 @@ class utils {
             if (empty($componentflavor->iconurl)) {
                 continue;
             }
-            $iconcssentries[] .= self::button_icon_css(
+            $iconcssentries[] = self::button_icon_css(
                 $componentflavor->componentname,
                 self::replace_pluginfile_urls($componentflavor->iconurl, true),
                 $componentflavor->flavorname
@@ -278,7 +271,7 @@ class utils {
             if (empty($component->iconurl)) {
                 continue;
             }
-            $iconcssentries[] .= self::button_icon_css($component->name, self::replace_pluginfile_urls($component->iconurl, true));
+            $iconcssentries[] = self::button_icon_css($component->name, self::replace_pluginfile_urls($component->iconurl, true));
         }
         $cssentries = array_merge(
             $categorycssentries,

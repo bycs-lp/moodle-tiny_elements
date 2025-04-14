@@ -21,6 +21,7 @@
  *
  * @package    tiny_elements
  * @copyright  2024 ISB Bayern
+ * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,9 +33,6 @@ use tiny_elements\importer;
  * @return bool
  */
 function xmldb_tiny_elements_install() {
-    // This is for debugging purposes only and should be removed in production.
-    return true;
-
     try {
         $basezip = __DIR__ . '/base.zip';
         $importer = new importer();

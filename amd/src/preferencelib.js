@@ -18,6 +18,7 @@
  *
  * @module     tiny_elements/preferencelib
  * @copyright  2024 ISB Bayern
+ * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,7 +36,7 @@ export const Preferences = {
 /**
  * Load user preferences.
  * @param {string} name
- * @returns {Promise}
+ * @returns {object}
  */
 export const loadPreferences = async(name) => {
     const request = {
@@ -45,16 +46,19 @@ export const loadPreferences = async(name) => {
         }
     };
 
-    return Ajax.call([request])[0]
+    await Ajax.call([request])[0]
         .then(result => {
             try {
                 let preferences = JSON.parse(result.preferences[0].value);
                 return preferences;
-            } catch (e) {
-                Notification.exception(e);
+            } catch (err) {
+                Notification.exception(err);
                 return {};
             }
-    }).catch(Notification.exception);
+        }).catch(err => {
+            Notification.exception(err);
+            return {};
+        });
 };
 
 /**

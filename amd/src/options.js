@@ -22,7 +22,7 @@
  */
 
 import {getPluginOptionName} from 'editor_tiny/options';
-import {pluginName} from './common';
+import {pluginName} from 'tiny_elements/common';
 
 const isstudentName = getPluginOptionName(pluginName, 'isstudent');
 const showpreviewName = getPluginOptionName(pluginName, 'showpreview');

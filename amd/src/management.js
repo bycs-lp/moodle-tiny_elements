@@ -1,3 +1,27 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Management functions for tiny_elements admin backend.
+ *
+ * @module     tiny_elements/management
+ * @copyright  2024 ISB Bayern
+ * @author     Tobias Garske
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 import Modal from 'core/modal';
 import ModalForm from 'core_form/modalform';
 import Notification from 'core/notification';
@@ -5,6 +29,7 @@ import {get_string as getString} from 'core/str';
 import {exception as displayException, deleteCancelPromise} from 'core/notification';
 import {call as fetchMany} from 'core/ajax';
 import {render as renderTemplate} from 'core/templates';
+import Log from 'core/log';
 class PreviewModal extends Modal {
     static TYPE = "tiny_elements/management_preview";
     static TEMPLATE = "tiny_elements/management_preview";
@@ -117,12 +142,12 @@ export const init = async(params) => {
 
 /**
  * Show dynamic form to add/edit a source.
- * @param {*} e
+ * @param {*} event
  * @param {*} id
  * @param {*} table
  */
-function showModal(e, id, table) {
-    e.preventDefault();
+const showModal = async(event, id, table) => {
+    event.preventDefault();
     let title;
     if (id == 0) {
         title = getString('additem', 'tiny_elements');
@@ -143,16 +168,16 @@ function showModal(e, id, table) {
     // Conditional reload page after submit.
     modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, () => reloadIfNew(modalForm.getFormNode()));
 
-    modalForm.show();
-}
+    await modalForm.show();
+};
 
 /**
  * Show modal to preview css version.
- * @param {*} e
+ * @param {*} event
  */
-async function previewModal(e) {
-    e.preventDefault();
-    let preview = e.target.closest(".preview");
+const previewModal = async(event) => {
+    event.preventDefault();
+    let preview = event.target.closest(".preview");
     const modal = await PreviewModal.create({
         templateContext: {
             component: preview.dataset.component,
@@ -160,15 +185,15 @@ async function previewModal(e) {
             config: M.cfg,
         },
     });
-    modal.show();
-}
+    await modal.show();
+};
 
 /**
  * Show dynamic form to import xml backups.
- * @param {*} e
+ * @param {*} event
  */
-function importModal(e) {
-    e.preventDefault();
+const importModal = async(event) => {
+    event.preventDefault();
     let title = getString('import', 'tiny_elements');
 
     const modalForm = new ModalForm({
@@ -179,20 +204,20 @@ function importModal(e) {
     });
     modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, importModalSubmitted);
 
-    modalForm.show();
-}
+    await modalForm.show();
+};
 
 /**
  * Process import form submit.
- * @param {*} e
+ * @param {*} event
  */
-async function importModalSubmitted(e) {
+const importModalSubmitted = async(event) => {
     // Reload page after submit.
-    if (e.detail.update) {
+    if (event.detail.update) {
         location.reload();
     } else {
-        e.stopPropagation();
-        renderTemplate('tiny_elements/management_import_form_result', e.detail).then(async(html) => {
+        event.stopPropagation();
+        renderTemplate('tiny_elements/management_import_form_result', event.detail).then(async(html) => {
             await Notification.alert(
                 getString('import_simulation', 'tiny_elements'),
                 html,
@@ -203,16 +228,16 @@ async function importModalSubmitted(e) {
             displayException(error);
         });
     }
-}
+};
 
 /**
  * Load modal to edit icon urls.
- * @param {*} e
+ * @param {*} event
  */
-function compflavorModal(e) {
-    e.preventDefault();
+const compflavorModal = async(event) => {
+    event.preventDefault();
     let title = getString('manage', 'tiny_elements');
-    const target = e.target.closest('.buttonicons');
+    const target = event.target.closest('.buttonicons');
     const component = target.dataset.component ?? '';
     const flavor = target.dataset.flavor ?? '';
     const modalForm = new ModalForm({
@@ -225,16 +250,16 @@ function compflavorModal(e) {
         modalConfig: {title: title},
     });
 
-    modalForm.show();
-}
+    await modalForm.show();
+};
 
 /**
  * Load modal to edit displaynames.
- * @param {*} e
+ * @param {*} event
  * @returns {void}
  */
-function displaynamesModal(e) {
-    e.preventDefault();
+const displaynamesModal = async(event) => {
+    event.preventDefault();
     let title = getString('manage', 'tiny_elements');
 
     const modalForm = new ModalForm({
@@ -247,16 +272,16 @@ function displaynamesModal(e) {
     // Reload page after submit.
     modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, () => location.reload());
 
-    modalForm.show();
-}
+    await modalForm.show();
+};
 
 /**
  * Load modal to edit displaynames.
- * @param {*} e
+ * @param {*} event
  * @returns {void}
  */
-function displaynamesFlavorModal(e) {
-    e.preventDefault();
+const displaynamesFlavorModal = async(event) => {
+    event.preventDefault();
     let title = getString('manage', 'tiny_elements');
 
     const modalForm = new ModalForm({
@@ -269,16 +294,16 @@ function displaynamesFlavorModal(e) {
     // Reload page after submit.
     modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, () => location.reload());
 
-    modalForm.show();
-}
+    await modalForm.show();
+};
 
 /**
  * Load modal to edit displaynames.
- * @param {*} e
+ * @param {*} event
  * @returns {void}
  */
-function displaynamesVariantModal(e) {
-    e.preventDefault();
+const displaynamesVariantModal = async(event) => {
+    event.preventDefault();
     let title = getString('manage', 'tiny_elements');
 
     const modalForm = new ModalForm({
@@ -291,18 +316,18 @@ function displaynamesVariantModal(e) {
     // Reload page after submit.
     modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, () => location.reload());
 
-    modalForm.show();
-}
+    await modalForm.show();
+};
 
 /**
  * Show dynamic form to delete a source.
- * @param {*} e
+ * @param {*} event
  * @param {*} id
  * @param {*} title
  * @param {*} table
  */
-function deleteModal(e, id, title, table) {
-    e.preventDefault();
+const deleteModal = (event, id, title, table) => {
+    event.preventDefault();
 
     deleteCancelPromise(
         getString('delete', 'tiny_elements', title),
@@ -323,10 +348,11 @@ function deleteModal(e, id, title, table) {
             }
         }
         return;
-    }).catch(() => {
+    }).catch((err) => {
+        Log.error(err.message);
         return;
     });
-}
+};
 
 /**
  * Delete elements items.
@@ -348,10 +374,10 @@ export const deleteItem = (
 
 /**
  * Show items after clicking a compcat.
- * @param {*} e
+ * @param {*} event
  * @param {*} compcat
  */
-function showItems(e, compcat) {
+const showItems = (event, compcat) => {
     // But first hide all items.
     let itemsHide = document.querySelectorAll('.flavor, .component, .variant');
     itemsHide.forEach(element => {
@@ -390,12 +416,12 @@ function showItems(e, compcat) {
     });
 
     // Unmark all and mark clicked compcat.
-    if (e) {
+    if (event) {
         let items = document.getElementsByClassName('compcat');
         items.forEach(element => {
             element.classList.remove('active');
         });
-        let item = e.target.closest('.compcat');
+        let item = event.target.closest('.compcat');
         item.classList.add('active');
     }
 
@@ -421,52 +447,52 @@ function showItems(e, compcat) {
             });
         }
     }
-}
+};
 
 /**
  * Reload for new items.
  * @param {*} form
  */
-function reloadIfNew(form) {
+const reloadIfNew = (form) => {
     // Newly created element without id?
     if (!form.elements.id.value) {
         reload();
     }
-}
+};
 
 /**
  * Reload page with active compcat.
  */
-function reload() {
+const reload = () => {
     // Reload page with active compcat.
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.set('compcat', getActiveCompcatName());
     window.location.href = currentUrl.toString();
-}
+};
 
 /**
  * Get the current active compcat.
  * @returns string Name of active compcat.
  */
-function getActiveCompcatName() {
+const getActiveCompcatName = () => {
     const compcat = document.querySelector('.compcat.active');
     if (!compcat) {
         return '';
     }
     return compcat.dataset.compcat ?? '';
-}
+};
 
 /**
  * Get the current active compcat.
  * @returns int Id of active compcat.
  */
-function getActiveCompcatId() {
+const getActiveCompcatId = () => {
     const compcat = document.querySelector('.compcat.active');
     if (!compcat) {
         return 0;
     }
     return compcat.dataset.id ?? 0;
-}
+};
 
 /**
  * Duplicate elements items.
@@ -482,4 +508,3 @@ export const duplicateItem = (id, table) => fetchMany(
             table,
         }
     }])[0];
-

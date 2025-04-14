@@ -53,11 +53,12 @@ class delete_item extends external_api {
      * @throws dml_exception
      */
     public static function execute(int $id, string $table): array {
-        global $DB;
-        self::validate_parameters(self::execute_parameters(), [
+        $params = self::validate_parameters(self::execute_parameters(), [
             'id' => $id,
             'table' => $table,
         ]);
+        $id = $params['id'];
+        $table = $params['table'];
         $systemcontext = \context_system::instance();
         self::validate_context($systemcontext);
         require_capability('tiny/elements:manage', $systemcontext);
