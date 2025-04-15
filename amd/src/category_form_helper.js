@@ -23,57 +23,56 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
+import Ajax from 'core/ajax';
+import Notification from 'core/notification';
 
-    return {
-        /**
-         * Process the results for auto complete elements.
-         *
-         * @param {String} selector The selector of the auto complete element.
-         * @param {Array} results An array or results.
-         * @return {Array} New array of results.
-         */
-        processResults: function(selector, results) {
-            var options = [];
-            results.forEach((data) => {
-                options.push({
-                    value: data.name,
-                    label: data.displayname
-                });
+export default {
+    /**
+     * Process the results for auto complete elements.
+     *
+     * @param {String} selector The selector of the auto complete element.
+     * @param {Array} results An array or results.
+     * @return {Array} New array of results.
+     */
+    processResults: function(selector, results) {
+        var options = [];
+        results.forEach((data) => {
+            options.push({
+                value: data.name,
+                label: data.displayname
             });
-            return options;
-        },
+        });
+        return options;
+    },
 
-        /**
-         * Source of data for Ajax element.
-         *
-         * @param {String} selector The selector of the auto complete element.
-         * @param {String} query The query string.
-         * @param {Function} callback A callback function receiving an array of results.
-         */
-        /* eslint-disable promise/no-callback-in-promise */
-        transport: function(selector, query, callback) {
-            var el = document.querySelector(selector);
-            if (!el) {
-                return;
-            }
-            const contextid = el.dataset.contextid ?? 1;
-            const categoryname = el.closest('form').querySelector('select[name="categoryname"]').value;
-
-            let methodname = 'tiny_elements_get_variants';
-            if (el.name == 'flavors[]') {
-                methodname = 'tiny_elements_get_flavors';
-            }
-
-            Ajax.call([{
-                methodname: methodname,
-                args: {
-                    contextid: contextid,
-                    categoryname: categoryname,
-                    query: query,
-                }
-            }])[0].then(callback).catch(Notification.exception);
+    /**
+     * Source of data for Ajax element.
+     *
+     * @param {String} selector The selector of the auto complete element.
+     * @param {String} query The query string.
+     * @param {Function} callback A callback function receiving an array of results.
+     */
+    /* eslint-disable promise/no-callback-in-promise */
+    transport: function(selector, query, callback) {
+        var el = document.querySelector(selector);
+        if (!el) {
+            return;
         }
-    };
+        const contextid = el.dataset.contextid ?? 1;
+        const categoryname = el.closest('form').querySelector('select[name="categoryname"]').value;
 
-});
+        let methodname = 'tiny_elements_get_variants';
+        if (el.name == 'flavors[]') {
+            methodname = 'tiny_elements_get_flavors';
+        }
+
+        Ajax.call([{
+            methodname: methodname,
+            args: {
+                contextid: contextid,
+                categoryname: categoryname,
+                query: query,
+            }
+        }])[0].then(callback).catch(Notification.exception);
+    }
+};

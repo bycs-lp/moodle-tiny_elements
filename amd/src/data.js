@@ -34,6 +34,7 @@ import {
 } from './helper';
 import {call as fetchMany} from 'core/ajax';
 import Log from 'core/log';
+
 export default class Data {
     categories = [];
     components = [];

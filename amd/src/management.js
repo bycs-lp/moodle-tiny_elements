@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Modal from 'core/modal';
+import {PreviewModal} from 'tiny_elements/previewmodal';
 import ModalForm from 'core_form/modalform';
 import Notification from 'core/notification';
 import {get_string as getString} from 'core/str';
@@ -30,15 +30,6 @@ import {exception as displayException, deleteCancelPromise} from 'core/notificat
 import {call as fetchMany} from 'core/ajax';
 import {render as renderTemplate} from 'core/templates';
 import Log from 'core/log';
-class PreviewModal extends Modal {
-    static TYPE = "tiny_elements/management_preview";
-    static TEMPLATE = "tiny_elements/management_preview";
-    configure(modalConfig) {
-        modalConfig.removeOnClose = true;
-        modalConfig.large = true;
-        super.configure(modalConfig);
-    }
-}
 
 export const init = async(params) => {
 

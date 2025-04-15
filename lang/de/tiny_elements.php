@@ -57,6 +57,8 @@ $string['dryrun'] = 'Import simulieren';
 $string['dryrun_help'] = 'Wenn diese Option aktiviert ist, wird ein Import simuliert ohne Änderungen vorzunehmen. Damit kann festgestellt werden, ob durch den Import bestehende Objekte verändert werden.';
 $string['edititem'] = 'Element bearbeiten';
 $string['elements:manage'] = 'Komponenten verwalten';
+
+$string['elements:showteachercomponents'] = 'Komponenten anzeigen, die nur für Lehrkräfte bestimmt sind';
 $string['elements:viewplugin'] = 'Kurselemente-Plugin anzeigen';
 $string['enablepreview'] = 'Vorschau aktivieren';
 $string['enablepreview_desc'] = 'Wenn aktiviert, wird eine Vorschau angezeigt, wenn Sie mit der Maus über jede Komponente fahren.';
