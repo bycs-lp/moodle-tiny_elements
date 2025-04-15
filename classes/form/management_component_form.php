@@ -92,19 +92,31 @@ class management_component_form extends base_form {
         $mform->addElement($this->codemirror_present() ? 'editor' : 'textarea', 'css', get_string('css', 'tiny_elements'));
         $mform->setType('css', PARAM_RAW);
 
-        $mform->addElement('url', 'iconurl', get_string('iconurl', 'tiny_elements'), ['size' => 255], ['usefilepicker' => false]);
-        $mform->setType('iconurl', PARAM_URL);
-
-        $mform->addElement(
-            'static',
+        $group = [];
+        $group[] = $mform->createElement('text', 'iconurl', get_string('iconurl', 'tiny_elements'));
+        $group[] = $mform->createElement(
+            'button',
             'printurls',
-            '',
-            '<a href="#" onclick="window.open(\'printurls.php\', \'popup\', \'width=800,height=600\'); return false;">' .
-            get_string('showprinturls', 'tiny_elements') . '</a>'
+            get_string('showprinturls', 'tiny_elements'),
+            ['data-buttontype' => 'tiny_elements_printurls']
         );
+        $mform->addElement('group', 'icongroup', get_string('iconurl', 'tiny_elements'), $group, false);
 
         $mform->addElement('checkbox', 'hideforstudents', get_string('hideforstudents', 'tiny_elements'));
         $mform->setType('hideforstudents', PARAM_INT);
+    }
+
+    /**
+     * Form definition after data is loaded.
+     */
+    public function definition_after_data() {
+        global $PAGE;
+        parent::definition_after_data();
+        $PAGE->requires->js_call_amd(
+            'tiny_elements/imagepicker',
+            'init',
+            ['[data-buttontype="tiny_elements_printurls"]', '[name*="iconurl"]']
+        );
     }
 
     /**

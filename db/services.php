@@ -63,4 +63,11 @@ $functions = [
                 'ajax' => true,
                 'capabilities' => 'tiny/elements:manage',
         ],
+        'tiny_elements_get_images' => [
+                'classname' => 'tiny_elements\external\get_images',
+                'description' => 'Retrieve images data',
+                'type' => 'read',
+                'ajax' => true,
+                'capabilities' => 'tiny/elements:manage',
+        ],
 ];

@@ -474,4 +474,40 @@ class utils {
         $oldstring = '@@PLUGINFILE@@/1/tiny_elements/' . $mark . 'images/';
         return str_replace($oldstring, $newstring, $subject);
     }
+
+    /**
+     * Return a list of all images in the given context.
+     *
+     * @param int $contextid
+     * @param int $categoryid
+     * @param string $categoryname
+     * @return array
+     */
+    public static function get_all_images(int $contextid = SYSCONTEXTID, int $categoryid = 0, string $categoryname = ''): array {
+        global $DB;
+        if (empty($categoryid) && !empty($categoryname)) {
+            $categoryid = $DB->get_field('tiny_elements_compcat', 'id', ['name' => $categoryname]);
+        }
+        $fs = get_file_storage();
+        $files = $fs->get_area_files($contextid, 'tiny_elements', 'images', (empty($categoryid) ? false : $categoryid));
+        $processedfiles = [];
+        foreach ($files as $file) {
+            if ($file->is_directory()) {
+                continue;
+            }
+
+            $processedfiles[] = [
+                'url' => \moodle_url::make_pluginfile_url(
+                    $file->get_contextid(),
+                    $file->get_component(),
+                    $file->get_filearea(),
+                    $file->get_itemid(),
+                    $file->get_filepath(),
+                    $file->get_filename()
+                )->out(),
+                'name' => $file->get_filepath() . $file->get_filename(),
+            ];
+        }
+        return $processedfiles;
+    }
 }

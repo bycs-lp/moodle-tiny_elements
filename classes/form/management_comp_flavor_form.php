@@ -38,13 +38,16 @@ class management_comp_flavor_form extends dynamic_form {
         $data = $this->_ajaxformdata;
 
         $conditions = [];
+        $categoryname = '';
 
         if (!empty($data['component'])) {
             $conditions['componentname'] = $data['component'];
+            $categoryname = $DB->get_field('tiny_elements_component', 'categoryname', ['name' => $data['component']]);
         }
 
         if (!empty($data['flavor'])) {
             $conditions['flavorname'] = $data['flavor'];
+            $categoryname = $DB->get_field('tiny_elements_flavor', 'categoryname', ['name' => $data['flavor']]);
         }
 
         $count = $DB->count_records('tiny_elements_comp_flavor', $conditions);
@@ -58,7 +61,15 @@ class management_comp_flavor_form extends dynamic_form {
         $group = [];
         $group[] = $mform->createElement('hidden', 'id');
         $group[] = $mform->createElement('static', 'name', get_string('component_flavor', 'tiny_elements'));
-        $group[] = $mform->createElement('text', 'iconurl', get_string('iconurl', 'tiny_elements'));
+        $subgroup = [];
+        $subgroup[] = $mform->createElement('text', 'iconurl', get_string('iconurl', 'tiny_elements'));
+        $subgroup[] = $mform->createElement(
+            'button',
+            'printurls',
+            get_string('showprinturls', 'tiny_elements'),
+            ['data-buttontype' => 'tiny_elements_printurls', 'data-categoryname' => $categoryname]
+        );
+        $group[] = $mform->createElement('group', 'icongroup', get_string('iconurl', 'tiny_elements'), $subgroup, false);
 
         $options = [
             'id' => [
@@ -77,6 +88,19 @@ class management_comp_flavor_form extends dynamic_form {
         $mform->removeElement('adddummy');
 
         $mform->setAttributes(['data-formtype' => 'tiny_elements_comp_flavor']);
+    }
+
+    /**
+     * Form definition after data is loaded.
+     */
+    public function definition_after_data() {
+        global $PAGE;
+        parent::definition_after_data();
+        $PAGE->requires->js_call_amd(
+            'tiny_elements/imagepicker',
+            'init',
+            ['[data-buttontype="tiny_elements_printurls"]', '[name*="iconurl"]']
+        );
     }
 
     /**
@@ -111,7 +135,7 @@ class management_comp_flavor_form extends dynamic_form {
         foreach ($formdata->id as $key => $id) {
             $record = new \stdClass();
             $record->id = $id;
-            $record->iconurl = utils::replace_pluginfile_urls($formdata->iconurl[$key] ?? '');
+            $record->iconurl = utils::replace_pluginfile_urls($formdata->icongroup[$key]['iconurl'] ?? '');
             $result &= $DB->update_record('tiny_elements_comp_flavor', $record);
         }
 
@@ -148,7 +172,7 @@ class management_comp_flavor_form extends dynamic_form {
         foreach ($compflavor as $item) {
             $data['id'][] = $item->id;
             $data['name'][] = $item->componentname . '/' . $item->flavorname;
-            $data['iconurl'][] = utils::replace_pluginfile_urls($item->iconurl ?? '', true);
+            $data['icongroup'][] = ['iconurl' => utils::replace_pluginfile_urls($item->iconurl ?? '', true)];
         }
 
         $data['itemcount'] = count($compflavor);

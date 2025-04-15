@@ -162,6 +162,7 @@ abstract class base_form extends dynamic_form {
         }
         if (isset($formdata->iconurl)) {
             $formdata->iconurl = utils::replace_pluginfile_urls($formdata->iconurl, true);
+            $formdata->icongroup = ['iconurl' => $formdata->iconurl];
         }
 
         $cssel = $form->_elements[$form->_elementIndex['css']] ?? null;
@@ -229,6 +230,10 @@ abstract class base_form extends dynamic_form {
         }
         if (isset($formdata->iconurl)) {
             $formdata->iconurl = utils::replace_pluginfile_urls($formdata->iconurl);
+        }
+        if (isset($formdata->icongroup['iconurl'])) {
+            $formdata->icongroup['iconurl'] = utils::replace_pluginfile_urls($formdata->icongroup['iconurl']);
+            $formdata->iconurl = $formdata->icongroup['iconurl'];
         }
     }
 

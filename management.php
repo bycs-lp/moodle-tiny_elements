@@ -63,13 +63,13 @@ foreach ($component as $key => $value) {
         if ($val->componentname == $value->name) {
             array_push($flavorsarr, $val->flavorname);
             if (!empty($val->iconurl)) {
-                array_push($flavorexamplesarr, utils::replace_pluginfile_urls($val->iconurl, true));
+                array_push($flavorexamplesarr, utils::replace_pluginfile_urls($val->iconurl ?? '', true));
             }
         }
     }
     $component[$key]->flavorsarr = $flavorsarr;
     if (empty($flavorexamplesarr)) {
-        $component[$key]->flavorexamplesarr = [utils::replace_pluginfile_urls($value->iconurl, true)];
+        $component[$key]->flavorexamplesarr = [utils::replace_pluginfile_urls($value->iconurl ?? '', true)];
     } else {
         $component[$key]->flavorexamplesarr = $flavorexamplesarr;
     }
@@ -85,7 +85,7 @@ foreach ($flavor as $key => $value) {
     foreach ($dbcompflavor as $val) {
         if ($val->flavorname == $value->name) {
             if (!empty($val->iconurl)) {
-                $flavor[$key]->example = utils::replace_pluginfile_urls($val->iconurl, true);
+                $flavor[$key]->example = utils::replace_pluginfile_urls($val->iconurl ?? '', true);
                 continue;
             }
         }
