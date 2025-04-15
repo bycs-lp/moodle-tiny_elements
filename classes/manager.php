@@ -86,11 +86,11 @@ class manager {
      */
     public function delete_flavor(int $id): void {
         global $DB;
-        $sql = 'DELETE FROM {tiny_elements_comp_flavor}
+        $sql = "DELETE FROM {tiny_elements_comp_flavor}
                 WHERE flavorname IN (
                     SELECT name FROM {tiny_elements_flavor}
                     WHERE id = ?
-                )';
+                )";
         $DB->execute($sql, [$id]);
         $DB->delete_records('tiny_elements_flavor', ['id' => $id]);
 
@@ -107,11 +107,11 @@ class manager {
      */
     public function delete_variant(int $id): void {
         global $DB;
-        $sql = 'DELETE FROM {tiny_elements_comp_variant}
+        $sql = "DELETE FROM {tiny_elements_comp_variant}
                 WHERE variant IN (
                     SELECT name FROM {tiny_elements_variant}
                     WHERE id = ?
-                )';
+                )";
         $DB->execute($sql, [$id]);
         $DB->delete_records('tiny_elements_variant', ['id' => $id]);
 
@@ -363,23 +363,23 @@ class manager {
         $result = $DB->update_record(constants::TABLES['compcat'], $data);
 
         $result &= $DB->execute(
-            'UPDATE {tiny_elements_component}
+            "UPDATE {tiny_elements_component}
              SET categoryname = ?
-             WHERE categoryname = ?',
+             WHERE categoryname = ?",
             [$data->name, $oldrecord->name]
         );
 
         $result &= $DB->execute(
-            'UPDATE {tiny_elements_flavor}
+            "UPDATE {tiny_elements_flavor}
              SET categoryname = ?
-             WHERE categoryname = ?',
+             WHERE categoryname = ?",
             [$data->name, $oldrecord->name]
         );
 
         $result &= $DB->execute(
-            'UPDATE {tiny_elements_variant}
+            "UPDATE {tiny_elements_variant}
              SET categoryname = ?
-             WHERE categoryname = ?',
+             WHERE categoryname = ?",
             [$data->name, $oldrecord->name]
         );
 
@@ -409,9 +409,9 @@ class manager {
 
         if ($oldrecord->name != $data->name) {
             $result &= $DB->execute(
-                'UPDATE {tiny_elements_comp_flavor}
+                "UPDATE {tiny_elements_comp_flavor}
                  SET flavorname = ?
-                 WHERE flavorname = ?',
+                 WHERE flavorname = ?",
                 [$data->name, $oldrecord->name]
             );
         }
@@ -441,9 +441,9 @@ class manager {
 
         if ($oldrecord->name != $data->name) {
             $result &= $DB->execute(
-                'UPDATE {tiny_elements_comp_variant}
+                "UPDATE {tiny_elements_comp_variant}
                  SET variant = ?
-                 WHERE variant = ?',
+                 WHERE variant = ?",
                 [$data->name, $oldrecord->name]
             );
         }
@@ -522,7 +522,7 @@ class manager {
         global $DB;
         $compcatname = '';
         $compcat = $DB->get_record_sql(
-            'SELECT c.name, COUNT(c.id) AS cnt
+            "SELECT c.name, COUNT(c.id) AS cnt
              FROM {tiny_elements_compcat} c
              JOIN {tiny_elements_component} cp
              ON c.name = cp.categoryname
@@ -530,7 +530,7 @@ class manager {
              ON cp.name = cpv.componentname
              WHERE cpv.variant = ?
              GROUP BY c.name
-             ORDER BY cnt DESC',
+             ORDER BY cnt DESC",
             [$variantname],
             IGNORE_MULTIPLE
         );
@@ -551,7 +551,7 @@ class manager {
         global $DB;
         $compcatname = '';
         $compcat = $DB->get_record_sql(
-            'SELECT c.name, COUNT(c.id) AS cnt
+            "SELECT c.name, COUNT(c.id) AS cnt
              FROM {tiny_elements_compcat} c
              JOIN {tiny_elements_component} cp
              ON c.name = cp.categoryname
@@ -559,7 +559,7 @@ class manager {
              ON cp.name = cpf.componentname
              WHERE cpf.flavorname = ?
              GROUP BY c.name
-             ORDER BY cnt DESC',
+             ORDER BY cnt DESC",
             [$flavorname],
             IGNORE_MULTIPLE
         );

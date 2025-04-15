@@ -16,6 +16,8 @@
 
 namespace tiny_elements\form;
 
+use tiny_elements\local\utils;
+
 /**
  * Class management_component_form
  *
@@ -29,7 +31,13 @@ class management_component_form extends base_form {
      * Form definition.
      */
     public function definition() {
-        global $DB;
+        global $CFG, $DB;
+
+        \MoodleQuickForm::registerElementType(
+            'choiceimagedropdown',
+            $CFG->dirroot. '/lib/editor/tiny/plugins/elements/classes/form/choiceimagedropdown.php',
+            'tiny_elements\form\choiceimagedropdown'
+        );
 
         $compcats = $DB->get_records_menu('tiny_elements_compcat', null, 'displayname', 'name, displayname');
         $flavors = $DB->get_records_menu('tiny_elements_flavor', null, 'displayname', 'name, displayname');
@@ -90,7 +98,7 @@ class management_component_form extends base_form {
         $mform->addElement($this->codemirror_present() ? 'editor' : 'textarea', 'css', get_string('css', 'tiny_elements'));
         $mform->setType('css', PARAM_RAW);
 
-        $mform->addElement('url', 'iconurl', get_string('iconurl', 'tiny_elements'), ['size' => '255']);
+        $mform->addElement('url', 'iconurl', get_string('iconurl', 'tiny_elements'), ['size' => 255], ['usefilepicker' => false]);
         $mform->setType('iconurl', PARAM_URL);
 
         $mform->addElement(

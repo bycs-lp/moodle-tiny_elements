@@ -41,22 +41,14 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configcheckbox('tiny_elements/enablepreview', $name, $desc, $default);
     $settings->add($setting);
 
-    // Mark inserted components.
-    $name = get_string('markinserted', 'tiny_elements');
-    $desc = get_string('markinserted_desc', 'tiny_elements');
-    $default = 1;
-    $setting = new admin_setting_configcheckbox('tiny_elements/markinserted', $name, $desc, $default);
-    $settings->add($setting);
-
     // Add text with link to management as setting.
-    $settings->add(new \tiny_elements\admin\setting_customtext(
+    $settings->add(new admin_setting_description(
         'tiny_elements/management',
         get_string('linktomanagername', 'tiny_elements'),
         get_string(
             'linktomanagerdesc',
             'tiny_elements',
             (new moodle_url('/lib/editor/tiny/plugins/elements/management.php'))->out()
-        ),
-        ''
+        )
     ));
 }

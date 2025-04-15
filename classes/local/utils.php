@@ -16,6 +16,8 @@
 
 namespace tiny_elements\local;
 
+use core\output\choicelist;
+
 /**
  * Utility class for tiny_elements.
  *
@@ -79,7 +81,7 @@ class utils {
             $params['query'] = '%' . $DB->sql_like_escape($query) . '%';
         }
         $variants = $DB->get_records_sql(
-            'SELECT * FROM {tiny_elements_variant}' . (!empty($where) ? ' WHERE ' . $where : ''),
+            "SELECT * FROM {tiny_elements_variant}" . (!empty($where) ? " WHERE " . $where : ""),
             $params
         );
         foreach ($variants as $variant) {
@@ -167,11 +169,11 @@ class utils {
             $params['query'] = '%' . $DB->sql_like_escape($query) . '%';
         }
         $flavors = $DB->get_records_sql(
-            '
+            "
             SELECT *
-            FROM {tiny_elements_flavor}' .
-            (!empty($where) ? ' WHERE ' . $where : '') .
-            ' ORDER BY displayorder',
+            FROM {tiny_elements_flavor}" .
+            (!empty($where) ? " WHERE " . $where : "") .
+            " ORDER BY displayorder",
             $params
         );
 

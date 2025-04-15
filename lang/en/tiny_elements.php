@@ -82,8 +82,6 @@ $string['linktomanagerdesc'] = 'Go to <a href="{$a}">management page</a> to edit
 $string['linktomanagername'] = 'Link to management';
 $string['manage'] = 'Manage';
 $string['management'] = 'Management';
-$string['markinserted'] = 'Mark inserted components';
-$string['markinserted_desc'] = 'If selected, all inserted components will be surrounded by &lt;!-- tiny_elements --&gt; and &lt;!-- /tiny_elements --&gt;. This can help you find the places where components are used.';
 $string['menuitem_elements'] = 'Course elements';
 $string['name'] = 'Name';
 $string['newcategory'] = 'New category "{$a}"';

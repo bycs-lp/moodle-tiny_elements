@@ -63,12 +63,12 @@ function xmldb_tiny_elements_upgrade($oldversion): bool {
 
         // Move componentid to componentname.
         $DB->execute(
-            'UPDATE {tiny_elements_comp_variant}
-            SET componentname = (SELECT name FROM {tiny_elements_component} WHERE id = component)'
+            "UPDATE {tiny_elements_comp_variant}
+            SET componentname = (SELECT name FROM {tiny_elements_component} WHERE id = component)"
         );
 
         // Delete all rows without componentname.
-        $DB->execute('DELETE FROM {tiny_elements_comp_variant} WHERE componentname IS NULL');
+        $DB->execute("DELETE FROM {tiny_elements_comp_variant} WHERE componentname IS NULL");
 
         // Remove old foreign key.
         $key = new xmldb_key(
@@ -118,8 +118,8 @@ function xmldb_tiny_elements_upgrade($oldversion): bool {
         }
 
         $DB->execute(
-            'UPDATE {tiny_elements_component}
-            SET categoryname = (SELECT name FROM {tiny_elements_compcat} WHERE id = compcat)'
+            "UPDATE {tiny_elements_component}
+            SET categoryname = (SELECT name FROM {tiny_elements_compcat} WHERE id = compcat)"
         );
 
         $key = new xmldb_key('compcat', XMLDB_KEY_FOREIGN, ['compcat'], 'tiny_elements_compcat', ['id']);

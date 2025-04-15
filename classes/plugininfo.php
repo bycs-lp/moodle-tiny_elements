@@ -74,7 +74,6 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
         $showpreview = get_config('tiny_elements', 'enablepreview');
         $isstudent = !has_capability('tiny/elements:showteachercomponents', $context);
         $canmanage = has_capability('tiny/elements:manage', $context);
-        $markcomponents = !empty(get_config('tiny_elements', 'markinserted'));
 
         $cache = \cache::make('tiny_elements', constants::CACHE_AREA);
         $rev = $cache->get(constants::CSS_CACHE_REV);
@@ -96,7 +95,6 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
             'viewelements' => $viewelements,
             'cssurl' => $cssurl,
             'canmanage' => $canmanage,
-            'markcomponents' => $markcomponents,
         ];
     }
 

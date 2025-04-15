@@ -33,7 +33,7 @@ import {
     findByName
 } from './helper';
 import {call as fetchMany} from 'core/ajax';
-
+import Log from 'core/log';
 export default class Data {
     categories = [];
     components = [];
@@ -238,9 +238,10 @@ export default class Data {
                 isstudent: this.userStudent,
                 contextid: this.contextid
             },
-        }])[0];
+        }])[0].catch(err => {
+            Log.error(err.message);
+        });
 
-        // TODO error handling.
         const indexedComponents = [];
         data.components.forEach(component => {
             indexedComponents[component.id] = component;

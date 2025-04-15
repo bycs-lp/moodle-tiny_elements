@@ -17,7 +17,6 @@
 namespace tiny_elements\form;
 
 use core_form\dynamic_form;
-use tiny_elements\local\utils;
 use context;
 
 /**

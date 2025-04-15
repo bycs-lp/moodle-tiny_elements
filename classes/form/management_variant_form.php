@@ -59,7 +59,7 @@ class management_variant_form extends base_form {
         $mform->addElement($this->codemirror_present() ? 'editor' : 'textarea', 'css', get_string('css', 'tiny_elements'));
         $mform->setType('css', PARAM_RAW);
 
-        $mform->addElement('url', 'iconurl', get_string('iconurl', 'tiny_elements'), ['size' => '255']);
+        $mform->addElement('url', 'iconurl', get_string('iconurl', 'tiny_elements'), ['size' => 255], ['usefilepicker' => false]);
         $mform->setType('iconurl', PARAM_URL);
 
         $mform->addElement(

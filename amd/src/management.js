@@ -164,6 +164,7 @@ const showModal = async(event, id, table) => {
             categoryname: getActiveCompcatName(),
         },
         modalConfig: {title: title},
+        returnFocus: event.target,
     });
     // Conditional reload page after submit.
     modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, () => reloadIfNew(modalForm.getFormNode()));
