@@ -48,7 +48,7 @@ class get_images extends external_api {
      * Retrieve the images.
      * @param int $contextid the context id (currently only system context is supported)
      * @param string $categoryname the category name
-     * @param string $query the query string
+     * @param int $categoryid the category id
      * @return array list of images
      */
     public static function execute(int $contextid, string $categoryname, int $categoryid): array {
