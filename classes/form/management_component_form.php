@@ -31,13 +31,7 @@ class management_component_form extends base_form {
      * Form definition.
      */
     public function definition() {
-        global $CFG, $DB;
-
-        \MoodleQuickForm::registerElementType(
-            'choiceimagedropdown',
-            $CFG->dirroot. '/lib/editor/tiny/plugins/elements/classes/form/choiceimagedropdown.php',
-            'tiny_elements\form\choiceimagedropdown'
-        );
+        global $DB;
 
         $compcats = $DB->get_records_menu('tiny_elements_compcat', null, 'displayname', 'name, displayname');
         $flavors = $DB->get_records_menu('tiny_elements_flavor', null, 'displayname', 'name, displayname');
