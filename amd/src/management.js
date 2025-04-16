@@ -64,7 +64,7 @@ export const init = async(params) => {
     });
 
     // Add listener to preview items.
-    let previewitems = document.getElementsByClassName('preview');
+    let previewitems = document.getElementsByClassName('preview-button');
     previewitems.forEach(element => {
         element.addEventListener('click', async(e) => {
             previewModal(e);
