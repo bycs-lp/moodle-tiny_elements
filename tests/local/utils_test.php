@@ -119,7 +119,7 @@ final class utils_test extends \advanced_testcase {
 
         $this->mock_clock_with_frozen($starttime + 20);
         $compcatrecord1 = $DB->get_record('tiny_elements_compcat', ['id' => $compcatrecord1id]);
-        $compcatrecord1->css = 'p{color:pink;}';
+        $compcatrecord1->css = 'p{color:pink}';
         $DB->update_record('tiny_elements_compcat', $compcatrecord1);
         $flavorrecord3 = $DB->get_record('tiny_elements_flavor', ['id' => $flavorrecord3id]);
         $flavorrecord3->hideforstudents = 0;
