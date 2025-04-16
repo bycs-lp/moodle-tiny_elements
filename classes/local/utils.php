@@ -288,6 +288,7 @@ class utils {
             '/* This file contains the stylesheet for the tiny_elements plugin.*/'
         );
         $css = self::replace_pluginfile_urls($css, true);
+        $css = \core_minify::css($css);
         $clock = \core\di::get(\core\clock::class);
         $rev = $clock->time();
         $cache->set(constants::CSS_CACHE_KEY, $css);
@@ -316,6 +317,7 @@ class utils {
             '/* This file contains the javascript for the tiny_elements plugin.*/'
         );
         $js = self::replace_pluginfile_urls($js, true);
+        $js = \core_minify::js($js);
         $cache->set(constants::JS_CACHE_KEY, $js);
         $clock = \core\di::get(\core\clock::class);
         $rev = $clock->time();
