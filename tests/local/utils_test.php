@@ -40,18 +40,18 @@ final class utils_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $compcatrecord1 = new stdClass();
-        $compcatrecord1->name = 'category1';
+        $compcatrecord1->name = 'testcategory1';
         $compcatrecord1->displayname = 'Category 1';
         $compcatrecord1->css = '.testcategory1{margin:3rem}';
         $compcatrecord1id = $DB->insert_record('tiny_elements_compcat', $compcatrecord1);
         $compcatrecord2 = new stdClass();
-        $compcatrecord2->name = 'category2';
+        $compcatrecord2->name = 'testcategory2';
         $compcatrecord2->displayname = 'Category 2';
         $compcatrecord2->css = '.testcategory2{padding:3rem}';
         $compcatrecord2id = $DB->insert_record('tiny_elements_compcat', $compcatrecord2);
 
         $componentrecord1 = new stdClass();
-        $componentrecord1->name = 'component1';
+        $componentrecord1->name = 'testcomponent1';
         $componentrecord1->displayname = 'Component 1';
 
         $componentrecord1->compcat = $compcatrecord1id;
@@ -59,7 +59,7 @@ final class utils_test extends \advanced_testcase {
         $DB->insert_record('tiny_elements_component', $componentrecord1);
 
         $componentrecord2 = new stdClass();
-        $componentrecord2->name = 'component2';
+        $componentrecord2->name = 'testcomponent2';
         $componentrecord2->displayname = 'Component 2';
 
         $componentrecord2->compcat = $compcatrecord2id;
@@ -67,19 +67,19 @@ final class utils_test extends \advanced_testcase {
         $DB->insert_record('tiny_elements_component', $componentrecord2);
 
         $flavorrecord1 = new stdClass();
-        $flavorrecord1->name = 'flavor1';
+        $flavorrecord1->name = 'testflavor1';
         $flavorrecord1->displayname = 'Flavor 1';
         $flavorrecord1->css = '#testflavor{color:blue}';
         $DB->insert_record('tiny_elements_flavor', $flavorrecord1);
 
         $flavorrecord2 = new stdClass();
-        $flavorrecord2->name = 'flavor2';
+        $flavorrecord2->name = 'testflavor2';
         $flavorrecord2->displayname = 'Flavor 2';
         $flavorrecord2->css = '#testflavor2{color:yellow}';
         $DB->insert_record('tiny_elements_flavor', $flavorrecord2);
 
         $flavorrecord3 = new stdClass();
-        $flavorrecord3->name = 'flavor3';
+        $flavorrecord3->name = 'testflavor3';
         $flavorrecord3->displayname = 'Flavor 3';
         $flavorrecord3->css = '#testflavor3{color:red}';
         $flavorrecord3->hideforstudents = 1;
