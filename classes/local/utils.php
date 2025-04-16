@@ -289,6 +289,9 @@ class utils {
         );
         $css = self::replace_pluginfile_urls($css, true);
         $css = \core_minify::css($css);
+        if (empty($css)) {
+            $css = ' ';
+        }
         $clock = \core\di::get(\core\clock::class);
         $rev = $clock->time();
         $cache->set(constants::CSS_CACHE_KEY, $css);
@@ -318,6 +321,9 @@ class utils {
         );
         $js = self::replace_pluginfile_urls($js, true);
         $js = \core_minify::js($js);
+        if (empty($js)) {
+            $js = ' ';
+        }
         $cache->set(constants::JS_CACHE_KEY, $js);
         $clock = \core\di::get(\core\clock::class);
         $rev = $clock->time();
