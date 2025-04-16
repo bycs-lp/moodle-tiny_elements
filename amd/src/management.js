@@ -460,6 +460,7 @@ const reload = () => {
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.set('compcat', getActiveCompcatName());
     window.location.href = currentUrl.toString();
+    window.location.reload();
 };
 
 /**
