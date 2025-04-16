@@ -165,10 +165,10 @@ abstract class base_form extends dynamic_form {
             $formdata->icongroup = ['iconurl' => $formdata->iconurl];
         }
 
-        $cssel = $form->_elements[$form->_elementIndex['css']] ?? null;
-        $jsel = $form->_elements[$form->_elementIndex['js']] ?? null;
-        $htmlel = $form->_elements[$form->_elementIndex['content']] ?? null;
-        $codeel = $form->_elements[$form->_elementIndex['code']] ?? null;
+        $cssel = array_key_exists('css', $form->_elementIndex) ? $form->_elements[$form->_elementIndex['css']] : null;
+        $jsel = array_key_exists('js', $form->_elementIndex) ? $form->_elements[$form->_elementIndex['js']] : null;
+        $htmlel = array_key_exists('content', $form->_elementIndex) ? $form->_elements[$form->_elementIndex['content']] : null;
+        $codeel = array_key_exists('code', $form->_elementIndex) ? $form->_elements[$form->_elementIndex['code']] : null;
 
         if ($cssel && $cssel->_type == 'editor') {
             $formdata->css = [

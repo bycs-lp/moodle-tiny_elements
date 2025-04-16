@@ -100,6 +100,7 @@ class management_component_form extends base_form {
             get_string('showprinturls', 'tiny_elements'),
             ['data-buttontype' => 'tiny_elements_printurls']
         );
+        $mform->setType('iconurl', PARAM_URL);
         $mform->addElement('group', 'icongroup', get_string('iconurl', 'tiny_elements'), $group, false);
 
         $mform->addElement('checkbox', 'hideforstudents', get_string('hideforstudents', 'tiny_elements'));

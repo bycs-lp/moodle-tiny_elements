@@ -67,6 +67,7 @@ class management_variant_form extends base_form {
             get_string('showprinturls', 'tiny_elements'),
             ['data-buttontype' => 'tiny_elements_printurls']
         );
+        $mform->setType('iconurl', PARAM_URL);
         $mform->addElement('group', 'icongroup', get_string('iconurl', 'tiny_elements'), $group, false);
 
         $mform->addElement('advcheckbox', 'c4lcompatibility', get_string('c4lcompatibility', 'tiny_elements'));
