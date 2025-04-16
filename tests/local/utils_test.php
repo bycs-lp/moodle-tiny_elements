@@ -42,12 +42,12 @@ final class utils_test extends \advanced_testcase {
         $compcatrecord1 = new stdClass();
         $compcatrecord1->name = 'category1';
         $compcatrecord1->displayname = 'Category 1';
-        $compcatrecord1->css = 'body{margin:3rem;}';
+        $compcatrecord1->css = 'body{margin:3rem}';
         $compcatrecord1id = $DB->insert_record('tiny_elements_compcat', $compcatrecord1);
         $compcatrecord2 = new stdClass();
         $compcatrecord2->name = 'category2';
         $compcatrecord2->displayname = 'Category 2';
-        $compcatrecord2->css = 'body{padding:3rem;}';
+        $compcatrecord2->css = 'body{padding:3rem}';
         $compcatrecord2id = $DB->insert_record('tiny_elements_compcat', $compcatrecord2);
 
         $componentrecord1 = new stdClass();
@@ -55,7 +55,7 @@ final class utils_test extends \advanced_testcase {
         $componentrecord1->displayname = 'Component 1';
 
         $componentrecord1->compcat = $compcatrecord1id;
-        $componentrecord1->css = 'body{background-color:red;}';
+        $componentrecord1->css = 'body{background-color:red}';
         $DB->insert_record('tiny_elements_component', $componentrecord1);
 
         $componentrecord2 = new stdClass();
@@ -63,7 +63,7 @@ final class utils_test extends \advanced_testcase {
         $componentrecord2->displayname = 'Component 2';
 
         $componentrecord2->compcat = $compcatrecord2id;
-        $componentrecord2->css = 'body{background-color:green;}';
+        $componentrecord2->css = 'body{background-color:green}';
         $DB->insert_record('tiny_elements_component', $componentrecord2);
 
         $flavorrecord1 = new stdClass();
@@ -92,8 +92,6 @@ final class utils_test extends \advanced_testcase {
         // This is usually being triggered by the before_http_headers hook.
         $mpage = new \moodle_page();
         $rbase = new \renderer_base($mpage, "/");
-        utils::purge_css_cache();
-        utils::rebuild_css_cache();
         $beforehttpheadershook = new before_http_headers($rbase);
         hook_callbacks::add_elements_data_to_dom($beforehttpheadershook);
 
