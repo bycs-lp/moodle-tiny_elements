@@ -69,10 +69,11 @@ foreach ($component as $key => $value) {
     }
     $component[$key]->flavorsarr = $flavorsarr;
     if (empty($flavorexamplesarr)) {
-        $component[$key]->flavorexamplesarr = [utils::replace_pluginfile_urls($value->iconurl ?? '', true)];
-    } else {
-        $component[$key]->flavorexamplesarr = $flavorexamplesarr;
+        if ($value->iconurl) {
+            $flavorexamplesarr = [utils::replace_pluginfile_urls($value->iconurl, true)];
+        }
     }
+    $component[$key]->flavorexamplesarr = $flavorexamplesarr;
     // Keep only the first two entries.
     if (count($component[$key]->flavorexamplesarr) > 2) {
         $component[$key]->flavorexamplesarr = array_slice($component[$key]->flavorexamplesarr, 0, 2);
