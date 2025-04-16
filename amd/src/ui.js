@@ -21,8 +21,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import ElementsModal from 'tiny_elements/modal';
-import ModalFactory from 'core/modal_factory';
+import {ElementsModal} from 'tiny_elements/modal';
 import {
     isStudent,
     showPreview,
@@ -92,7 +91,7 @@ export const handleAction = async(editor) => {
 const displayDialogue = async(editor) => {
     const templateContext = data.getTemplateContext(editor);
     // Show modal with buttons.
-    const modal = await ModalFactory.create({
+    const modal = await ElementsModal.create({
         type: ElementsModal.TYPE,
         templateContext: templateContext,
         large: true,

@@ -22,9 +22,8 @@
  */
 
 import Modal from 'core/modal';
-import ModalRegistry from 'core/modal_registry';
 
-const ElementsModal = class extends Modal {
+export const ElementsModal = class extends Modal {
     static TYPE = 'tiny_elements/modal';
     static TEMPLATE = 'tiny_elements/modal';
 
@@ -39,7 +38,3 @@ const ElementsModal = class extends Modal {
         super.registerEventListeners();
     }
 };
-
-ModalRegistry.register(ElementsModal.TYPE, ElementsModal, ElementsModal.TEMPLATE);
-
-export default ElementsModal;
