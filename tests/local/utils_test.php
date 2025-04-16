@@ -75,7 +75,7 @@ final class utils_test extends \advanced_testcase {
         $flavorrecord2 = new stdClass();
         $flavorrecord2->name = 'testflavor2';
         $flavorrecord2->displayname = 'Flavor 2';
-        $flavorrecord2->css = '#testflavor2{color:yellow}';
+        $flavorrecord2->css = '#testflavor2{color:grey}';
         $DB->insert_record('tiny_elements_flavor', $flavorrecord2);
 
         $flavorrecord3 = new stdClass();
