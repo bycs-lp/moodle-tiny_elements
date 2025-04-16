@@ -169,7 +169,7 @@ const showModal = async(event, id, table) => {
  */
 const previewModal = async(event) => {
     event.preventDefault();
-    let preview = event.target.closest(".preview");
+    let preview = event.target.closest(".preview-button");
     const modal = await PreviewModal.create({
         templateContext: {
             component: preview.dataset.component,
