@@ -87,7 +87,7 @@ class management_comp_flavor_form extends dynamic_form {
 
         $mform->removeElement('adddummy');
 
-        $mform->setAttributes(['data-formtype' => 'tiny_elements_comp_flavor']);
+        $mform->setAttributes($mform->getAttributes() + ['data-formtype' => 'tiny_elements_comp_flavor']);
     }
 
     /**
