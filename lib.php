@@ -74,10 +74,8 @@ function tiny_elements_pluginfile(
 ): bool {
     global $CFG;
 
-    // This is just an additional security measure, the hook callback "add_elements_data_to_dom" should not even include
-    // the corresponding pluginfile url in the DOM if the user is not logged in.
-    if ($CFG->forcelogin) {
-        require_login();
+    if ($CFG->forcelogin && !isloggedin()) {
+        send_file('', '', -1, 0, true);
     }
 
     if ($filearea === 'export') {
@@ -113,7 +111,8 @@ function tiny_elements_pluginfile(
     }
     $css = utils::get_css_from_cache();
     if (!$css) {
-        return send_file_not_found();
+        send_file_not_found();
+        return false;
     }
     send_file($css, 'tiny_elements_styles.css', null, 0, true, false, 'text/css');
     return true;
