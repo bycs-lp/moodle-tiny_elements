@@ -91,9 +91,11 @@ function tiny_elements_pluginfile(
 
         $exportfile = $exporter->export($compcatid);
 
-        send_stored_file($exportfile);
+        send_stored_file($exportfile, 0 , ['dontdie' => true]);
 
         $exportfile->delete();
+
+        die();
     } else if ($filearea === 'images') {
         $fs = get_file_storage();
         $fullpath = '/1/tiny_elements/images/' . implode('/', $args);
