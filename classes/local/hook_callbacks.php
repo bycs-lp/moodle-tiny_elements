@@ -35,6 +35,8 @@ class hook_callbacks {
      * @param before_http_headers $beforehttpheadershook
      */
     public static function add_elements_data_to_dom(\core\hook\output\before_http_headers $beforehttpheadershook): void {
+        global $CFG;
+
         // Parameter to disable css delivery.
         if (optional_param('tiny_elements_disable', false, PARAM_BOOL)) {
             return;
@@ -47,6 +49,9 @@ class hook_callbacks {
         $pluginmanager = \core_plugin_manager::instance();
         $plugins = $pluginmanager->get_enabled_plugins('tiny');
         if (!in_array('elements', $plugins)) {
+            return;
+        }
+        if ($CFG->forcelogin && !isloggedin()) {
             return;
         }
 

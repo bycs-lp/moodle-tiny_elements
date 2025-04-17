@@ -74,6 +74,8 @@ function tiny_elements_pluginfile(
 ): bool {
     global $CFG;
 
+    // This is just an additional security measure, the hook callback "add_elements_data_to_dom" should not even include
+    // the corresponding pluginfile url in the DOM if the user is not logged in.
     if ($CFG->forcelogin) {
         require_login();
     }
