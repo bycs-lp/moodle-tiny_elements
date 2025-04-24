@@ -181,7 +181,7 @@ class utils {
         foreach ($flavors as $flavor) {
             $flavorsbyname[$flavor->name] = $flavor;
             $flavorsbyname[$flavor->name]->categories = [];
-            $flavorsbyname[$flavor->name]->content = self::replace_pluginfile_urls($flavor->content, true);
+            $flavorsbyname[$flavor->name]->content = self::replace_pluginfile_urls($flavor->content ?? '', true);
         }
         return $flavorsbyname;
     }
