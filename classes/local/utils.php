@@ -422,7 +422,11 @@ class utils {
         $variant = empty($variant) ? '' : '.' . $variant;
         return <<<CSS
         .elements-{$buttonclass}-icon{$variant} .elements-button-text::before {
-            content: url('{$iconurl}');
+            background-image: url('{$iconurl}');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            content: '';
         }
         CSS;
     }
