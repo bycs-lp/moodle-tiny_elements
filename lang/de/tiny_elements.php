@@ -29,7 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 $string['additem'] = 'Hinzufügen';
 $string['bulk_edit_displaynames'] = 'Editieren aller Anzeigenamen';
 $string['bulk_edit_flavor_displaynames'] = 'Editieren aller Flavor Anzeigenamen';
-$string['bulk_edit_licenses'] = 'Quellenangaben bearbeiten';
 $string['bulk_edit_variant_displaynames'] = 'Editieren aller Variant Anzeigenamen';
 $string['button_elements'] = 'Elemente';
 $string['c4lcompatibility'] = 'Wenn ausgewählt, lautet der Varianten-Klassenname c4l-...-variant anstelle von elements-...-variant, um mit den ursprünglichen c4l-Komponenten kompatibel zu sein.';
