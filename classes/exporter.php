@@ -117,15 +117,21 @@ class exporter {
      * @return string
      */
     public function exportxml(int $compcatid = 0): string {
+        global $DB;
         // Start.
         $xmloutput = new memory_xml_output();
         $xmlwriter = new xml_writer($xmloutput);
         $xmlwriter->start();
         $xmlwriter->begin_tag('elements');
 
-        $result = $this->export_categories_and_components($xmlwriter, $compcatid);
+        $categoryname = '';
+        if (!empty($compcatid)) {
+            $categoryname = $DB->get_field(constants::TABLES['compcat'], 'name', ['id' => $compcatid], MUST_EXIST);    
+        }
 
-        $this->export_flavors_and_variants($xmlwriter, $compcatid, $result['componentnames']);
+        $result = $this->export_categories_and_components($xmlwriter, $categoryname);
+
+        $this->export_flavors_and_variants($xmlwriter, $categoryname, $result['componentnames']);
 
         // End.
         $xmlwriter->end_tag('elements');
