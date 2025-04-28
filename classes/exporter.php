@@ -115,7 +115,7 @@ class exporter {
                 'filearea' => 'export',
                 'itemid' => time(),
                 'filepath' => '/',
-                'filename' => 'tiny_elements_filemetadata.xml',
+                'filename' => 'tiny_elements_filemetadata_'.$compcat->name.'.xml',
             ];
             $exportxmlfile = $fs->create_file_from_string($filerecord, $this->exportxml_filemetadata($compcat->id));
             $exportfiles[$compcat->name . '/' . $filerecord['filename']] = $exportxmlfile;
@@ -264,9 +264,9 @@ class exporter {
         $xmlwriter->end_tag($table);
     }
 
-     /**
+    /**
      * Export files metadata to XML.
-     * 
+     *
      * @param int $compcatid Category ID.
      * @return string XML string.
      */
@@ -282,14 +282,13 @@ class exporter {
         $xmlwriter->begin_tag($compcatname->name, ['id' => $compcatid]);
 
         $fs = get_file_storage();
-        $files = $fs->get_area_files(\context_system::instance()->id, 'tiny_elements', 'images', $compcatid, "itemid, filepath, filename", false);
-        
+        $files = $fs->get_area_files(\context_system::instance()->id, 'tiny_elements', 'images', $compcatid,
+            "itemid, filepath, filename", false);
+
         foreach ($files as $file) {
-          
             $xmlwriter->begin_tag(constants::ITEMNAME);
 
             $xmlwriter->full_tag('id', $file->get_id() ?? '');
-            $xmlwriter->full_tag('filepath', $file->get_filepath() ?? '');
             $xmlwriter->full_tag('filename', $file->get_filename() ?? '');
             $xmlwriter->full_tag('source', $file->get_source() ?? '');
             $xmlwriter->full_tag('author', $file->get_author() ?? '');
