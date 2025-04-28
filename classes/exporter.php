@@ -126,7 +126,7 @@ class exporter {
 
         $categoryname = '';
         if (!empty($compcatid)) {
-            $categoryname = $DB->get_field(constants::TABLES['compcat'], 'name', ['id' => $compcatid], MUST_EXIST);    
+            $categoryname = $DB->get_field(constants::TABLES['compcat'], 'name', ['id' => $compcatid], MUST_EXIST);
         }
 
         $result = $this->export_categories_and_components($xmlwriter, $categoryname);

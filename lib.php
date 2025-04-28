@@ -91,7 +91,7 @@ function tiny_elements_pluginfile(
 
         $exportfile = $exporter->export($compcatid);
 
-        send_stored_file($exportfile, 0 , ['dontdie' => true]);
+        send_stored_file($exportfile, 0, ['dontdie' => true]);
 
         $exportfile->delete();
 
