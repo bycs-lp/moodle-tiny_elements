@@ -45,6 +45,9 @@ require_once($CFG->dirroot . '/local/mbs/classes/form/MoodleQuickForm_license.ph
  */
 class management_editlicense_form extends dynamic_form {
 
+    /**
+     * @var array $areafiles Files of category.
+     */
     private $areafiles = [];
 
     /**
@@ -55,21 +58,23 @@ class management_editlicense_form extends dynamic_form {
         $data = $this->_ajaxformdata;
 
         $fs = get_file_storage();
-        $this->areafiles = $fs->get_area_files(\context_system::instance()->id, 'tiny_elements', 'images', $data['id'],"itemid, filepath, filename", false);
+        $this->areafiles = $fs->get_area_files(\context_system::instance()->id, 'tiny_elements', 'images', $data['id'],
+            "itemid, filepath, filename", false);
         $count = count($this->areafiles);
 
         $mform =& $this->_form;
 
         $group = [];
         // Fileicon.
-        $group[] = $mform->createElement('html', \html_writer::img('dummy', 'tiny_elements_thumbnail', ['class'  => 'tiny_elements_thumbnail']));
+        $group[] = $mform->createElement('html', \html_writer::img('dummy', 'tiny_elements_thumbnail',
+            ['class'  => 'tiny_elements_thumbnail']));
         // Filename.
         $group[] = $mform->createElement('hidden', 'fileid');
         $group[] = $mform->createElement('static', 'filename', get_string('name', 'repository')); //to do styling
         // Author.
         $group[] = $mform->createElement('text', 'fileauthor', get_string('author', 'repository'));
         // Source.
-        $group[] = $mform->createElement('text', 'filesource', get_string('editlicensesformfileurl', 'local_mbslicenseinfo'));
+        $group[] = $mform->createElement('text', 'filesource', get_string('editlicensesformfileurl', 'tiny_elements'));
         // License.
         $licenses = [];
         // Discard licenses without a name from enabled licenses.
@@ -90,16 +95,16 @@ class management_editlicense_form extends dynamic_form {
             ],
             'fileauthor' => [
                 'type' => PARAM_TEXT,
-                'helpbutton' => ['editlicensesformfileautor', 'local_mbslicenseinfo'], // to do strings
+                'helpbutton' => ['editlicensesformfileautor', 'tiny_elements'],
             ],
             'filesource' => [
                 'type' => PARAM_TEXT,
-                'helpbutton' => ['editlicensesformfileurl', 'local_mbslicenseinfo'],
+                'helpbutton' => ['editlicensesformfileurl', 'tiny_elements'],
             ],
             'filelicense' => [
                 'type' => PARAM_TEXT,
                 'default' => $CFG->sitedefaultlicense,
-                'helpbutton' => ['editlicensesformfilelicense', 'local_mbslicenseinfo'],
+                'helpbutton' => ['editlicensesformfilelicense', 'tiny_elements'],
             ],
         ];
 
@@ -140,10 +145,10 @@ class management_editlicense_form extends dynamic_form {
 
         for ($i = 0; $i < $formdata->itemcount; $i++) {
             $record = new \stdClass();
-            $record->id =  $formdata->fileid[$i];
+            $record->id = $formdata->fileid[$i];
             $record->author = $formdata->fileauthor[$i] ?? '';
             $record->license = $formdata->filelicense[$i] ?? '';
-            $record->source= $formdata->filesource[$i] ?? '';
+            $record->source = $formdata->filesource[$i] ?? '';
             $result &= $DB->update_record('files', $record, true);
         }
 
@@ -156,7 +161,7 @@ class management_editlicense_form extends dynamic_form {
      * Load in existing data as form defaults.
      */
     public function set_data_for_dynamic_submission(): void {
-       global $DB;
+        global $DB;
 
         $data = $this->_ajaxformdata;
 
@@ -168,6 +173,7 @@ class management_editlicense_form extends dynamic_form {
             $files['fileid'][] = $file->get_id();
             $files['filename'][]  = $file->get_filename();
             $files['fileauthor'][]  = $file->get_author();
+            $files['filesource'][]  = $file->get_source();
             $files['filelicense'][]  = $file->get_license();
             $files['fileurl'][]  = \moodle_url::make_pluginfile_url(
                     $file->get_contextid(),
@@ -176,7 +182,7 @@ class management_editlicense_form extends dynamic_form {
                     $file->get_itemid(),
                     $file->get_filepath(),
                     $file->get_filename()
-                )->out();           
+                )->out();
         }
 
          $data['itemcount'] = count($files);
@@ -192,7 +198,7 @@ class management_editlicense_form extends dynamic_form {
         return new \moodle_url('/lib/editor/tiny/plugins/elements/management.php');
     }
 
-     /**
+    /**
      * Called when data / defaults are already loaded.
      *
      * @return void
@@ -206,7 +212,8 @@ class management_editlicense_form extends dynamic_form {
 
         for ($i = 0; $i < count($mform->_elements); $i++) {
             if ($mform->_elements[$i]->_type === 'html' ) {
-                $mform->_elements[$i]->_text = \html_writer::img($data['fileurl'][intdiv($i,6)], 'tiny_elements_thumbnail', ['class'  => 'tiny_elements_thumbnail']);
+                $mform->_elements[$i]->_text = \html_writer::img($data['fileurl'][intdiv($i, 6)], 'tiny_elements_thumbnail',
+                    ['class'  => 'tiny_elements_thumbnail']);
             } elseif ( //TO DO.
                 $mform->_elements[$i]->_type === 'select' ) { // Set existing license.
                 $mform->_elements[$i]->_values = [$data['filelicense'][$i]] ?? [$CFG->sitedefaultlicense];

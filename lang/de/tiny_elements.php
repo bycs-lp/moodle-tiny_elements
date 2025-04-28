@@ -29,7 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 $string['additem'] = 'Hinzufügen';
 $string['bulk_edit_displaynames'] = 'Editieren aller Anzeigenamen';
 $string['bulk_edit_flavor_displaynames'] = 'Editieren aller Flavor Anzeigenamen';
-$string['bulk_edit_licenses'] = 'Quellenangaben bearbeiten';
 $string['bulk_edit_variant_displaynames'] = 'Editieren aller Variant Anzeigenamen';
 $string['button_elements'] = 'Elemente';
 $string['c4lcompatibility'] = 'Wenn ausgewählt, lautet der Varianten-Klassenname c4l-...-variant anstelle von elements-...-variant, um mit den ursprünglichen c4l-Komponenten kompatibel zu sein.';
@@ -57,8 +56,17 @@ $string['dryrun'] = 'Import simulieren';
 $string['dryrun_help'] = 'Wenn diese Option aktiviert ist, wird ein Import simuliert ohne Änderungen vorzunehmen. Damit kann festgestellt werden, ob durch den Import bestehende Objekte verändert werden.';
 $string['edititem'] = 'Element bearbeiten';
 $string['editlicenses'] = 'Quellenangaben der Symbole bearbeiten';
+$string['editlicensesformfileautor_help'] = '<strong>Wer</strong> hat das Werk geschaffen? <br> Hier wird der Autor, Künstler
+            oder wenn keine Person genannt ist, die herausgebende Institution angegeben. <br> <br>
+            Üblich ist dabei folgendes Schema: <br> Nachname, Vorname. Herausgeber werden durch "Hrsg." am Schluss hervorgehoben.
+            Im Falle mehrerer Autoren werden diese durch Schrägstriche voneinander getrennt angegeben. <br> Sind auf einer Website
+            keine Autoren genannt, tritt der Name der Website bzw. der herausgebenden Institution an Autorenstelle.';
+$string['editlicensesformfilelicense_help'] = 'Geben Sie bitte an, unter welcher Lizenz das verwendet Material steht.';
+$string['editlicensesformfileurl'] = 'Quelle oder URL';
+$string['editlicensesformfileurl_help'] = '<strong>Wo</strong> wurde das Werk veröffentlicht? <br> <br> Bei Büchern ist der Verlag
+            und der Verlagsort, für Zeitschriftenartikel der Name der Zeitschrift plus Jahr-, Band-, Heft- und Seitenangabe, bei
+            Webseiten die vollständige URL anzugeben.';
 $string['elements:manage'] = 'Komponenten verwalten';
-
 $string['elements:showteachercomponents'] = 'Komponenten anzeigen, die nur für Lehrkräfte bestimmt sind';
 $string['elements:viewplugin'] = 'Kurselemente-Plugin anzeigen';
 $string['enablepreview'] = 'Vorschau aktivieren';
@@ -94,6 +102,8 @@ $string['newcomponent'] = 'Neue Komponente "{$a}"';
 $string['newcompvariant'] = 'Erzeuge Beziehung Komponente <-> Variante "{$a}"';
 $string['newfile'] = 'Neue Datei "{$a}"';
 $string['newflavor'] = 'Neue Geschmacksrichtung "{$a}"';
+$string['newmetadata'] = 'Neue Quellenangabe "{$a}"';
+$string['newmetadatafilemissing'] = 'Zugehörige Datei nicht gefunden: "{$a}"';
 $string['newvariant'] = 'Neue Variante "{$a}"';
 $string['pluginname'] = 'Kurselemente';
 $string['preview'] = 'Vorschau';
