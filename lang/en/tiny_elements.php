@@ -110,4 +110,5 @@ $string['showprinturls'] = 'Pick an icon';
 $string['text'] = 'Text';
 $string['unchangedfile'] = 'File "{$a}" is unchanged';
 $string['validclassname'] = 'The name has to be a valid css class name. It may only contain letters, numbers and the characters "-" and "_". It must start with a letter or "_". Using only lowercase letters is recommended.';
+$string['variant'] = 'Variant';
 $string['variants'] = 'Variants';

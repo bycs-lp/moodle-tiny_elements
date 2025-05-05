@@ -40,15 +40,11 @@ class management_displaynames_form extends dynamic_form {
         $group = [];
         $group[] = $mform->createElement('hidden', 'id');
         $group[] = $mform->createElement('static', 'longname', get_string('component', 'tiny_elements'));
-        $group[] = $mform->createElement('text', 'name', get_string('component', 'tiny_elements'));
         $group[] = $mform->createElement('text', 'displayname', get_string('displayname', 'tiny_elements'));
 
         $options = [
             'id' => [
                 'type' => PARAM_INT,
-            ],
-            'name' => [
-                'type' => PARAM_TEXT,
             ],
             'longname' => [
                 'type' => PARAM_TEXT,
@@ -119,7 +115,6 @@ class management_displaynames_form extends dynamic_form {
         foreach ($components as $component) {
             $data['id'][] = $component->id;
             $data['longname'][] = $categories[$component->compcat]->name . '/' . $component->name;
-            $data['name'][] = $component->name;
             $data['displayname'][] = $component->displayname;
         }
 
