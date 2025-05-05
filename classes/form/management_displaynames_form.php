@@ -109,12 +109,12 @@ class management_displaynames_form extends dynamic_form {
         global $DB;
 
         $components = $DB->get_records('tiny_elements_component');
-        $categories = $DB->get_records('tiny_elements_compcat');
+        $categories = $DB->get_records('tiny_elements_compcat', null, '', 'name, id');
 
         $data = [];
         foreach ($components as $component) {
             $data['id'][] = $component->id;
-            $data['longname'][] = $categories[$component->compcat]->name . '/' . $component->name;
+            $data['longname'][] = $categories[$component->categoryname]->name . '/' . $component->name;
             $data['displayname'][] = $component->displayname;
         }
 
