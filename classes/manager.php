@@ -260,13 +260,15 @@ class manager {
         $data->timecreated = time();
         $data->timemodified = time();
 
+        $result = $DB->insert_record(constants::TABLES['flavor'], $data);
+
         // Purge CSS cache if necessary.
         if (!empty($data->css)) {
             \tiny_elements\local\utils::purge_css_cache();
             \tiny_elements\local\utils::rebuild_css_cache();
         }
 
-        return $DB->insert_record(constants::TABLES['flavor'], $data);
+        return $result;
     }
 
     /**
@@ -280,13 +282,15 @@ class manager {
         $data->timecreated = time();
         $data->timemodified = time();
 
+        $result = $DB->insert_record(constants::TABLES['variant'], $data);
+
         // Purge CSS cache if necessary.
         if (!empty($data->css) || !empty($data->iconurl)) {
             \tiny_elements\local\utils::purge_css_cache();
             \tiny_elements\local\utils::rebuild_css_cache();
         }
 
-        return $DB->insert_record(constants::TABLES['variant'], $data);
+        return $result;
     }
 
     /**
@@ -301,18 +305,6 @@ class manager {
         $data->timemodified = time();
 
         $data->id = $DB->insert_record(constants::TABLES['component'], $data);
-
-        // Purge CSS cache if necessary.
-        if (!empty($data->css) || !empty($data->iconurl)) {
-            \tiny_elements\local\utils::purge_css_cache();
-            \tiny_elements\local\utils::rebuild_css_cache();
-        }
-
-        // Purge JS cache if necessary.
-        if (!empty($data->js)) {
-            \tiny_elements\local\utils::purge_js_cache();
-            \tiny_elements\local\utils::rebuild_js_cache();
-        }
 
         if (count($data->flavors) > 0) {
             foreach ($data->flavors as $flavor) {
@@ -330,6 +322,18 @@ class manager {
                     'variant' => $variant,
                 ]);
             }
+        }
+
+        // Purge CSS cache if necessary.
+        if (!empty($data->css) || !empty($data->iconurl)) {
+            \tiny_elements\local\utils::purge_css_cache();
+            \tiny_elements\local\utils::rebuild_css_cache();
+        }
+
+        // Purge JS cache if necessary.
+        if (!empty($data->js)) {
+            \tiny_elements\local\utils::purge_js_cache();
+            \tiny_elements\local\utils::rebuild_js_cache();
         }
 
         return $data->id;
@@ -354,12 +358,6 @@ class manager {
             constants::FILE_OPTIONS
         );
 
-        // Purge CSS cache if necessary.
-        if ($data->css != $oldrecord->css) {
-            \tiny_elements\local\utils::purge_css_cache();
-            \tiny_elements\local\utils::rebuild_css_cache();
-        }
-
         $result = $DB->update_record(constants::TABLES['compcat'], $data);
 
         $result &= $DB->execute(
@@ -383,6 +381,12 @@ class manager {
             [$data->name, $oldrecord->name]
         );
 
+        // Purge CSS cache if necessary.
+        if ($data->css != $oldrecord->css) {
+            \tiny_elements\local\utils::purge_css_cache();
+            \tiny_elements\local\utils::rebuild_css_cache();
+        }
+
         return $result;
     }
 
@@ -399,12 +403,6 @@ class manager {
 
         $oldrecord = $DB->get_record(constants::TABLES['flavor'], ['id' => $data->id]);
 
-        // Purge CSS cache if necessary.
-        if ($data->css != $oldrecord->css) {
-            \tiny_elements\local\utils::purge_css_cache();
-            \tiny_elements\local\utils::rebuild_css_cache();
-        }
-
         $result = $DB->update_record(constants::TABLES['flavor'], $data);
 
         if ($oldrecord->name != $data->name) {
@@ -414,6 +412,12 @@ class manager {
                  WHERE flavorname = ?",
                 [$data->name, $oldrecord->name]
             );
+        }
+
+        // Purge CSS cache if necessary.
+        if ($data->css != $oldrecord->css) {
+            \tiny_elements\local\utils::purge_css_cache();
+            \tiny_elements\local\utils::rebuild_css_cache();
         }
 
         return $result;
@@ -431,12 +435,6 @@ class manager {
 
         $oldrecord = $DB->get_record(constants::TABLES['variant'], ['id' => $data->id]);
 
-        // Purge CSS cache if necessary.
-        if ($data->css != $oldrecord->css || $data->iconurl != $oldrecord->iconurl) {
-            \tiny_elements\local\utils::purge_css_cache();
-            \tiny_elements\local\utils::rebuild_css_cache();
-        }
-
         $result = $DB->update_record(constants::TABLES['variant'], $data);
 
         if ($oldrecord->name != $data->name) {
@@ -446,6 +444,12 @@ class manager {
                  WHERE variant = ?",
                 [$data->name, $oldrecord->name]
             );
+        }
+
+        // Purge CSS cache if necessary.
+        if ($data->css != $oldrecord->css || $data->iconurl != $oldrecord->iconurl) {
+            \tiny_elements\local\utils::purge_css_cache();
+            \tiny_elements\local\utils::rebuild_css_cache();
         }
 
         return $result;
