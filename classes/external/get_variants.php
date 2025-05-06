@@ -65,7 +65,7 @@ class get_variants extends external_api {
 
         require_capability('tiny/elements:manage', $context);
 
-        return \tiny_elements\local\utils::get_all_variants(false, $categoryname, $query);
+        return \tiny_elements\local\utils::get_all_variants($categoryname, $query);
     }
 
     /**
