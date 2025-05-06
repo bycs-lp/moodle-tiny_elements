@@ -51,6 +51,8 @@ $componentdata->code = str_replace('{{VARIANTS}}', $variant, $componentdata->cod
 $componentdata->code = str_replace('{{VARIANTSHTML}}', $varianthtml, $componentdata->code);
 $componentdata->code = str_replace('{{PLACEHOLDER}}', $componentdata->text ?? 'Lorem ipsum', $componentdata->code);
 
+$componentdata->code = tiny_elements\local\utils::replace_pluginfile_urls($componentdata->code, true);
+
 if (empty($flavordata)) {
     echo str_replace('{{FLAVOR}}', '', $componentdata->code);
 } else {

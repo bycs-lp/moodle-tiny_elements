@@ -207,7 +207,7 @@ class utils {
                 if (!isset($flavors[$flavor])) {
                     continue;
                 }
-                $flavors[$flavor]->categories[] = $component['compcat'];
+                $flavors[$flavor]->categories[] = $component['categoryname'];
             }
 
             // Add variants to components structure.
