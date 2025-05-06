@@ -158,7 +158,7 @@ const showModal = async(event, id, table) => {
         returnFocus: event.target,
     });
     // Conditional reload page after submit.
-    modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, () => reloadIfNew(modalForm.getFormNode()));
+    modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, () => reload());
 
     await modalForm.show();
 };
@@ -438,17 +438,6 @@ const showItems = (event, compcat) => {
                 element.classList.remove('hidden');
             });
         }
-    }
-};
-
-/**
- * Reload for new items.
- * @param {*} form
- */
-const reloadIfNew = (form) => {
-    // Newly created element without id?
-    if (!form.elements.id.value) {
-        reload();
     }
 };
 
