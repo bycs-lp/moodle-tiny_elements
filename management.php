@@ -68,6 +68,7 @@ foreach ($component as $key => $value) {
         }
     }
     $component[$key]->flavorsarr = $flavorsarr;
+    $component[$key]->hasflavors = !empty($flavorsarr);
     if (empty($flavorexamplesarr)) {
         if ($value->iconurl) {
             $flavorexamplesarr = [utils::replace_pluginfile_urls($value->iconurl, true)];
@@ -82,9 +83,11 @@ foreach ($component as $key => $value) {
 
 // Add flavor previews.
 foreach ($flavor as $key => $value) {
+    $flavor[$key]->hascomponents = false;
     // Look for an example in comp_flavor.
     foreach ($dbcompflavor as $val) {
         if ($val->flavorname == $value->name) {
+            $flavor[$key]->hascomponents = true;
             if (!empty($val->iconurl)) {
                 $flavor[$key]->example = utils::replace_pluginfile_urls($val->iconurl ?? '', true);
                 continue;
