@@ -82,6 +82,7 @@ Code: The HTML code that is inserted to the TinyMCE content area. This can conta
 * {{FLAVOR}} - "elements-..-flavor" where ".." is the name of the chosen flavor (is empty, if none is chosen)
 * {{VARIANTS}} - the space separated names of the activated variants in the format "elements-..-variant" where ".." is the name of the variant
 * {{VARIANTSHTML}} - the concatenated HTML code for all activated variants
+* {{@ID}} - a random id
 
 Text: The default dummy text for {{PLACEHOLDER}}
 Variants: Choose the variants available for this component (you can also add them later)
