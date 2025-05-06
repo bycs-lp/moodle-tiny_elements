@@ -127,16 +127,15 @@ export const getVariantsClass = (component, flavor = '') => {
  * Return all HTML variants for a component.
  *
  * @param  {string} component Component name
+ * @param {string} flavor Flavor name
  * @returns {string}
  */
-export const getVariantsHtml = (component) => {
+export const getVariantsHtml = (component, flavor) => {
     let variantsHtml = '';
-    let variantObj = {};
 
-    let componentObj = findByName(data.getComponents(), component);
-    componentObj.variants.forEach(variant => {
-        variantObj = findByName(data.getVariants(), variant);
-        if (variantObj != undefined) {
+    getVariantPreference(component, flavor).forEach(variant => {
+        let variantObj = findById(data.getVariants(), variant);
+        if (variantObj !== undefined) {
             variantsHtml += variantObj.content;
         }
     });

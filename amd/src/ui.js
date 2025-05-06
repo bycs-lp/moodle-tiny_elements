@@ -302,7 +302,7 @@ const updateComponentCode = (componentCode, selectedButton, placeholder, flavor 
     // Apply variants to html component.
     if (variants.length > 0) {
         componentCode = componentCode.replace('{{VARIANTS}}', variants.join(' '));
-        componentCode = componentCode.replace('{{VARIANTSHTML}}', getVariantsHtml(comp.name));
+        componentCode = componentCode.replace('{{VARIANTSHTML}}', getVariantsHtml(comp.name, flavor));
     } else {
         componentCode = componentCode.replace('{{VARIANTS}}', '');
         componentCode = componentCode.replace('{{VARIANTSHTML}}', '');
@@ -454,10 +454,10 @@ const updateVariantComponentState = (variant, button, modal, show, updateHtml) =
 
             // Update variant preview HTML.
             if (variantPreview) {
-                variantPreview.innerHTML = getVariantsHtml(comp.name);
+                variantPreview.innerHTML = getVariantsHtml(comp.name, currentFlavor);
             }
         } else {
-            variantsHtml = getVariantsHtml(comp.name);
+            variantsHtml = getVariantsHtml(comp.name, currentFlavor);
             if (show) {
                 previewComponent.classList.add(selectedVariant);
                 variantsHtml += getVariantHtml(variant.dataset.variant);
