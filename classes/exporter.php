@@ -92,6 +92,7 @@ class exporter {
         $fs = get_file_storage();
 
         $conditions = [];
+        $exportfiles = [];
 
         if (!empty($compcatid)) {
             $conditions['id'] = $compcatid;
