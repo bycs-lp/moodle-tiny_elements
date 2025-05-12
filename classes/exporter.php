@@ -22,6 +22,7 @@ global $CFG;
 require_once($CFG->dirroot . '/backup/util/xml/xml_writer.class.php');
 require_once($CFG->dirroot . '/backup/util/xml/output/xml_output.class.php');
 require_once($CFG->dirroot . '/backup/util/xml/output/memory_xml_output.class.php');
+require_once($CFG->libdir . '/licenselib.php');
 
 use tiny_elements\local\utils;
 use tiny_elements\local\constants;
@@ -281,6 +282,9 @@ class exporter {
         $compcatname = $DB->get_record(constants::TABLES['compcat'], ['id' => $compcatid], 'name');
         $xmlwriter->begin_tag($compcatname->name, ['id' => $compcatid]);
 
+        // Get licenses.
+        $licenses = \license_manager::get_active_licenses();
+        // Get files.
         $fs = get_file_storage();
         $files = $fs->get_area_files(\context_system::instance()->id, 'tiny_elements', 'images', $compcatid,
             "itemid, filepath, filename", false);
@@ -292,7 +296,11 @@ class exporter {
             $xmlwriter->full_tag('filename', $file->get_filename() ?? '');
             $xmlwriter->full_tag('source', $file->get_source() ?? '');
             $xmlwriter->full_tag('author', $file->get_author() ?? '');
-            $xmlwriter->full_tag('license', $file->get_license() ?? '');
+            $xmlwriter->begin_tag('license');
+                $xmlwriter->full_tag('shortname', $file->get_license() ?? '');
+                $xmlwriter->full_tag('fullname', $licenses[$file->get_license()]->fullname);
+                $xmlwriter->full_tag('source', $licenses[$file->get_license()]->source);
+            $xmlwriter->end_tag('license');
 
             $xmlwriter->end_tag(constants::ITEMNAME);
         }

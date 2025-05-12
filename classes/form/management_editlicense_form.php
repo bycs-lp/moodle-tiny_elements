@@ -33,7 +33,6 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/licenselib.php');
-require_once($CFG->dirroot . '/local/mbs/classes/form/MoodleQuickForm_license.php');
 
 /**
  * Form for editing licenses.
@@ -70,7 +69,7 @@ class management_editlicense_form extends dynamic_form {
             ['class'  => 'tiny_elements_thumbnail']));
         // Filename.
         $group[] = $mform->createElement('hidden', 'fileid');
-        $group[] = $mform->createElement('static', 'filename', get_string('name', 'repository')); //to do styling
+        $group[] = $mform->createElement('static', 'filename', get_string('name', 'repository'));
         // Author.
         $group[] = $mform->createElement('text', 'fileauthor', get_string('author', 'repository'));
         // Source.
@@ -103,7 +102,6 @@ class management_editlicense_form extends dynamic_form {
             ],
             'filelicense' => [
                 'type' => PARAM_TEXT,
-                'default' => $CFG->sitedefaultlicense,
                 'helpbutton' => ['editlicensesformfilelicense', 'tiny_elements'],
             ],
         ];
@@ -214,9 +212,6 @@ class management_editlicense_form extends dynamic_form {
             if ($mform->_elements[$i]->_type === 'html' ) {
                 $mform->_elements[$i]->_text = \html_writer::img($data['fileurl'][intdiv($i, 6)], 'tiny_elements_thumbnail',
                     ['class'  => 'tiny_elements_thumbnail']);
-            } elseif ( //TO DO.
-                $mform->_elements[$i]->_type === 'select' ) { // Set existing license.
-                $mform->_elements[$i]->_values = [$data['filelicense'][$i]] ?? [$CFG->sitedefaultlicense];
             }
         }
     }
