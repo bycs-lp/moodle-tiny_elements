@@ -73,8 +73,11 @@ class importer {
                 $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '/', 'tiny_c4l_export.xml');
             }
             $xmlcontent = $xmlfile->get_content();
-            $this->importxml($xmlcontent);
-            $categories = $DB->get_records('tiny_elements_compcat');
+            // Import data.
+            $categorymap = $this->importxml($xmlcontent);
+            // Import files.
+            list($incategoryids, $inparams) = $DB->get_in_or_equal(array_values($categorymap), SQL_PARAMS_NAMED);
+            $categories = $DB->get_records_select('tiny_elements_compcat', 'id ' . $incategoryids, $inparams, '', 'id, name');
             foreach ($categories as $category) {
                 $categoryfiles = $fs->get_directory_files(
                     $this->contextid,
@@ -162,12 +165,12 @@ class importer {
     }
 
     /**
-     * Import xml
+     * Load xml and import data.
      *
-     * @param string $xmlcontent
-     * @return boolean
+     * @param string $xmlcontent XML content to be imported.
+     * @return array $categorymap ID mapping of categories.
      */
-    public function importxml(string $xmlcontent): bool {
+    public function importxml(string $xmlcontent): array {
         try {
             $xml = simplexml_load_string($xmlcontent);
         } catch (\Exception $exception) {
@@ -241,7 +244,7 @@ class importer {
             local\utils::purge_and_rebuild_caches();
         }
 
-        return true;
+        return $categorymap;
     }
 
     /**
@@ -577,9 +580,13 @@ class importer {
             foreach ($rows as $row) {
                 $filemetadataobj = new \stdClass();
                 foreach ($row as $column => $value) {
-                    $filemetadataobj->$column = (string) $value;
-                    $data[$catname][] = $filemetadataobj;
+                    if ($column == 'license') {
+                        $filemetadataobj->license = (string) $value->shortname;
+                    } else {
+                        $filemetadataobj->$column = (string) $value;
+                    }
                 }
+                $data[$catname][] = $filemetadataobj;
             }
         }
         return $data;
