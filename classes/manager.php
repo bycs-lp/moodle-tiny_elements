@@ -572,4 +572,28 @@ class manager {
         }
         return $compcatname ?? '';
     }
+
+    /**
+     * This function deletes all data from the plugin tables and from the filesystem.
+     * Use with caution!
+     */
+    public function wipe(): void {
+        global $DB;
+        $DB->delete_records(constants::TABLES['compcat']);
+        $DB->delete_records(constants::TABLES['component']);
+        $DB->delete_records(constants::TABLES['flavor']);
+        $DB->delete_records(constants::TABLES['variant']);
+        $DB->delete_records(constants::TABLES['comp_flavor']);
+        $DB->delete_records(constants::TABLES['comp_variant']);
+
+        $fs = get_file_storage();
+        $fs->delete_area_files($this->contextid, 'tiny_elements', 'images');
+        $fs->delete_area_files($this->contextid, 'tiny_elements', 'export');
+
+        // Purge CSS and JS cache.
+        \tiny_elements\local\utils::purge_css_cache();
+        \tiny_elements\local\utils::rebuild_css_cache();
+        \tiny_elements\local\utils::purge_js_cache();
+        \tiny_elements\local\utils::rebuild_js_cache();
+    }
 }
