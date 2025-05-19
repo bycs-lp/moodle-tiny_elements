@@ -116,7 +116,7 @@ class exporter {
                 'filearea' => 'export',
                 'itemid' => time(),
                 'filepath' => '/',
-                'filename' => 'tiny_elements_filemetadata_'.$compcat->name.'.xml',
+                'filename' => 'tiny_elements_filemetadata_' . $compcat->name . '.xml',
             ];
             $exportxmlfile = $fs->create_file_from_string($filerecord, $this->exportxml_filemetadata($compcat->id));
             $exportfiles[$compcat->name . '/' . $filerecord['filename']] = $exportxmlfile;
