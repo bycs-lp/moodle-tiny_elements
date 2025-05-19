@@ -298,8 +298,8 @@ class exporter {
             $xmlwriter->full_tag('author', $file->get_author() ?? '');
             $xmlwriter->begin_tag('license');
                 $xmlwriter->full_tag('shortname', $file->get_license() ?? '');
-                $xmlwriter->full_tag('fullname', $licenses[$file->get_license()]->fullname);
-                $xmlwriter->full_tag('source', $licenses[$file->get_license()]->source);
+                $xmlwriter->full_tag('fullname', $licenses[$file->get_license()]->fullname ?? '');
+                $xmlwriter->full_tag('source', $licenses[$file->get_license()]->source ?? '');
             $xmlwriter->end_tag('license');
 
             $xmlwriter->end_tag(constants::ITEMNAME);
