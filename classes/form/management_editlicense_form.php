@@ -26,7 +26,6 @@
 namespace tiny_elements\form;
 
 use core_form\dynamic_form;
-use tiny_elements\local\utils;
 use context;
 
 defined('MOODLE_INTERNAL') || die();
@@ -53,7 +52,6 @@ class management_editlicense_form extends dynamic_form {
      * Define the form elements.
      */
     public function definition(): void {
-        global $DB, $CFG;
         $data = $this->_ajaxformdata;
 
         $fs = get_file_storage();
@@ -90,7 +88,6 @@ class management_editlicense_form extends dynamic_form {
             ],
             'filename' => [
                 'type' => PARAM_TEXT,
-                'flagFrozen' => true,
             ],
             'fileauthor' => [
                 'type' => PARAM_TEXT,
@@ -111,7 +108,6 @@ class management_editlicense_form extends dynamic_form {
         $mform->removeElement('adddummy');
 
         $mform->setAttributes(['data-formtype' => 'tiny_elements_editlicense']);
-
     }
 
     /**
@@ -159,8 +155,6 @@ class management_editlicense_form extends dynamic_form {
      * Load in existing data as form defaults.
      */
     public function set_data_for_dynamic_submission(): void {
-        global $DB;
-
         $data = $this->_ajaxformdata;
 
         $files = [];
@@ -204,16 +198,14 @@ class management_editlicense_form extends dynamic_form {
      * @throws dml_exception
      */
     public function definition_after_data(): void {
-        global $CFG;
         $mform = $this->_form;
         $data = $mform->_defaultValues;
 
         for ($i = 0; $i < count($mform->_elements); $i++) {
-            if ($mform->_elements[$i]->_type === 'html' ) {
+            if ($mform->_elements[$i]->_type === 'html') {
                 $mform->_elements[$i]->_text = \html_writer::img($data['fileurl'][intdiv($i, 6)], 'tiny_elements_thumbnail',
                     ['class'  => 'tiny_elements_thumbnail']);
             }
         }
     }
-
 }
