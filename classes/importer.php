@@ -556,7 +556,7 @@ class importer {
         global $DB;
 
         $fs = get_file_storage();
-        $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '\/'.$categoryname.'\/',
+        $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '\/' . $categoryname . '\/',
             'tiny_elements_filemetadata_'.$categoryname.'.xml');
         // Manage older exports without filemetadata.
         if (!$xmlfile) {
