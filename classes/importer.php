@@ -68,7 +68,7 @@ class importer {
             $fs = get_file_storage();
             $fp = get_file_packer('application/zip');
             $fp->extract_to_storage($zip, $this->contextid, 'tiny_elements', 'import', $draftitemid, '/');
-            $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '/', 'tiny_elements_export.xml');
+            $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '/', constants::FILE_NAME_EXPORT);
             if (!$xmlfile) {
                 $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '/', 'tiny_c4l_export.xml');
             }
@@ -109,6 +109,12 @@ class importer {
         foreach ($files as $file) {
             if ($file->is_directory()) {
                 continue;
+            }
+            if ($file->get_mimetype() == 'application/xml') {
+                $filename = $file->get_filename();
+                if ($filename == constants::FILE_NAME_EXPORT || str_starts_with($filename, constants::FILE_NAME_METADATA)) {
+                    continue;
+                }
             }
             $newfilepath = ($categoryname ? str_replace('/' . $categoryname, '', $file->get_filepath()) : $file->get_filepath());
             if (
@@ -557,7 +563,7 @@ class importer {
 
         $fs = get_file_storage();
         $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '\/' . $categoryname . '\/',
-            'tiny_elements_filemetadata_' . $categoryname . '.xml');
+            constants::FILE_NAME_METADATA . '_' . $categoryname . '.xml');
         // Manage older exports without filemetadata.
         if (!$xmlfile) {
             return [];

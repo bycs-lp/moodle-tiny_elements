@@ -69,4 +69,10 @@ class constants {
 
     /** @var array IMPORT_FILE_OPTIONS the options for the filemanager */
     public const IMPORT_FILE_OPTIONS = ['subdirs' => 0, 'accepted_types' => 'xml,zip', 'maxfiles' => 1];
+
+    /** @var string FILE_NAMES_EXPORT xml file_name for export*/
+    public const FILE_NAME_EXPORT = 'tiny_elements_export.xml';
+
+    /** @var string FILE_NAME_METADATA xml file_name for metadata*/
+    public const FILE_NAME_METADATA = 'tiny_elements_filemetadata';
 }

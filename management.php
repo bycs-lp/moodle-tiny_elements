@@ -24,6 +24,7 @@
  */
 
 use tiny_elements\local\utils;
+use tiny_elements\local\constants;
 
 require('../../../../../config.php');
 
@@ -110,7 +111,7 @@ $exportlink = \moodle_url::make_pluginfile_url(
     'export',
     null,
     '/',
-    'tiny_elements_export.xml'
+    constants::FILE_NAME_EXPORT
 )->out();
 
 $params = new \stdClass();

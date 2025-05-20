@@ -70,10 +70,10 @@ class exporter {
             'filearea' => 'export',
             'itemid' => time(),
             'filepath' => '/',
-            'filename' => 'tiny_elements_export.xml',
+            'filename' => constants::FILE_NAME_EXPORT,
         ];
         $exportxmlfile = $fs->create_file_from_string($filerecord, $this->exportxml($compcatid));
-        $exportfiles['tiny_elements_export.xml'] = $exportxmlfile;
+        $exportfiles[constants::FILE_NAME_EXPORT] = $exportxmlfile;
         $filename = 'tiny_elements_export_' . time() . '.zip';
         $exportfile = $fp->archive_to_storage($exportfiles, $this->contextid, 'tiny_elements', 'export', 0, '/', $filename);
         if (!$exportfile) {
@@ -116,7 +116,7 @@ class exporter {
                 'filearea' => 'export',
                 'itemid' => time(),
                 'filepath' => '/',
-                'filename' => 'tiny_elements_filemetadata_' . $compcat->name . '.xml',
+                'filename' => constants::FILE_NAME_METADATA . '_' . $compcat->name . '.xml',
             ];
             $exportxmlfile = $fs->create_file_from_string($filerecord, $this->exportxml_filemetadata($compcat->id));
             $exportfiles[$compcat->name . '/' . $filerecord['filename']] = $exportxmlfile;
