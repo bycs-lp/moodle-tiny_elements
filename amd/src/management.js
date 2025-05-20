@@ -349,7 +349,9 @@ const deleteModal = (event, id, title, table) => {
         }
         return;
     }).catch((err) => {
-        Log.error(err.message);
+        if (err.message) {
+            Log.error(err.message);
+        }
         return;
     });
 };
@@ -372,7 +374,9 @@ const wipeModal = (event) => {
             displayException(error);
         }
     }).catch((err) => {
-        Log.error(err.message);
+        if (err.message) {
+            Log.error(err.message);
+        }
         return;
     });
 };

@@ -112,5 +112,5 @@ $string['unchangedfile'] = 'File "{$a}" is unchanged';
 $string['validclassname'] = 'The name has to be a valid css class name. It may only contain letters, numbers and the characters "-" and "_". It must start with a letter or "_". Using only lowercase letters is recommended.';
 $string['variant'] = 'Variant';
 $string['variants'] = 'Variants';
-$string['wipe'] = 'Wipe all elements';
+$string['wipe'] = 'Wipe everything';
 $string['wipewarning'] = 'This will remove all categories, files, components, flavors and variants. There is no way to undo this step. Make sure, you have a backup!';
