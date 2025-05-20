@@ -212,7 +212,7 @@ class exporter {
             $params
         );
         $this->write_elements($xmlwriter, constants::TABLES['compflavor'], $compflavors);
-        $flavornames = array_unique(array_column($compflavors, 'flavor'));
+        $flavornames = array_unique(array_column($compflavors, 'flavorname'));
 
         $sql = ' = name';
         if (!empty($categoryname)) {
