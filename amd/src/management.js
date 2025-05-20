@@ -399,6 +399,7 @@ const wipeModal = (event) => {
         } catch (error) {
             displayException(error);
         }
+        return;
     }).catch((err) => {
         if (err.message) {
             Log.error(err.message);
