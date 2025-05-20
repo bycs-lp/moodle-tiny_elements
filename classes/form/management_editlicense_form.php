@@ -106,8 +106,6 @@ class management_editlicense_form extends dynamic_form {
         $this->repeat_elements($group, $count, $options, 'itemcount', 'adddummy', 0);
 
         $mform->removeElement('adddummy');
-
-        $mform->setAttributes(['data-formtype' => 'tiny_elements_editlicense']);
     }
 
     /**
@@ -207,5 +205,6 @@ class management_editlicense_form extends dynamic_form {
                     ['class'  => 'tiny_elements_thumbnail']);
             }
         }
+        $mform->setAttributes(['data-formtype' => 'tiny_elements_editlicense']);
     }
 }
