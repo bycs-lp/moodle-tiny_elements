@@ -45,7 +45,9 @@ class wipe extends external_api {
 
     /**
      * Implementation of web service tiny_elements_wipe
-     * @return array
+     *
+     * @param int $contextid the context id
+     * @return array result array
      */
     public static function execute(int $contextid): array {
         $params = self::validate_parameters(self::execute_parameters(), [
