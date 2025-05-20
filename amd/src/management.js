@@ -110,6 +110,14 @@ export const init = async(params) => {
         });
     });
 
+    // Add listener to wipe all items.
+    let wipebutton = document.getElementById('elements_wipe');
+    if (wipebutton) {
+        wipebutton.addEventListener('click', async(e) => {
+            wipeModal(e);
+        });
+    }
+
     // Add image and text to item setting click area.
     let enlargeItems = document.querySelectorAll(
         '.flavor .card-body > .clickingextended, .component .card-body > .clickingextended, .variant .card-body > .clickingextended'
@@ -347,6 +355,29 @@ const deleteModal = (event, id, title, table) => {
 };
 
 /**
+ * Show a modal to confirm wiping all items.
+ * @param {*} event
+ */
+const wipeModal = (event) => {
+    event.preventDefault();
+
+    deleteCancelPromise(
+        getString('wipe', 'tiny_elements'),
+        getString('wipewarning', 'tiny_elements')
+    ).then(async() => {
+        try {
+            await wipe();
+            reload();
+        } catch (error) {
+            displayException(error);
+        }
+    }).catch((err) => {
+        Log.error(err.message);
+        return;
+    });
+};
+
+/**
  * Delete elements items.
  * @param {*} id
  * @param {*} table
@@ -361,6 +392,18 @@ export const deleteItem = (
         args: {
             id,
             table,
+        }
+    }])[0];
+
+/**
+ * Wipe all elements items.
+ * @returns {mixed}
+ */
+export const wipe = () => fetchMany(
+    [{
+        methodname: 'tiny_elements_wipe',
+        args: {
+            "contextid": 1,
         }
     }])[0];
 

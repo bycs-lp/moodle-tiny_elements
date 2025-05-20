@@ -63,10 +63,13 @@
 }}
 
 <div class="container-fluid">
-    <div class="row row-cols-1 mb-2">
+    <div class="row mb-2">
         <div class="col">
             <a href="{{exportlink}}" class="btn btn-primary"> {{#str}} export, tiny_elements {{/str}}</a>
-            <a href="#" id="elements_import" class="ml-2 btn btn-primary"> {{#str}} import, tiny_elements {{/str}}</a>            
+            <a href="#" id="elements_import" class="ml-2 btn btn-primary"> {{#str}} import, tiny_elements {{/str}}</a>
+        </div>
+        <div class="col">
+            <a href="#" id="elements_wipe" class="ml-2 btn btn-secondary">{{#pix}} req, core {{/pix}} {{#str}} wipe, tiny_elements {{/str}}</a>
         </div>
     </div>
 

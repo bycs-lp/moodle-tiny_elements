@@ -70,4 +70,11 @@ $functions = [
                 'ajax' => true,
                 'capabilities' => 'tiny/elements:manage',
         ],
+        'tiny_elements_wipe' => [
+                'classname' => 'tiny_elements\external\wipe',
+                'description' => 'Wipe all elements data',
+                'type' => 'write',
+                'ajax' => true,
+                'capabilities' => 'tiny/elements:manage',
+        ],
 ];

@@ -583,8 +583,8 @@ class manager {
         $DB->delete_records(constants::TABLES['component']);
         $DB->delete_records(constants::TABLES['flavor']);
         $DB->delete_records(constants::TABLES['variant']);
-        $DB->delete_records(constants::TABLES['comp_flavor']);
-        $DB->delete_records(constants::TABLES['comp_variant']);
+        $DB->delete_records(constants::TABLES['compflavor']);
+        $DB->delete_records(constants::TABLES['compvariant']);
 
         $fs = get_file_storage();
         $fs->delete_area_files($this->contextid, 'tiny_elements', 'images');
