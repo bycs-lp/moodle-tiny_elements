@@ -56,6 +56,7 @@ class wipe extends external_api {
         $contextid = $params['contextid'];
         $context = \core\context::instance_by_id($contextid);
         self::validate_context($context);
+        require_capability('tiny/elements:manage', $context);
 
         $manager = new manager($context->id);
         $manager->wipe();
