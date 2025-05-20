@@ -22,6 +22,7 @@ global $CFG;
 require_once($CFG->dirroot . '/backup/util/xml/xml_writer.class.php');
 require_once($CFG->dirroot . '/backup/util/xml/output/xml_output.class.php');
 require_once($CFG->dirroot . '/backup/util/xml/output/memory_xml_output.class.php');
+require_once($CFG->libdir . '/licenselib.php');
 
 use tiny_elements\local\utils;
 use tiny_elements\local\constants;
@@ -69,10 +70,10 @@ class exporter {
             'filearea' => 'export',
             'itemid' => time(),
             'filepath' => '/',
-            'filename' => 'tiny_elements_export.xml',
+            'filename' => constants::FILE_NAME_EXPORT,
         ];
         $exportxmlfile = $fs->create_file_from_string($filerecord, $this->exportxml($compcatid));
-        $exportfiles['tiny_elements_export.xml'] = $exportxmlfile;
+        $exportfiles[constants::FILE_NAME_EXPORT] = $exportxmlfile;
         $filename = 'tiny_elements_export_' . time() . '.zip';
         $exportfile = $fp->archive_to_storage($exportfiles, $this->contextid, 'tiny_elements', 'export', 0, '/', $filename);
         if (!$exportfile) {
@@ -107,6 +108,18 @@ class exporter {
             foreach ($files as $file) {
                 $exportfiles[$compcat->name . '/' . $file->get_filepath() . $file->get_filename()] = $file;
             }
+
+            // Write xml file with metadata.
+            $filerecord = [
+                'contextid' => $this->contextid,
+                'component' => 'tiny_elements',
+                'filearea' => 'export',
+                'itemid' => time(),
+                'filepath' => '/',
+                'filename' => constants::FILE_NAME_METADATA . '_' . $compcat->name . '.xml',
+            ];
+            $exportxmlfile = $fs->create_file_from_string($filerecord, $this->exportxml_filemetadata($compcat->id));
+            $exportfiles[$compcat->name . '/' . $filerecord['filename']] = $exportxmlfile;
         }
 
         return $exportfiles;
@@ -250,5 +263,54 @@ class exporter {
             $xmlwriter->end_tag(constants::ITEMNAME);
         }
         $xmlwriter->end_tag($table);
+    }
+
+    /**
+     * Export files metadata to XML.
+     *
+     * @param int $compcatid Category ID.
+     * @return string XML string.
+     */
+    public function exportxml_filemetadata(int $compcatid): string {
+        global $DB;
+
+        // Start.
+        $xmloutput = new memory_xml_output();
+        $xmlwriter = new xml_writer($xmloutput);
+        $xmlwriter->start();
+        $xmlwriter->begin_tag('tiny_elements_files_with_license');
+        $compcatname = $DB->get_record(constants::TABLES['compcat'], ['id' => $compcatid], 'name');
+        $xmlwriter->begin_tag($compcatname->name, ['id' => $compcatid]);
+
+        // Get licenses.
+        $licenses = \license_manager::get_active_licenses();
+        // Get files.
+        $fs = get_file_storage();
+        $files = $fs->get_area_files(\context_system::instance()->id, 'tiny_elements', 'images', $compcatid,
+            "itemid, filepath, filename", false);
+
+        foreach ($files as $file) {
+            $xmlwriter->begin_tag(constants::ITEMNAME);
+
+            $xmlwriter->full_tag('id', $file->get_id() ?? '');
+            $xmlwriter->full_tag('filename', $file->get_filename() ?? '');
+            $xmlwriter->full_tag('source', $file->get_source() ?? '');
+            $xmlwriter->full_tag('author', $file->get_author() ?? '');
+            $xmlwriter->begin_tag('license');
+                $xmlwriter->full_tag('shortname', $file->get_license() ?? '');
+                $xmlwriter->full_tag('fullname', $licenses[$file->get_license()]->fullname ?? '');
+                $xmlwriter->full_tag('source', $licenses[$file->get_license()]->source ?? '');
+            $xmlwriter->end_tag('license');
+
+            $xmlwriter->end_tag(constants::ITEMNAME);
+        }
+
+        // End.
+        $xmlwriter->end_tag($compcatname->name);
+        $xmlwriter->end_tag('tiny_elements_files_with_license');
+        $xmlwriter->stop();
+        $xmlstr = $xmloutput->get_allcontents();
+
+        return $xmlstr;
     }
 }

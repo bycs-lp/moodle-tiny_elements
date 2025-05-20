@@ -68,13 +68,16 @@ class importer {
             $fs = get_file_storage();
             $fp = get_file_packer('application/zip');
             $fp->extract_to_storage($zip, $this->contextid, 'tiny_elements', 'import', $draftitemid, '/');
-            $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '/', 'tiny_elements_export.xml');
+            $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '/', constants::FILE_NAME_EXPORT);
             if (!$xmlfile) {
                 $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '/', 'tiny_c4l_export.xml');
             }
             $xmlcontent = $xmlfile->get_content();
-            $this->importxml($xmlcontent);
-            $categories = $DB->get_records('tiny_elements_compcat');
+            // Import data.
+            $categorymap = $this->importxml($xmlcontent);
+            // Import files.
+            list($incategoryids, $inparams) = $DB->get_in_or_equal(array_values($categorymap), SQL_PARAMS_NAMED);
+            $categories = $DB->get_records_select('tiny_elements_compcat', 'id ' . $incategoryids, $inparams, '', 'id, name');
             foreach ($categories as $category) {
                 $categoryfiles = $fs->get_directory_files(
                     $this->contextid,
@@ -85,7 +88,8 @@ class importer {
                     true,
                     false
                 );
-                $this->importfiles($categoryfiles, $category->id, $category->name);
+                $metadata = $this->update_files_metadata($category->name, $draftitemid);
+                $this->importfiles($categoryfiles, $category->id, $metadata, $category->name);
             }
             $fs->delete_area_files($this->contextid, 'tiny_elements', 'import', $draftitemid);
         }
@@ -94,17 +98,23 @@ class importer {
     /**
      * Import files.
      *
-     * @param array $files
-     * @param int $categoryid
-     * @param string $categoryname
-
+     * @param array $files Array of stored_files.
+     * @param int $categoryid ID of the category.
+     * @param array $metadata Array of filemetadata objects.
+     * @param string $categoryname Name of the category.
      * @throws moodle_exception
      */
-    public function importfiles(array $files, int $categoryid, string $categoryname = ''): void {
+    public function importfiles(array $files, int $categoryid, array $metadata, string $categoryname = '', ): void {
         $fs = get_file_storage();
         foreach ($files as $file) {
             if ($file->is_directory()) {
                 continue;
+            }
+            if ($file->get_mimetype() == 'application/xml') {
+                $filename = $file->get_filename();
+                if ($filename == constants::FILE_NAME_EXPORT || str_starts_with($filename, constants::FILE_NAME_METADATA)) {
+                    continue;
+                }
             }
             $newfilepath = ($categoryname ? str_replace('/' . $categoryname, '', $file->get_filepath()) : $file->get_filepath());
             if (
@@ -127,14 +137,28 @@ class importer {
                 }
             } else {
                 if (!$this->dryrun) {
-                    $newfile = $fs->create_file_from_storedfile([
+                    $filemetadata = [];
+                    if (count($metadata) !== 0) {
+                        // Find metadata for this file.
+                        foreach ($metadata[$categoryname] as $metafile) {
+                            if ($metafile->filename == $file->get_filename()) {
+                                $filemetadata['source'] = $metafile->source;
+                                $filemetadata['author'] = $metafile->author;
+                                $filemetadata['license'] = $metafile->license;
+                                break;
+                            }
+                        }
+                    }
+                    // Create file.
+                    $filechanges = [
                         'contextid' => $this->contextid,
                         'component' => 'tiny_elements',
                         'filearea' => 'images',
                         'itemid' => $categoryid,
                         'filepath' => $newfilepath,
                         'filename' => $file->get_filename(),
-                    ], $file);
+                    ];
+                    $newfile = $fs->create_file_from_storedfile(array_merge($filechanges, $filemetadata), $file);
                     if (!$newfile) {
                         throw new moodle_exception(
                             get_string('error_fileimport', 'tiny_elements', $newfilepath . $file->get_filename())
@@ -147,12 +171,12 @@ class importer {
     }
 
     /**
-     * Import xml
+     * Load xml and import data.
      *
-     * @param string $xmlcontent
-     * @return boolean
+     * @param string $xmlcontent XML content to be imported.
+     * @return array $categorymap ID mapping of categories.
      */
-    public function importxml(string $xmlcontent): bool {
+    public function importxml(string $xmlcontent): array {
         try {
             $xml = simplexml_load_string($xmlcontent);
         } catch (\Exception $exception) {
@@ -226,13 +250,13 @@ class importer {
             local\utils::purge_and_rebuild_caches();
         }
 
-        return true;
+        return $categorymap;
     }
 
     /**
      * Updates all flavors and variants that do not have a categoryname yet.
      */
-    public function update_flavor_variant_category() {
+    public function update_flavor_variant_category(): void {
         global $DB;
 
         $manager = new manager();
@@ -525,5 +549,52 @@ class importer {
      */
     public function get_importresults(): array {
         return $this->importresults;
+    }
+
+    /**
+     * Updates files metadata.
+     *
+     * @param string $categoryname The name of the category to update metadata for.
+     * @param int $draftitemid The draft item ID associated with the import process (default is 0).
+     * @return array Array of filemetadata objects.
+     */
+    public function update_files_metadata($categoryname, $draftitemid = 0): array {
+        global $DB;
+
+        $fs = get_file_storage();
+        $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '\/' . $categoryname . '\/',
+            constants::FILE_NAME_METADATA . '_' . $categoryname . '.xml');
+        // Manage older exports without filemetadata.
+        if (!$xmlfile) {
+            return [];
+        }
+
+        // Get xml content.
+        $xmlcontent = $xmlfile->get_content();
+        try {
+            $xml = simplexml_load_string($xmlcontent);
+        } catch (\Exception $exception) {
+            $xml = false;
+        }
+        if (!$xml) {
+            return [];
+        }
+
+        $data = [];
+        // Make data usable for further processing.
+        foreach ($xml as $catname => $rows) {
+            foreach ($rows as $row) {
+                $filemetadataobj = new \stdClass();
+                foreach ($row as $column => $value) {
+                    if ($column == 'license') {
+                        $filemetadataobj->license = (string) $value->shortname;
+                    } else {
+                        $filemetadataobj->$column = (string) $value;
+                    }
+                }
+                $data[$catname][] = $filemetadataobj;
+            }
+        }
+        return $data;
     }
 }

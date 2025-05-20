@@ -94,6 +94,9 @@
                                 <a class="delete" href="#" data-id="{{id}}" data-title="{{displayname}}" data-table="compcat">
                                     {{#pix}} t/delete, core, {{#str}} delete {{/str}}{{/pix}}
                                 </a>
+                                <a class="editlicenses" href="#" data-id="{{id}}">
+                                    {{#pix}} i/files, core, {{#str}} editlicenses, tiny_elements {{/str}}{{/pix}}
+                                </a>
                             </div>
                         {{/id}}
                         {{^id}}
@@ -247,4 +250,5 @@
             <button id="elements_displaynames_variant_button" class="btn btn-secondary">{{#str}} bulk_edit_variant_displaynames, tiny_elements {{/str}}</button>
         </div>
     </div>
+
 </div>

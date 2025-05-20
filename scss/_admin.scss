@@ -80,4 +80,10 @@
     .compcat[data-compcat="found-items"] a {
         display: none;
     }
+
+    form[data-formtype="tiny_elements_editlicense"] {
+        div[data-fieldtype="static"] {
+            padding-top: calc(0.75rem + 1px);
+        }
+    }
 }

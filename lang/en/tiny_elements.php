@@ -55,6 +55,17 @@ $string['displayorder'] = 'Display order';
 $string['dryrun'] = 'Simulate import';
 $string['dryrun_help'] = 'If checked, this will simulate an import run without changing anything. This can be used to see if there are any changes affecting existing items.';
 $string['edititem'] = 'Edit item';
+$string['editlicenses'] = 'Edit symbol licenses';
+$string['editlicensesformfileautor_help'] = '<strong>Who</strong> created the work? <br> Here is the author, artist or if no person
+            is named, the issuing institution is stated. <br> <br> The following scheme is usual: <br> Last name, first name.
+            Editors are identified by “Hrsg.” highlighted at the end. In the case of multiple authors, these are separated from
+            each other by slashes. <br> Are on one website If no authors are mentioned, the name of the website or the publishing
+            institution takes the place of the author.';
+$string['editlicensesformfilelicense_help'] = 'Please indicate which license the material used is under.';
+$string['editlicensesformfileurl'] = 'Source or URL';
+$string['editlicensesformfileurl_help'] = '<strong>Where</strong> was the work published? <br> <br> For books, the publisher is
+            responsible and the place of publication, for magazine articles the name of the magazine plus the year, volume, issue
+            and page details To provide websites with the full URL.';
 $string['elements:manage'] = 'Manage components';
 $string['elements:showteachercomponents'] = 'Show components that are for teacher use only';
 $string['elements:viewplugin'] = 'View Elements plugin';
@@ -90,6 +101,8 @@ $string['newcomponent'] = 'New component "{$a}"';
 $string['newcompvariant'] = 'Create relation component<->variant "{$a}"';
 $string['newfile'] = 'New file "{$a}"';
 $string['newflavor'] = 'New flavor "{$a}"';
+$string['newmetadata'] = 'New license "{$a}"';
+$string['newmetadatafilemissing'] = 'Related file not found: "{$a}"';
 $string['newvariant'] = 'New variant "{$a}"';
 $string['pluginname'] = 'Course elements';
 $string['preview'] = 'Preview';
