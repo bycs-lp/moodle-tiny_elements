@@ -36,6 +36,8 @@ $string['c4lcompatibility_help'] = 'C4L (components for learning) ist das Plugin
 $string['cachedef_tiny_elements_css'] = 'Cache für tiny_elements CSS';
 $string['category'] = 'Kategorie';
 $string['close'] = 'Schließen';
+
+$string['code'] = 'HTML';
 $string['code_help'] = 'Einzufügender HTML-Code. Sie können {{VARIANTS}}, {{FLAVOR}} und {{PLACEHOLDER}} als Platzhalter für Varianten, Flavors und einzufügenden Text verwenden.';
 $string['compcat'] = 'Kategorien';
 $string['compflavor_icons'] = 'Ändern der Symbole für Komponenten je nach Flavor';
@@ -124,4 +126,7 @@ $string['showprinturls'] = 'Ein Symbol auswählen';
 $string['text'] = 'Text';
 $string['unchangedfile'] = 'Datei "{$a}" ist unverändert';
 $string['validclassname'] = 'Der Name muss ein gültiger CSS-Klassenname sein. Er darf nur Buchstaben, Zahlen und die Zeichen "-" und "_" enthalten. Er muss mit einem Buchstaben oder "_" beginnen. Es wird empfohlen, nur Kleinbuchstaben zu verwenden.';
+$string['variant'] = 'Variante';
 $string['variants'] = 'Varianten';
+$string['wipe'] = 'Alles löschen';
+$string['wipewarning'] = 'Diese Funktion entfernt alle Kategorien, Dateien, Komponenten, Flavors und Varianten. Es gibt keine Möglichkeit, diesen Schritt rückgängig zu machen. Stellen Sie sicher, dass Sie ein Backup haben!';

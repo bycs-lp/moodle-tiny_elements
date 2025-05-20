@@ -408,6 +408,29 @@ const wipeModal = (event) => {
 };
 
 /**
+ * Show a modal to confirm wiping all items.
+ * @param {*} event
+ */
+const wipeModal = (event) => {
+    event.preventDefault();
+
+    deleteCancelPromise(
+        getString('wipe', 'tiny_elements'),
+        getString('wipewarning', 'tiny_elements')
+    ).then(async() => {
+        try {
+            await wipe();
+            reload();
+        } catch (error) {
+            displayException(error);
+        }
+    }).catch((err) => {
+        Log.error(err.message);
+        return;
+    });
+};
+
+/**
  * Delete elements items.
  * @param {*} id
  * @param {*} table
