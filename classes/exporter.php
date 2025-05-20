@@ -103,7 +103,7 @@ class exporter {
         // It is necessary to get the files for each compcat separately to avoid mixing up files from
         // different categories.
         foreach ($compcats as $compcat) {
-            $files = $fs->get_area_files($this->contextid, 'tiny_elements', 'images', $compcat->id);
+            $files = $fs->get_area_files($this->contextid, 'tiny_elements', 'images', $compcat->id, 'itemid', false);
             foreach ($files as $file) {
                 $exportfiles[$compcat->name . '/' . $file->get_filepath() . $file->get_filename()] = $file;
             }
