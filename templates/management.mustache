@@ -76,7 +76,7 @@
     <h2>{{#str}} compcat, tiny_elements {{/str}}</h2>
     <div class="row row-cols-8">
         {{#compcats}}
-            <div 
+            <div
                 class="col mb-4 item compcat {{^id}}addcontainer{{/id}}" data-compcat="{{name}}" data-id="{{id}}"
                 data-categoryname="{{categoryname}}"
             >
@@ -154,11 +154,11 @@
     </div>
 
     <div class="row{{^showbulkedit}} hidden{{/showbulkedit}}">
-        <div class="col mb-4"> 
+        <div class="col mb-4">
             <button id="elements_displaynames_flavor_button" class="btn btn-secondary">{{#str}} bulk_edit_flavor_displaynames, tiny_elements {{/str}}</button>
         </div>
     </div>
-    
+
     <h2>{{#str}} components, tiny_elements {{/str}} </h2>
 
     <div class="row row-cols-12">
@@ -207,7 +207,7 @@
     </div>
 
     <div class="row{{^showbulkedit}} hidden{{/showbulkedit}}">
-        <div class="col mb-4"> 
+        <div class="col mb-4">
             <button id="elements_displaynames_button" class="btn btn-secondary">{{#str}} bulk_edit_displaynames, tiny_elements {{/str}}</button>
         </div>
     </div>
@@ -215,7 +215,7 @@
     <h2>{{#str}} variants, tiny_elements {{/str}}</h2>
     <div class="row row-cols-12">
         {{#variant}}
-            <div 
+            <div
                 class="col mb-4 item variant {{name}} {{#id}}hidden{{/id}}{{^id}}addcontainer{{/id}}" data-categoryname="{{categoryname}}">
                 <div class="card h-100">
                 <div class="card-body">
@@ -246,9 +246,8 @@
     </div>
 
     <div class="row{{^showbulkedit}} hidden{{/showbulkedit}}">
-        <div class="col mb-4"> 
+        <div class="col mb-4">
             <button id="elements_displaynames_variant_button" class="btn btn-secondary">{{#str}} bulk_edit_variant_displaynames, tiny_elements {{/str}}</button>
         </div>
     </div>
-
 </div>

@@ -396,8 +396,10 @@ const wipeModal = (event) => {
         try {
             await wipe();
             reload();
+            return;
         } catch (error) {
             displayException(error);
+            return;
         }
         return;
     }).catch((err) => {
