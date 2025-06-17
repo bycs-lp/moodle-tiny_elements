@@ -17,6 +17,8 @@
 namespace tiny_elements\local;
 
 use core\hook\output\before_http_headers;
+use tool_mfa\manager;
+use tool_mfa\plugininfo\factor;
 
 /**
  * Class containing the hook callbacks for tiny_elements.
@@ -45,6 +47,12 @@ class hook_callbacks {
         if (during_initial_install()) {
             return;
         }
+
+        // Do not deliver anything if MFA is enabled and we're stuck in MFA verification.
+        if (manager::is_ready() && manager::get_status() !== factor::STATE_PASS) {
+            return;
+        }
+
         // Only run if plugin is enabled.
         $pluginmanager = \core_plugin_manager::instance();
         $plugins = $pluginmanager->get_enabled_plugins('tiny');
