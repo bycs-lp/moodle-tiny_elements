@@ -49,7 +49,7 @@ class hook_callbacks {
         }
 
         // Do not deliver anything if MFA is enabled and we're stuck in MFA verification.
-        if (manager::is_ready() && manager::get_status() !== factor::STATE_PASS) {
+        if (!empty(get_config('tool_mfa', 'enabled')) && manager::get_status() !== factor::STATE_PASS) {
             return;
         }
 
