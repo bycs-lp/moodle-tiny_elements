@@ -39,8 +39,8 @@ class get_images extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'contextid' => new external_value(PARAM_INT, 'Context id', VALUE_REQUIRED),
-            'categoryname' => new external_value(PARAM_TEXT, 'Category name', VALUE_OPTIONAL, 0),
-            'categoryid' => new external_value(PARAM_INT, 'Category id', VALUE_OPTIONAL, 0),
+            'categoryname' => new external_value(PARAM_TEXT, 'Category name', VALUE_DEFAULT, ''),
+            'categoryid' => new external_value(PARAM_INT, 'Category id', VALUE_DEFAULT, 0),
         ]);
     }
 
