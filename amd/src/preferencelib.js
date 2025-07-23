@@ -46,7 +46,7 @@ export const loadPreferences = async(name) => {
         }
     };
 
-    await Ajax.call([request])[0]
+    return Ajax.call([request])[0]
         .then(result => {
             try {
                 let preferences = JSON.parse(result.preferences[0].value);
