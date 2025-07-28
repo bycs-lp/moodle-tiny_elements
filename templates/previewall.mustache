@@ -15,15 +15,28 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template tiny_elements/management_import_form_result
+    @template tiny_elements/previewall
 
-    List of results from the import process.
+    Template for the preview of all elements in the Tiny Elements plugin.
 
     Example context (json):
     {
         "results": [
-            "Component unchanged",
-            "New file"
+            {
+                "category": "Sketchpals",
+                "elements": [
+                    {
+                        "name": "Horst",
+                        "code": "<div>...</div>",
+                        "show": true
+                    },
+                    {
+                        "name": "Cloud",
+                        "code": "<div>...</div>",
+                        "show": false
+                    }
+                ]
+            }
         ]
     }
 }}
