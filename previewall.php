@@ -90,7 +90,7 @@ foreach ($categorydata as $category) {
     }
     $mustachedata['results'][] = [
         'category' => $category,
-        'elements' => $elements
+        'elements' => $elements,
     ];
 }
 
