@@ -95,7 +95,7 @@ $string['js'] = 'JS';
 $string['linktomanagerdesc'] = 'Go to <a href="{$a}">management page</a> to edit categories, components, flavors and variants.';
 $string['linktomanagername'] = 'Link to management';
 $string['linktopreviewall'] = 'Link to preview';
-$string['linktopreviewall_desc'] = 'Go to <a href="{$a}">preview</a> to watch all elements and export as string.';
+$string['linktopreviewall_desc'] = 'Go to <a href="{$a}">preview</a> to view examples of all elements and export them as string.';
 
 $string['manage'] = 'Manage';
 $string['management'] = 'Management';
