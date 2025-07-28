@@ -98,7 +98,7 @@ $string['js'] = 'JS';
 $string['linktomanagerdesc'] = 'Gehen Sie zu <a href="{$a}">Verwaltung</a>, um Änderungen vorzunehmen.';
 $string['linktomanagername'] = 'Link zur Verwaltung';
 $string['linktopreviewall'] = 'Link zur Vorschau';
-$string['linktopreviewall_desc'] = 'Gehen Sie zu <a href="{$a}">Vorschau</a>, um alle Elements anzusehen und als String zu exportieren.';
+$string['linktopreviewall_desc'] = 'Gehen Sie zu <a href="{$a}">Vorschau</a>, um alle Elemente anzusehen und als String zu exportieren.';
 $string['manage'] = 'Verwalten';
 $string['management'] = 'Verwaltung';
 $string['menuitem_elements'] = 'Kurselemente';
