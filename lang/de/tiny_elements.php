@@ -114,6 +114,7 @@ $string['newmetadatafilemissing'] = 'Zugehörige Datei nicht gefunden: "{$a}"';
 $string['newvariant'] = 'Neue Variante "{$a}"';
 $string['pluginname'] = 'Kurselemente';
 $string['preview'] = 'Vorschau';
+$string['previewall'] = 'Vorschau aller Elemente';
 $string['previewcss'] = 'Vorschau-CSS';
 $string['previewcsstext'] = 'Wenn alles korrekt ist, sollte die Komponente in allen Flavors angezeigt werden.';
 $string['previewdefault'] = 'Zeigen Sie mit dem Mauszeiger auf eine Komponente, um eine Vorschau anzuzeigen.';

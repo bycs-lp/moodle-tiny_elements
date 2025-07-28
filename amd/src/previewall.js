@@ -25,10 +25,11 @@ import {add as addToast} from 'core/toast';
 import {get_string as getString} from "core/str";
 
 export const init = async() => {
-    // Add listener to copy all elements as string.
-    document.getElementById("elements_to_clipboard").addEventListener("click", () => {
-        const allelements = document.getElementById("elements_output");
-        navigator.clipboard.writeText(allelements.value)
+    // Add listener to fill input and copy all elements as string.
+    const allelements = document.getElementById("results_of_previewall");
+    const toclipboard = document.getElementById("elements_to_clipboard");
+    toclipboard.addEventListener("click", () => {
+        navigator.clipboard.writeText(allelements.innerHTML)
         .then(() => {
             addToast(getString('copysuccess', 'tiny_elements'), {
                 type: 'info',

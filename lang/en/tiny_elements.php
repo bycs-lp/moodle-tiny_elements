@@ -112,6 +112,7 @@ $string['newmetadatafilemissing'] = 'Related file not found: "{$a}"';
 $string['newvariant'] = 'New variant "{$a}"';
 $string['pluginname'] = 'Course elements';
 $string['preview'] = 'Preview';
+$string['previewall'] = 'Preview all elements';
 $string['previewcss'] = 'Preview CSS';
 $string['previewcsstext'] = 'If everything is correct, the component should be shown in all flavors';
 $string['previewdefault'] = 'Place the pointer on any component to see its preview.';

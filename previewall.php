@@ -35,14 +35,14 @@ echo $OUTPUT->header();
 
 // Iterate over every category.
 $categorydata = $DB->get_records('tiny_elements_compcat');
-$outputbuffer = '';
+$mustachedata = ['results' => []];
+$seenelements = [];
 foreach ($categorydata as $category) {
-    $outputbuffer .= '<h2>' . $category->name . '</h2>';
+    $elements = [];
     $category = $category->name;
     $componentdata = $DB->get_records('tiny_elements_component', ['categoryname' => $category]);
     // Iterate over every component.
     foreach ($componentdata as $component) {
-        $outputbuffer .= '<h3>' . $component->name . '</h3>';
         // Select corresponding flavors and variants.
         $sql = "SELECT * FROM {tiny_elements_flavor} fla
                 JOIN {tiny_elements_comp_flavor} comfla ON comfla.flavorname = fla.name
@@ -77,20 +77,27 @@ foreach ($categorydata as $category) {
                     $flavordata->name . ' ' . $variantdata->name,
                     $tmpcomponent->code
                 );
-                // Output element.
+                // Collect element data.
                 $tmpcomponent->code = tiny_elements\local\utils::replace_pluginfile_urls($tmpcomponent->code, true);
-                $outputbuffer .= $tmpcomponent->code;
+                $elements[] = [
+                    'name' => $component->name,
+                    'code' => $tmpcomponent->code,
+                    'show' => in_array($component->name, $seenelements) ? false : true,
+                ];
+                $seenelements[] = $component->name;
             }
         }
     }
+    $mustachedata['results'][] = [
+        'category' => $category,
+        'elements' => $elements
+    ];
 }
 
 // Create button to copy elements to clipboard.
 echo "<button id='elements_to_clipboard' type='button' class='btn btn-primary mb-3'>"
     . get_string('copyasstring', 'tiny_elements') . "</button>";
-echo "<input type='hidden' id='elements_output' value='$outputbuffer' />";
 $PAGE->requires->js_call_amd('tiny_elements/previewall', 'init');
-
-echo $outputbuffer;
+echo $OUTPUT->render_from_template('tiny_elements/previewall', $mustachedata);
 
 echo $OUTPUT->footer();
