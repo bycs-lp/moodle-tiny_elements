@@ -70,13 +70,15 @@ export const handleAction = async(editor) => {
     await data.loadData();
     setVariantsData(data);
 
-    currentCategoryId = loadPreferences(Preferences.category);
-    lastFlavor = loadPreferences(Preferences.category_flavors);
-    if (lastFlavor === null) {
+    currentCategoryId = await loadPreferences(Preferences.category);
+
+    lastFlavor = await loadPreferences(Preferences.category_flavors);
+    if (lastFlavor === null || lastFlavor === undefined) {
         lastFlavor = [];
     }
-    let componentVariants = loadPreferences(Preferences.component_variants);
-    if (componentVariants === null) {
+
+    let componentVariants = await loadPreferences(Preferences.component_variants);
+    if (componentVariants === null || componentVariants === undefined) {
         componentVariants = {};
     }
     loadVariantPreferences(componentVariants);
