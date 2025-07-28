@@ -53,10 +53,6 @@ $componentdata->code = str_replace('{{PLACEHOLDER}}', $componentdata->text ?? 'L
 
 $componentdata->code = tiny_elements\local\utils::replace_pluginfile_urls($componentdata->code, true);
 
-if (empty($flavordata)) {
-    echo str_replace('{{FLAVOR}}', '', $componentdata->code);
-} else {
-    echo str_replace('{{FLAVOR}}', $flavordata->name, $componentdata->code);
-}
+echo $componentdata->code;
 
 echo $OUTPUT->footer();

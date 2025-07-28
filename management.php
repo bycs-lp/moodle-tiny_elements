@@ -124,5 +124,6 @@ echo($OUTPUT->render_from_template('tiny_elements/management', [
     'variant' => $variant,
     'exportlink' => $exportlink,
     'showbulkedit' => $showbulkedit,
+    'previewalllink' => (new moodle_url('/lib/editor/tiny/plugins/elements/previewall.php'))->out(),
 ]));
 echo $OUTPUT->footer();

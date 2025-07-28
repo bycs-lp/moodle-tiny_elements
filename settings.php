@@ -51,4 +51,15 @@ if ($ADMIN->fulltree) {
             (new moodle_url('/lib/editor/tiny/plugins/elements/management.php'))->out()
         )
     ));
+
+    // Add text with link to previewpage as setting.
+    $settings->add(new admin_setting_description(
+        'tiny_elements/previewall',
+        get_string('linktopreviewall', 'tiny_elements'),
+        get_string(
+            'linktopreviewall_desc',
+            'tiny_elements',
+            (new moodle_url('/lib/editor/tiny/plugins/elements/previewall.php'))->out()
+        )
+    ));
 }
