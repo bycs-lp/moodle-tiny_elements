@@ -78,8 +78,8 @@ class exporter {
 
         $exporttag = 'full';
         if (!empty($compcatid)) {
-            $compcat = $DB->get_record(constants::TABLES['compcat'], ['id' => $compcatid], 'name', MUST_EXIST);
-            $exporttag = $compcat->name;
+            $compcatname = $DB->get_field(constants::TABLES['compcat'], 'name', ['id' => $compcatid], MUST_EXIST);
+            $exporttag = $compcatname;
         }
 
         $filename = 'tiny_elements_export_' . $exporttag . '_' . time() . '.zip';
