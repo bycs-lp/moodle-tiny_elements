@@ -1,0 +1,47 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_elements/imagepicker
+
+    Template to show image urls in a modal
+
+    Example context (json):
+    {
+        "images": [
+            {
+                "id": 1,
+                "name": "Image 1",
+                "url": "http://example.com/image1.jpg"
+            },
+            {
+                "id": 2,
+                "name": "Image 2",
+                "url": "http://example.com/image2.jpg"
+            }
+        ]
+    }
+}}
+
+<div class="container text-center">
+  <div class="row">
+    {{#images}}
+    <div class="col">
+      <div class="border p-3 tiny_elements_imagepicker"><img src="{{url}}" class="tiny_elements_thumbnail" alt="{{name}}"></div>
+    </div>
+    {{/images}}
+  </div>
+</div>
