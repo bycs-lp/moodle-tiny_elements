@@ -59,6 +59,7 @@ class exporter {
      * @throws moodle_exception
      */
     public function export($compcatid = 0): \stored_file {
+        global $DB;
         $fs = get_file_storage();
         $fp = get_file_packer('application/zip');
 
@@ -74,7 +75,14 @@ class exporter {
         ];
         $exportxmlfile = $fs->create_file_from_string($filerecord, $this->exportxml($compcatid));
         $exportfiles[constants::FILE_NAME_EXPORT] = $exportxmlfile;
-        $filename = 'tiny_elements_export_' . time() . '.zip';
+
+        $exporttag = 'full';
+        if (!empty($compcatid)) {
+            $compcatname = $DB->get_field(constants::TABLES['compcat'], 'name', ['id' => $compcatid], MUST_EXIST);
+            $exporttag = $compcatname;
+        }
+
+        $filename = 'tiny_elements_export_' . $exporttag . '_' . time() . '.zip';
         $exportfile = $fp->archive_to_storage($exportfiles, $this->contextid, 'tiny_elements', 'export', 0, '/', $filename);
         if (!$exportfile) {
             throw new moodle_exception(get_string('error_export', 'tiny_elements'));
