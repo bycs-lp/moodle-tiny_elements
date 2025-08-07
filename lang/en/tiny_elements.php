@@ -78,6 +78,7 @@ $string['error_export'] = 'Error creating export file';
 $string['error_fileimport'] = 'Error importing file "{$a}"';
 $string['error_import_component'] = 'Error importing component "{$a}"';
 $string['error_import_missing_table'] = 'Error while importing xml: missing table "{$a}"';
+$string['error_import_missing_xml'] = 'Import error: Missing XML file';
 $string['errorbackupfile'] = 'Error in backup file';
 $string['errorcompcat'] = '**compcat** cant be empty';
 $string['errordisplayname'] = 'Displayname cant be empty';

@@ -72,6 +72,9 @@ class importer {
             if (!$xmlfile) {
                 $xmlfile = $fs->get_file($this->contextid, 'tiny_elements', 'import', $draftitemid, '/', 'tiny_c4l_export.xml');
             }
+            if (!$xmlfile) {
+                throw new moodle_exception(get_string('error_import_missing_xml', 'tiny_elements'));
+            }
             $xmlcontent = $xmlfile->get_content();
             // Import data.
             $categorymap = $this->importxml($xmlcontent);
