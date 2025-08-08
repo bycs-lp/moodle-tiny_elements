@@ -43,8 +43,8 @@ class hook_callbacks {
         if (optional_param('tiny_elements_disable', false, PARAM_BOOL)) {
             return;
         }
-        // Don't run during initial install.
-        if (during_initial_install()) {
+        // Don't run during initial install or in similar cases.
+        if (is_major_upgrade_required()) {
             return;
         }
 
