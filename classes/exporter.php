@@ -241,7 +241,7 @@ class exporter {
         $variantnames = array_unique(array_column($compvariants, 'variant'));
 
         $sql = ' = name';
-        if (!empty($compcatid)) {
+        if (!empty($categoryname)) {
             [$sql, $params] = $DB->get_in_or_equal($variantnames, SQL_PARAMS_QM, 'param', true, '');
         }
         $variants = $DB->get_records_sql("SELECT * FROM {" . constants::TABLES['variant'] . "} WHERE name " . $sql, $params);
