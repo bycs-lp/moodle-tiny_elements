@@ -382,7 +382,7 @@ class manager {
         );
 
         // Purge CSS cache if necessary.
-        if ($data->css != $oldrecord->css) {
+        if ($data->css != $oldrecord->css || $data->name != $oldrecord->name) {
             \tiny_elements\local\utils::purge_css_cache();
             \tiny_elements\local\utils::rebuild_css_cache();
         }
@@ -415,7 +415,7 @@ class manager {
         }
 
         // Purge CSS cache if necessary.
-        if ($data->css != $oldrecord->css) {
+        if ($data->css != $oldrecord->css || $data->name != $oldrecord->name) {
             \tiny_elements\local\utils::purge_css_cache();
             \tiny_elements\local\utils::rebuild_css_cache();
         }
@@ -447,7 +447,7 @@ class manager {
         }
 
         // Purge CSS cache if necessary.
-        if ($data->css != $oldrecord->css || $data->iconurl != $oldrecord->iconurl) {
+        if ($data->css != $oldrecord->css || $data->iconurl != $oldrecord->iconurl || $data->name != $oldrecord->name) {
             \tiny_elements\local\utils::purge_css_cache();
             \tiny_elements\local\utils::rebuild_css_cache();
         }
@@ -501,7 +501,7 @@ class manager {
         }
 
         // Purge CSS cache if necessary.
-        if ($data->css != $oldrecord->css) {
+        if ($data->css != $oldrecord->css || $data->iconurl != $oldrecord->iconurl || $data->name != $oldrecord->name) {
             \tiny_elements\local\utils::purge_css_cache();
             \tiny_elements\local\utils::rebuild_css_cache();
         }
