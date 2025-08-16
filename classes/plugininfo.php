@@ -28,7 +28,8 @@ use tiny_elements\local\constants;
  * Tiny elements plugin for Moodle.
  *
  * @package    tiny_elements
- * @copyright  2022 Marc Català <reskit@gmail.com>
+ * @copyright 2025 ISB Bayern
+ * @copyright based on the work of Marc Català <reskit@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugininfo extends plugin implements plugin_with_buttons, plugin_with_configuration, plugin_with_menuitems {

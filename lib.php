@@ -18,7 +18,8 @@
  * Tiny Elements library functions.
  *
  * @package   tiny_elements
- * @copyright 2023 Marc Català <reskit@gmail.com>
+ * @copyright 2025 ISB Bayern
+ * @copyright based on the work of Marc Català <reskit@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

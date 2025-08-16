@@ -17,7 +17,8 @@
  * Tiny Elements configuration.
  *
  * @module      tiny_elements/configuration
- * @copyright   2022 Marc Català <reskit@gmail.com>
+ * @copyright 2025 ISB Bayern
+ * @copyright based on the work of Marc Català <reskit@gmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
