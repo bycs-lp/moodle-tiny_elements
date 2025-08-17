@@ -41,18 +41,21 @@ final class utils_test extends \advanced_testcase {
 
         $compcatrecord1 = new stdClass();
         $compcatrecord1->name = 'testcategory1';
-        $compcatrecord1->displayname = 'Category 1';
+        $compcatrecord1->displayname = '<span lang="de" class="multilang">Kategorie 1</span><span lang="en" class="multilang">' .
+            'Category 1</span>';
         $compcatrecord1->css = '.testcategory1{margin:3rem}';
         $compcatrecord1id = $DB->insert_record('tiny_elements_compcat', $compcatrecord1);
         $compcatrecord2 = new stdClass();
         $compcatrecord2->name = 'testcategory2';
-        $compcatrecord2->displayname = 'Category 2';
+        $compcatrecord2->displayname = '<span lang="de" class="multilang">Kategorie 2</span><span lang="en" class="multilang">' .
+            'Category 2</span>';
         $compcatrecord2->css = '.testcategory2{padding:3rem}';
         $compcatrecord2id = $DB->insert_record('tiny_elements_compcat', $compcatrecord2);
 
         $componentrecord1 = new stdClass();
         $componentrecord1->name = 'testcomponent1';
-        $componentrecord1->displayname = 'Component 1';
+        $componentrecord1->displayname = '<span lang="de" class="multilang">Komponente 1</span><span lang="en" class="multilang">' .
+            'Component 1</span>';
 
         $componentrecord1->compcat = $compcatrecord1id;
         $componentrecord1->css = 'div.testcomponent1{background-color:red}';
@@ -60,7 +63,8 @@ final class utils_test extends \advanced_testcase {
 
         $componentrecord2 = new stdClass();
         $componentrecord2->name = 'testcomponent2';
-        $componentrecord2->displayname = 'Component 2';
+        $componentrecord2->displayname = '<span lang="de" class="multilang">Komponente 2</span><span lang="en" class="multilang">' .
+            'Component 2</span>';
 
         $componentrecord2->compcat = $compcatrecord2id;
         $componentrecord2->css = 'p.testcomponent2{background-color:green}';
@@ -68,19 +72,22 @@ final class utils_test extends \advanced_testcase {
 
         $flavorrecord1 = new stdClass();
         $flavorrecord1->name = 'testflavor1';
-        $flavorrecord1->displayname = 'Flavor 1';
+        $flavorrecord1->displayname = '<span lang="de" class="multilang">Geschmack 1</span><span lang="en" class="multilang">' .
+            'Flavor 1</span>';
         $flavorrecord1->css = '#testflavor{color:blue}';
         $DB->insert_record('tiny_elements_flavor', $flavorrecord1);
 
         $flavorrecord2 = new stdClass();
         $flavorrecord2->name = 'testflavor2';
-        $flavorrecord2->displayname = 'Flavor 2';
+        $flavorrecord2->displayname = '<span lang="de" class="multilang">Geschmack 2</span><span lang="en" class="multilang">' .
+            'Flavor 2</span>';
         $flavorrecord2->css = '#testflavor2{color:grey}';
         $DB->insert_record('tiny_elements_flavor', $flavorrecord2);
 
         $flavorrecord3 = new stdClass();
         $flavorrecord3->name = 'testflavor3';
-        $flavorrecord3->displayname = 'Flavor 3';
+        $flavorrecord3->displayname = '<span lang="de" class="multilang">Geschmack 3</span><span lang="en" class="multilang">' .
+            'Flavor 3</span>';
         $flavorrecord3->css = '#testflavor3{color:red}';
         $flavorrecord3->hideforstudents = 1;
         $flavorrecord3id = $DB->insert_record('tiny_elements_flavor', $flavorrecord3);

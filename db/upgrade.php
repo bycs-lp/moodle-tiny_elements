@@ -186,5 +186,38 @@ function xmldb_tiny_elements_upgrade($oldversion): bool {
         upgrade_plugin_savepoint(true, 2025022409, 'tiny', 'elements');
     }
 
+    if ($oldversion < 2025081700) {
+
+        // Changing precision of field displayname on table tiny_elements_component to (1333).
+        $table = new xmldb_table('tiny_elements_component');
+        $field = new xmldb_field('displayname', XMLDB_TYPE_CHAR, '1333', null, null, null, null, 'name');
+
+        // Launch change of precision for field displayname.
+        $dbman->change_field_precision($table, $field);
+
+        // Changing precision of field displayname on table tiny_elements_compcat to (1333).
+        $table = new xmldb_table('tiny_elements_compcat');
+        $field = new xmldb_field('displayname', XMLDB_TYPE_CHAR, '1333', null, null, null, null, 'name');
+
+        // Launch change of precision for field displayname.
+        $dbman->change_field_precision($table, $field);
+
+        // Changing precision of field displayname on table tiny_elements_variant to (1333).
+        $table = new xmldb_table('tiny_elements_variant');
+        $field = new xmldb_field('displayname', XMLDB_TYPE_CHAR, '1333', null, null, null, null, 'name');
+
+        // Launch change of precision for field displayname.
+        $dbman->change_field_precision($table, $field);
+
+        // Changing precision of field displayname on table tiny_elements_flavor to (1333).
+        $table = new xmldb_table('tiny_elements_flavor');
+        $field = new xmldb_field('displayname', XMLDB_TYPE_CHAR, '1333', null, null, null, null, 'name');
+
+        // Launch change of precision for field displayname.
+        $dbman->change_field_precision($table, $field);
+
+        // Elements savepoint reached.
+        upgrade_plugin_savepoint(true, 2025081700, 'tiny', 'elements');
+    }
     return true;
 }
