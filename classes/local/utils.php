@@ -44,7 +44,7 @@ class utils {
             $components[] = [
                     'id' => $record->id,
                     'name' => $record->name,
-                    'displayname' => $record->displayname,
+                    'displayname' => format_string($record->displayname, true, ['escape' => false]),
                     'categoryname' => $record->categoryname,
                     'code' => self::replace_pluginfile_urls($record->code, true),
                     'text' => $record->text,
@@ -88,6 +88,7 @@ class utils {
             $params
         );
         foreach ($variants as $variant) {
+            $variant->displayname = format_string($variant->displayname, true, ['escape' => false]);
             $variant->content = self::replace_pluginfile_urls($variant->content, true);
         }
         return $variants;
@@ -108,6 +109,7 @@ class utils {
                 [$compvariant->variant],
                 $components[$compvariant->componentname] ?? []
             );
+            $compvariant->displayname = format_string($compvariant->displayname, true, ['escape' => false]);
         }
         return $components;
     }
@@ -119,6 +121,9 @@ class utils {
     public static function get_all_compcats(): array {
         global $DB;
         $categories = $DB->get_records('tiny_elements_compcat', null, 'displayorder');
+        foreach ($categories as $category) {
+            $category->displayname = format_string($category->displayname, true, ['escape' => false]);
+        }
         return array_values($categories);
     }
 
@@ -135,6 +140,7 @@ class utils {
                 [$compflavor->flavorname],
                 $components[$compflavor->componentname] ?? []
             );
+            $compflavor->displayname = format_string($compflavor->displayname, true, ['escape' => false]);
         }
         return $components;
     }
@@ -190,6 +196,7 @@ class utils {
             $flavorsbyname[$flavor->name] = $flavor;
             $flavorsbyname[$flavor->name]->categories = [];
             $flavorsbyname[$flavor->name]->content = self::replace_pluginfile_urls($flavor->content ?? '', true);
+            $flavor->displayname = format_string($flavor->displayname, true, ['escape' => false]);
         }
         return $flavorsbyname;
     }
