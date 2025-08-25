@@ -73,12 +73,15 @@ class utils {
             $params['categoryname'] = $categoryname;
         }
         if (!empty($query)) {
-            $sql = $DB->sql_like('name', ':query', false, false);
             if (!empty($where)) {
                 $where .= ' AND ';
             }
-            $where .= $sql;
+            $sql = $DB->sql_like('name', ':query', false, false);
+            $where .= '(' . $sql;
+            $sql = $DB->sql_like('displayname', ':query2', false, false);
+            $where .= ' OR ' . $sql . ')';
             $params['query'] = '%' . $DB->sql_like_escape($query) . '%';
+            $params['query2'] = $params['query'];
         }
         $variants = $DB->get_records_sql(
             "SELECT * FROM {tiny_elements_variant}" . (!empty($where) ? " WHERE " . $where : ""),
@@ -161,13 +164,18 @@ class utils {
             $params['categoryname'] = $categoryname;
         }
         if (!empty($query)) {
-            $sql = $DB->sql_like('name', ':query', false, false);
             if (!empty($where)) {
                 $where .= ' AND ';
             }
-            $where .= $sql;
+            $sql = $DB->sql_like('name', ':query', false, false);
+            $where .= '(' . $sql;
+            $sql = $DB->sql_like('displayname', ':query2', false, false);
+            $where .= ' OR ' . $sql . ')';
+
             $params['query'] = '%' . $DB->sql_like_escape($query) . '%';
+            $params['query2'] = $params['query'];
         }
+
         $flavors = $DB->get_records_sql(
             "
             SELECT *
