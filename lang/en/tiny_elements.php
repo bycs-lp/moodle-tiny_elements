@@ -27,6 +27,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Add item';
+$string['allowedfilters'] = 'Filters allowed for use with tiny_elements';
+$string['allowedfilters_desc'] = 'Comma separated list without filter_ prefix';
 $string['bulk_edit_displaynames'] = 'Bulk edit displaynames';
 $string['bulk_edit_flavor_displaynames'] = 'Bulk edit flavor displaynames';
 $string['bulk_edit_variant_displaynames'] = 'Bulk edit variant displaynames';

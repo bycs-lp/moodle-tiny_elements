@@ -17,6 +17,7 @@
 namespace tiny_elements\local;
 
 use core\output\choicelist;
+use core_filters\filter_manager;
 
 /**
  * Utility class for tiny_elements.
@@ -44,7 +45,7 @@ class utils {
             $components[] = [
                     'id' => $record->id,
                     'name' => $record->name,
-                    'displayname' => format_string($record->displayname, true, ['escape' => false]),
+                    'displayname' => self::filter_string($record->displayname),
                     'categoryname' => $record->categoryname,
                     'code' => self::replace_pluginfile_urls($record->code, true),
                     'text' => $record->text,
@@ -88,7 +89,7 @@ class utils {
             $params
         );
         foreach ($variants as $variant) {
-            $variant->displayname = format_string($variant->displayname, true, ['escape' => false]);
+            $variant->displayname = self::filter_string($variant->displayname);
             $variant->content = self::replace_pluginfile_urls($variant->content, true);
         }
         return $variants;
@@ -109,7 +110,7 @@ class utils {
                 [$compvariant->variant],
                 $components[$compvariant->componentname] ?? []
             );
-            $compvariant->displayname = format_string($compvariant->displayname, true, ['escape' => false]);
+            $compvariant->displayname = self::filter_string($compvariant->displayname);
         }
         return $components;
     }
@@ -122,7 +123,7 @@ class utils {
         global $DB;
         $categories = $DB->get_records('tiny_elements_compcat', null, 'displayorder');
         foreach ($categories as $category) {
-            $category->displayname = format_string($category->displayname, true, ['escape' => false]);
+            $category->displayname = self::filter_string($category->displayname);
         }
         return array_values($categories);
     }
@@ -140,7 +141,7 @@ class utils {
                 [$compflavor->flavorname],
                 $components[$compflavor->componentname] ?? []
             );
-            $compflavor->displayname = format_string($compflavor->displayname, true, ['escape' => false]);
+            $compflavor->displayname = self::filter_string($compflavor->displayname);
         }
         return $components;
     }
@@ -196,7 +197,7 @@ class utils {
             $flavorsbyname[$flavor->name] = $flavor;
             $flavorsbyname[$flavor->name]->categories = [];
             $flavorsbyname[$flavor->name]->content = self::replace_pluginfile_urls($flavor->content ?? '', true);
-            $flavor->displayname = format_string($flavor->displayname, true, ['escape' => false]);
+            $flavor->displayname = self::filter_string($flavor->displayname);
         }
         return $flavorsbyname;
     }
@@ -537,4 +538,31 @@ class utils {
         }
         return $processedfiles;
     }
+
+    /**
+     * Let a string pass through the filter(s).
+     *
+     * @param string|null $string
+     * @return string the filtered string
+     */
+    public static function filter_string(?string $string = ''): string {
+        if (empty($string)) {
+            return '';
+        }
+
+        $allowedfilters = explode(',', str_replace(' ', '', get_config('tiny_elements', 'allowedfilters')));
+
+        $filtermanager = filter_manager::instance();
+        $skipfilters = array_diff(array_keys(filter_get_active_in_context(\context_system::instance())), $allowedfilters);
+
+        return(
+        $filtermanager->filter_text(
+            $string,
+            \context_system::instance(),
+            ['escape' => false],
+            $skipfilters
+        )
+        );
+    }
 }
+
