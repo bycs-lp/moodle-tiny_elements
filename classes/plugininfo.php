@@ -43,6 +43,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
             'tiny_elements/elements',
         ];
     }
+
     /**
      * Get the dropdown menu items for this plugin
      *
