@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tiny_elements';
-$plugin->release = '1.0.0';
+$plugin->release = '1.0.1';
 $plugin->requires = 2024042200;
 $plugin->maturity = MATURITY_BETA;
 $plugin->version = 2025081700;
