@@ -25,13 +25,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$ADMIN->add('editortiny', new admin_category('tiny_elements', new lang_string('pluginname', 'tiny_elements')));
+$categoryname = 'tiny_elements_settings';
 
-$settings = new admin_settingpage('tiny_elements_settings', new lang_string('pluginname', 'tiny_elements'));
+// We overwrite $settings here that is defined in editor_tiny\plugininfo\tiny::load_settings().
+$settings = new admin_category($categoryname, new lang_string('pluginname', 'tiny_elements'));
+
+$settingspage = new admin_settingpage('tiny_elements', new lang_string('generalsettings', 'tiny_elements'));
 
 if ($ADMIN->fulltree) {
     // Custom components settings.
-    $settings->add(
+    $settingspage->add(
         new admin_setting_heading('tiny_elements/generalsettings', new lang_string('generalsettings', 'tiny_elements'), '')
     );
 
@@ -40,34 +43,28 @@ if ($ADMIN->fulltree) {
     $desc = get_string('enablepreview_desc', 'tiny_elements');
     $default = 1;
     $setting = new admin_setting_configcheckbox('tiny_elements/enablepreview', $name, $desc, $default);
-    $settings->add($setting);
+    $settingspage->add($setting);
 
-    $settings->add(new admin_setting_configtext(
+    $settingspage->add(new admin_setting_configtext(
         'tiny_elements/allowedfilters',
         get_string('allowedfilters', 'tiny_elements'),
         get_string('allowedfilters_desc', 'tiny_elements'),
         'multilang2'
     ));
-
-    // Add text with link to management as setting.
-    $settings->add(new admin_setting_description(
-        'tiny_elements/management',
-        get_string('linktomanagername', 'tiny_elements'),
-        get_string(
-            'linktomanagerdesc',
-            'tiny_elements',
-            (new moodle_url('/lib/editor/tiny/plugins/elements/management.php'))->out()
-        )
-    ));
-
-    // Add text with link to previewpage as setting.
-    $settings->add(new admin_setting_description(
-        'tiny_elements/previewall',
-        get_string('linktopreviewall', 'tiny_elements'),
-        get_string(
-            'linktopreviewall_desc',
-            'tiny_elements',
-            (new moodle_url('/lib/editor/tiny/plugins/elements/previewall.php'))->out()
-        )
-    ));
 }
+
+$settings->add($categoryname, $settingspage);
+
+$settings->add($categoryname, new admin_externalpage(
+    'tiny_elements_management',
+    get_string('elements:manage', 'tiny_elements'),
+    new moodle_url('/lib/editor/tiny/plugins/elements/management.php'),
+    'tiny/elements:manage'
+));
+
+$settings->add($categoryname, new admin_externalpage(
+    'tiny_elements_previewall',
+    get_string('previewall', 'tiny_elements'),
+    new moodle_url('/lib/editor/tiny/plugins/elements/previewall.php'),
+    'tiny/elements:manage'
+));
