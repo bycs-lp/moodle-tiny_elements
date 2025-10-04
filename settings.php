@@ -44,6 +44,13 @@ if ($ADMIN->fulltree) {
     $default = 1;
     $setting = new admin_setting_configcheckbox('tiny_elements/enablepreview', $name, $desc, $default);
     $settingspage->add($setting);
+
+    $settingspage->add(new admin_setting_configtext(
+        'tiny_elements/allowedfilters',
+        get_string('allowedfilters', 'tiny_elements'),
+        get_string('allowedfilters_desc', 'tiny_elements'),
+        'multilang2'
+    ));
 }
 
 $settings->add($categoryname, $settingspage);
