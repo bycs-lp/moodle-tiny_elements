@@ -236,11 +236,6 @@ const handleCategoryFlavorClick = (event, modal) => {
 
     const componentButtons = modal.getRoot()[0].querySelectorAll('.elements-buttons-preview button');
     componentButtons.forEach(componentButton => {
-        // Remove previous flavor.
-        if (componentButton.dataset.flavor != undefined) {
-            componentButton.classList.remove(componentButton.dataset.flavor);
-        }
-        componentButton.classList.add(currentFlavor);
         componentButton.dataset.flavor = currentFlavor;
         if (
             (componentButton.dataset.flavorlist == '' || componentButton.dataset.flavorlist.split(',').includes(currentFlavor)) &&
