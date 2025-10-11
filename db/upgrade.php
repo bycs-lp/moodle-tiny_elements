@@ -187,7 +187,6 @@ function xmldb_tiny_elements_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 2025081700) {
-
         // Changing precision of field displayname on table tiny_elements_component to (1333).
         $table = new xmldb_table('tiny_elements_component');
         $field = new xmldb_field('displayname', XMLDB_TYPE_CHAR, '1333', null, null, null, null, 'name');
