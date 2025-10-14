@@ -431,13 +431,13 @@ class utils {
      *
      * @param string $buttonclass
      * @param string $iconurl
-     * @param string $variant
+     * @param string $flavor
      * @return string
      */
-    public static function button_icon_css(string $buttonclass, string $iconurl, string $variant = ''): string {
-        $variant = empty($variant) ? '' : '.' . $variant;
+    public static function button_icon_css(string $buttonclass, string $iconurl, string $flavor = ''): string {
+        $flavor = empty($flavor) ? '' : '[data-flavor="' . $flavor . '"]';
         return <<<CSS
-        .elements-{$buttonclass}-icon{$variant} .elements-button-text::before {
+        .elements-{$buttonclass}-icon{$flavor} .elements-button-text::before {
             background-image: url('{$iconurl}');
             background-size: contain;
             background-repeat: no-repeat;
