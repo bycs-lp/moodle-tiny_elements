@@ -40,7 +40,7 @@ export const init = async(params) => {
     });
 
     // Add listener for adding a new item.
-    let additem = document.getElementsByClassName('add');
+    let additem = Array.from(document.getElementsByClassName('add'));
     additem.forEach(element => {
         element.addEventListener('click', async(e) => {
             showModal(e, element.dataset.id, element.dataset.table);
@@ -48,7 +48,7 @@ export const init = async(params) => {
     });
 
     // Add listener to edit items.
-    let edititems = document.getElementsByClassName('edit');
+    let edititems = Array.from(document.getElementsByClassName('edit'));
     edititems.forEach(element => {
         element.addEventListener('click', async(e) => {
             showModal(e, element.dataset.id, element.dataset.table);
@@ -56,7 +56,7 @@ export const init = async(params) => {
     });
 
     // Add listener to delete items.
-    let deleteitems = document.getElementsByClassName('delete');
+    let deleteitems = Array.from(document.getElementsByClassName('delete'));
     deleteitems.forEach(element => {
         element.addEventListener('click', async(e) => {
             deleteModal(e, element.dataset.id, element.dataset.title, element.dataset.table);
@@ -64,7 +64,7 @@ export const init = async(params) => {
     });
 
     // Add listener to preview items.
-    let previewitems = document.getElementsByClassName('preview-button');
+    let previewitems = Array.from(document.getElementsByClassName('preview-button'));
     previewitems.forEach(element => {
         element.addEventListener('click', async(e) => {
             previewModal(e);
@@ -72,7 +72,7 @@ export const init = async(params) => {
     });
 
     // Add listener to select compcat to show corresponding items.
-    let compcats = document.getElementsByClassName('compcat');
+    let compcats = Array.from(document.getElementsByClassName('compcat'));
     compcats.forEach(element => {
         element.addEventListener('click', async(e) => {
             showItems(e, element.dataset.compcat);
@@ -80,7 +80,7 @@ export const init = async(params) => {
     });
 
     // Add listener to edit licenses icon.
-    let editlicenses = document.getElementsByClassName('editlicenses');
+    let editlicenses = Array.from(document.getElementsByClassName('editlicenses'));
     editlicenses.forEach(element => {
         element.addEventListener('click', async(e) => {
             editlicensesModal(e, element.dataset.id);
@@ -111,7 +111,7 @@ export const init = async(params) => {
     });
 
     // Add listener to duplicate items.
-    let duplicateitems = document.getElementsByClassName('duplicate');
+    let duplicateitems = Array.from(document.getElementsByClassName('duplicate'));
     duplicateitems.forEach(element => {
         element.addEventListener('click', async() => {
             duplicateItem(element.dataset.id, element.dataset.table).always(() => reload());
@@ -477,14 +477,14 @@ const showItems = (event, compcat) => {
     }
 
     // Show add buttons.
-    let addsShow = document.getElementsByClassName('addcontainer');
+    let addsShow = Array.from(document.getElementsByClassName('addcontainer'));
     addsShow.forEach(element => {
         element.classList.remove('hidden');
     });
 
     // Unmark all and mark clicked compcat.
     if (event) {
-        let items = document.getElementsByClassName('compcat');
+        let items = Array.from(document.getElementsByClassName('compcat'));
         items.forEach(element => {
             element.classList.remove('active');
         });
