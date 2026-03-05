@@ -29,5 +29,5 @@ $plugin->component = 'tiny_elements';
 $plugin->release = '1.0.1';
 $plugin->requires = 2024042200;
 $plugin->maturity = MATURITY_BETA;
-$plugin->version = 2025081700;
+$plugin->version = 2025081700.02;
 $plugin->supported = [405, 501];
