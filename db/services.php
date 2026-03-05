@@ -49,6 +49,14 @@ $functions = [
                 'ajax'          => true,
                 'capabilities'  => 'tiny/elements:manage',
         ],
+        'tiny_elements_filter_string' => [
+                'classname'    => 'tiny_elements\external\filter_string',
+                'methodname'   => 'execute',
+                'description'  => 'Filter a string through configured filters',
+                'type'         => 'read',
+                'ajax'         => true,
+                'capabilities' => 'tiny/elements:viewplugin',
+        ],
         'tiny_elements_get_variants' => [
                 'classname' => 'tiny_elements\external\get_variants',
                 'description' => 'Retrieve variants data',

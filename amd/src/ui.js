@@ -22,6 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import Ajax from 'core/ajax';
 import {ElementsModal} from 'tiny_elements/modal';
 import {
     isStudent,
@@ -379,10 +380,22 @@ const handleButtonMouseEvent = (event, modal, show) => {
     let flavor = comp.flavors.length > 0 ? currentFlavor : '';
 
     const placeholder = (selection.length > 0 ? selection : comp.text);
-
-    node.innerHTML = updateComponentCode(comp.code, selectedButton, placeholder, flavor);
+    const html = updateComponentCode(comp.code, selectedButton, placeholder, flavor);
 
     if (node) {
+        Ajax.call([{
+            methodname: 'tiny_elements_filter_string',
+            args: {
+                contextid: M?.cfg?.courseContextId ?? 1,
+                text: html,
+            },
+            done: (data) => {
+                node.innerHTML = data.text;
+            },
+            fail: () => {
+                node.innerHTML = html;
+            }
+        }]);
         if (show) {
             previewDefault.classList.toggle('elements-hidden');
             node.classList.toggle('elements-hidden');
