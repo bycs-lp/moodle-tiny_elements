@@ -360,6 +360,7 @@ const handleButtonClick = async(event, editor, modal) => {
 
         modal.destroy();
         editor.focus();
+        editor.undoManager.add();
     }
 };
 
