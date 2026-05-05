@@ -51,6 +51,7 @@ let currentFlavorId = 0;
 let currentCategoryId = 1;
 let currentCategoryName = '';
 let selectedComponentId = null;
+let previewComponentId = null;
 let stripComponentId = null;
 let stripHideTimer = null;
 let lastFlavor = [];
@@ -345,6 +346,7 @@ const showPreviewFor = (modal, componentId) => {
     const root = modal.getRoot()[0];
     const previewBody = root.querySelector('.elements-preview-body');
     if (!previewBody) {
+        previewComponentId = null;
         return;
     }
     previewBody.querySelectorAll('.elements-component-code, .elements-preview-default').forEach(node => {
@@ -356,21 +358,25 @@ const showPreviewFor = (modal, componentId) => {
         if (defaultHint) {
             defaultHint.classList.remove('elements-hidden');
         }
+        previewComponentId = null;
         return;
     }
 
     const comp = data.getComponentById(componentId);
     if (!comp) {
+        previewComponentId = null;
         return;
     }
     const node = previewBody.querySelector(`div[data-id="code-preview-${componentId}"]`);
     if (!node) {
+        previewComponentId = null;
         return;
     }
     const flavor = comp.flavors.length > 0 ? currentFlavor : '';
     const placeholder = (selection.length > 0 ? selection : comp.text);
     node.innerHTML = updateComponentCode(comp.code, componentId, placeholder, flavor);
     node.classList.remove('elements-hidden');
+    previewComponentId = componentId;
 };
 
 /**
@@ -534,8 +540,8 @@ const toggleVariantForComponent = (modal, componentId, variantName, variantClass
         }
     }
 
-    if (selectedComponentId === componentId) {
-        refreshSelectedPreview(modal);
+    if (previewComponentId === componentId) {
+        showPreviewFor(modal, componentId);
     }
     updatePreviewSummary(modal);
 };
