@@ -1,39 +1,37 @@
-/* BUTTON VARIANTS */
+/* Flavor list (inside the rail, under the active category) */
 
-.elementst-dialog-button .elements-button-variants {
-    display: grid;
-    grid-auto-flow: column;
-    grid-gap: 3px;
-    justify-content: end;
-    width: 100%;
-    height: 42px;
-    margin-right: 3px;
+.elements-flavor-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: var(--elements-radius);
+    background: transparent;
+    color: var(--elements-gray-600);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: background 80ms, color 80ms;
 
-    .elements-button-variant {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #ecf3ff;
-        color: #1679f9;
-        height: 42px;
-        width: 36px;
-        
-        &::before {
-            content: ' ';
-            background-size: 50%;
-            background-repeat: no-repeat;
-            background-position: center;
-            height: 42px;
-            width: 36px;
-        }
+    &:hover {
+        background: rgba(255, 255, 255, 0.6);
+        color: var(--elements-gray-900);
+    }
 
-        &.on, &:hover {
-            background-color: #1679f9;
-            color: #fff;
+    &.active {
+        background: #fff;
+        color: var(--elements-orange);
+        font-weight: 600;
+    }
 
-            &::before {
-                filter: brightness(10);
-            }
+    &.elements-flavor-none {
+        font-style: italic;
+
+        &.active {
+            color: var(--elements-gray-900);
+            font-style: normal;
         }
     }
 }

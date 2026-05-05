@@ -30,13 +30,10 @@ import {
 } from 'tiny_elements/options';
 import ModalEvents from 'core/modal_events';
 import {
-    addVariant,
     getVariantsClass,
-    getVariantHtml,
     getVariantPreferences,
     getVariantsHtml,
     loadVariantPreferences,
-    removeVariant,
     setData as setVariantsData
 } from 'tiny_elements/variantslib';
 import {
@@ -51,12 +48,13 @@ let currentFlavor = '';
 let currentFlavorId = 0;
 let currentCategoryId = 1;
 let currentCategoryName = '';
+let selectedComponentId = null;
 let lastFlavor = [];
 let selection = '';
 let data = {};
 
 /**
- * Handle action
+ * Handle action.
  *
  * @param {TinyMCE} editor
  */
@@ -87,202 +85,384 @@ export const handleAction = async(editor) => {
 };
 
 /**
- * Display modal
+ * Display modal.
  *
  * @param  {TinyMCE} editor
  */
 const displayDialogue = async(editor) => {
     const templateContext = data.getTemplateContext(editor);
-    // Show modal with buttons.
     const modal = await ElementsModal.create({
         type: ElementsModal.TYPE,
         templateContext: templateContext,
         large: true,
     });
 
-    // Choose class to modal.
     const modalClass = data.getPreviewElements() ? 'elements-modal' : 'elements-modal-no-preview';
-
-    // Set class to modal.
     editor.targetElm.closest('body').classList.add(modalClass);
 
     modal.show();
 
-    // Event modal listener.
+    const root = modal.getRoot()[0];
+
     modal.getRoot().on(ModalEvents.hidden, () => {
         handleModalHidden(editor);
     });
 
-    // Event listener for categories without flavors.
-    const soleCategories = modal.getRoot()[0].querySelectorAll('.elements-category.no-flavors');
-    soleCategories.forEach(node => {
-        node.addEventListener('click', (event) => {
-            handleCategoryClick(event, modal);
-        });
+    root.querySelectorAll('.elements-rail-item').forEach(node => {
+        node.addEventListener('click', (event) => handleRailClick(event, modal));
     });
 
-    // Event listener for categories with flavors.
-    const selectCategories = modal.getRoot()[0].querySelectorAll('.elements-category-flavor');
-    selectCategories.forEach(node => {
-        node.addEventListener('click', (event) => {
-            handleCategoryFlavorClick(event, modal);
-        });
+    root.querySelectorAll('.elements-flavor-chip').forEach(node => {
+        node.addEventListener('click', (event) => handleFlavorChipClick(event, modal));
     });
 
-    // Event listener for category dropdown, triggering to switch to last used flavor.
-    const selectCategoriesRemember = modal.getRoot()[0].querySelectorAll('.nav-link.dropdown-toggle');
-    selectCategoriesRemember.forEach(node => {
-        node.addEventListener('click', (event) => {
-            handleCategoryRemember(event, modal);
-        });
-    });
-
-    // Event buttons listeners.
-    const buttons = modal.getRoot()[0].querySelectorAll('.elementst-dialog-button');
-    buttons.forEach(node => {
-        node.addEventListener('click', (event) => {
-            handleButtonClick(event, editor, modal);
-        });
+    root.querySelectorAll('.elementst-dialog-button').forEach(node => {
+        node.addEventListener('click', (event) => handleCardClick(event, modal));
         if (data.getPreviewElements()) {
-            node.addEventListener('mouseenter', (event) => {
-                handleButtonMouseEvent(event, modal, true);
-            });
-            node.addEventListener('mouseleave', (event) => {
-                handleButtonMouseEvent(event, modal, false);
-            });
+            node.addEventListener('mouseenter', (event) => handleCardMouseEvent(event, modal, true));
+            node.addEventListener('mouseleave', (event) => handleCardMouseEvent(event, modal, false));
         }
     });
 
-    // Event variants listeners.
-    const variants = modal.getRoot()[0].querySelectorAll('.elements-button-variant');
-    variants.forEach(node => {
-        node.addEventListener('click', (event) => {
-            handleVariantClick(event, modal);
-        });
-    });
+    const insertBtn = root.querySelector('.elements-insert-btn');
+    if (insertBtn) {
+        insertBtn.addEventListener('click', () => handleInsertClick(editor, modal));
+    }
 
-    // Select first or saved category.
-    if (soleCategories.length > 0 || selectCategories.length > 0) {
-        const savedCategory = currentCategoryId;
-        const savedFlavor = lastFlavor[currentCategoryId];
-        if (soleCategories.length == 0 || soleCategories[0].displayorder > selectCategories[0].displayorder) {
-            selectCategories[0].click();
-        } else {
-            soleCategories[0].click();
-        }
-        if (savedCategory != 0) {
-            soleCategories.forEach((node) => {
-                if (node.dataset.categoryid == savedCategory) {
-                    node.click();
-                }
-            });
-            selectCategories.forEach((node) => {
-                if (node.dataset.categoryid == savedCategory) {
-                    node.click();
-                }
-            });
-            if (savedFlavor) {
-                const flavorlink = modal.getRoot()[0].querySelector(
-                    '.elements-category-flavor[data-id="' + savedFlavor + '"]'
-                );
-                if (flavorlink) {
-                    flavorlink.click();
-                }
-            }
+    restoreInitialSelection(modal);
+};
+
+/**
+ * Restore the previously chosen category + flavor on modal open.
+ *
+ * @param {obj} modal
+ */
+const restoreInitialSelection = (modal) => {
+    const root = modal.getRoot()[0];
+    const railItems = root.querySelectorAll('.elements-rail-item');
+    if (railItems.length === 0) {
+        return;
+    }
+    let target = null;
+    if (currentCategoryId) {
+        target = root.querySelector(`.elements-rail-item[data-categoryid="${currentCategoryId}"]`);
+    }
+    if (!target) {
+        target = railItems[0];
+    }
+    target.click();
+
+    const savedFlavorId = lastFlavor[target.dataset.categoryid];
+    if (savedFlavorId) {
+        const flavorChip = root.querySelector(
+            `.elements-flavor-chip[data-id="${savedFlavorId}"][data-categoryid="${target.dataset.categoryid}"]`
+        );
+        if (flavorChip) {
+            flavorChip.click();
         }
     }
 };
 
 /**
- * Handle a click within filter button.
+ * Activate a category — switches the rail, the flavor bar set, and filters the grid.
  *
- * @param {MouseEvent} event The change event
+ * @param {MouseEvent} event
  * @param {obj} modal
  */
-const handleCategoryClick = (event, modal) => {
-    const link = event.target;
-    currentCategoryId = link.dataset.categoryid;
-    currentCategoryName = link.dataset.categoryname;
+const handleRailClick = (event, modal) => {
+    const item = event.currentTarget;
+    currentCategoryId = item.dataset.categoryid;
+    currentCategoryName = item.dataset.categoryname;
+    currentFlavor = '';
+    currentFlavorId = 0;
 
-    // Remove active from all and set to selected.
-    const links = modal.getRoot()[0].querySelectorAll('.nav-link, .dropdown-item');
-    links.forEach(node => node.classList.remove('active'));
-    link.classList.add('active');
+    const root = modal.getRoot()[0];
 
-    // Show/hide component buttons.
+    root.querySelectorAll('.elements-rail-item').forEach(node => {
+        const isActive = node === item;
+        node.classList.toggle('active', isActive);
+        node.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    root.querySelectorAll('.elements-flavor-list').forEach(set => {
+        set.toggleAttribute('hidden', set.dataset.categoryid !== currentCategoryId);
+    });
+    root.querySelectorAll('.elements-flavor-chip').forEach(chip => chip.classList.remove('active'));
+    const noneChip = root.querySelector(
+        `.elements-flavor-list[data-categoryid="${currentCategoryId}"] .elements-flavor-none`
+    );
+    if (noneChip) {
+        noneChip.classList.add('active');
+    }
+
     showCategoryButtons(modal, currentCategoryName);
+    clearSelection(modal);
 };
 
 /**
- * Handle a click on a flavor in the category dropdown.
+ * Handle clicks on a flavor chip (incl. the "Kein Flavor" chip).
  *
- * @param {MouseEvent} event The change event
+ * @param {MouseEvent} event
  * @param {obj} modal
  */
-const handleCategoryFlavorClick = (event, modal) => {
-    const link = event.target;
-    currentFlavor = link.dataset.flavor;
-    currentFlavorId = link.dataset.id;
-    currentCategoryId = link.dataset.categoryid;
-    currentCategoryName = link.dataset.categoryname;
-    lastFlavor[currentCategoryId] = currentFlavorId;
+const handleFlavorChipClick = (event, modal) => {
+    const chip = event.currentTarget;
+    currentFlavor = chip.dataset.flavor || '';
+    currentFlavorId = chip.dataset.id ? parseInt(chip.dataset.id, 10) : 0;
+    currentCategoryId = chip.dataset.categoryid;
+    currentCategoryName = chip.dataset.categoryname;
 
-    // Remove active from all and set to selected.
-    const links = modal.getRoot()[0].querySelectorAll('.nav-link, .dropdown-item');
-    links.forEach(node => node.classList.remove('active'));
-    link.classList.add('active');
-    const category = modal.getRoot()[0].querySelector('.nav-link[data-categoryid="' + currentCategoryId + '"]');
-    category.classList.add('active');
+    if (currentFlavorId) {
+        lastFlavor[currentCategoryId] = currentFlavorId;
+    } else {
+        delete lastFlavor[currentCategoryId];
+    }
 
-    const componentButtons = modal.getRoot()[0].querySelectorAll('.elements-buttons-preview button');
-    componentButtons.forEach(componentButton => {
-        componentButton.dataset.flavor = currentFlavor;
-        if (
-            (componentButton.dataset.flavorlist == '' || componentButton.dataset.flavorlist.split(',').includes(currentFlavor)) &&
-            componentButton.dataset.category == currentCategoryName
-        ) {
-            componentButton.classList.remove('elements-hidden');
-            if (componentButton.dataset.flavorlist != '') {
-                let variants = getVariantsClass(data.getComponentById(componentButton.dataset.id).name, currentFlavor);
-                let availableVariants = componentButton.querySelectorAll('.elements-button-variant');
-                availableVariants.forEach((variant) => {
-                    updateVariantButtonState(variant, variants.indexOf(variant.dataset.variantclass) != -1);
-                });
-            }
-        } else {
-            componentButton.classList.add('elements-hidden');
+    const root = modal.getRoot()[0];
+    root.querySelectorAll(
+        `.elements-flavor-list[data-categoryid="${currentCategoryId}"] .elements-flavor-chip`
+    ).forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+
+    const buttons = root.querySelectorAll('.elementst-dialog-button');
+    buttons.forEach(button => {
+        const matchesCategory = button.dataset.category === currentCategoryName;
+        const flavorlist = button.dataset.flavorlist || '';
+        const matchesFlavor = !currentFlavor || flavorlist === '' || flavorlist.split(',').includes(currentFlavor);
+        const visible = matchesCategory && matchesFlavor;
+        button.classList.toggle('elements-hidden', !visible);
+
+        if (visible) {
+            button.dataset.flavor = currentFlavor;
+            refreshCardDots(button);
         }
     });
 
-};
-
-/**
- * When opening the category dropdown, try to load remembered flavor.
- *
- * @param {MouseEvent} event The change event
- * @param {obj} modal
- */
-const handleCategoryRemember = (event, modal) => {
-    const link = event.target;
-    currentCategoryId = link.dataset.categoryid;
-    currentCategoryName = link.dataset.categoryname;
-    currentFlavorId = lastFlavor[currentCategoryId];
-
-    if (currentFlavorId != undefined) {
-        // Call handleCategoryFlavorClick with tampered data.
-        let e = {target: modal.getRoot()[0].querySelector('.elements-category-flavor[data-id="' + currentFlavorId + '"]')};
-        handleCategoryFlavorClick(e, modal);
+    if (selectedComponentId) {
+        const stillVisible = root.querySelector(
+            `.elementst-dialog-button[data-id="${selectedComponentId}"]:not(.elements-hidden)`
+        );
+        if (!stillVisible) {
+            clearSelection(modal);
+        } else {
+            updatePreviewSummary(modal);
+            refreshSelectedPreview(modal);
+        }
     }
 };
 
 /**
- * Handle when closing the Modal.
+ * Handle a click on a component card — sets selection, enables Insert.
+ *
+ * @param {MouseEvent} event
+ * @param {obj} modal
+ */
+const handleCardClick = (event, modal) => {
+    const button = event.currentTarget;
+    const root = modal.getRoot()[0];
+
+    selectedComponentId = button.dataset.id;
+
+    root.querySelectorAll('.elementst-dialog-button.selected').forEach(node => {
+        node.classList.remove('selected');
+        node.setAttribute('aria-selected', 'false');
+    });
+    button.classList.add('selected');
+    button.setAttribute('aria-selected', 'true');
+
+    refreshSelectedPreview(modal);
+    updatePreviewSummary(modal);
+
+    const insertBtn = root.querySelector('.elements-insert-btn');
+    if (insertBtn) {
+        insertBtn.disabled = false;
+    }
+};
+
+/**
+ * Hover over a card — show/hide preview (selection takes over on mouseleave).
+ *
+ * @param {MouseEvent} event
+ * @param {obj} modal
+ * @param {bool} show
+ */
+const handleCardMouseEvent = (event, modal, show) => {
+    const button = event.currentTarget;
+    if (show) {
+        showPreviewFor(modal, button.dataset.id);
+    } else if (selectedComponentId) {
+        showPreviewFor(modal, selectedComponentId);
+    } else {
+        showPreviewFor(modal, null);
+    }
+};
+
+/**
+ * Render preview for the given component id (or the default hint when null).
+ *
+ * @param {obj} modal
+ * @param {?string} componentId
+ */
+const showPreviewFor = (modal, componentId) => {
+    const root = modal.getRoot()[0];
+    const previewBody = root.querySelector('.elements-preview-body');
+    if (!previewBody) {
+        return;
+    }
+    previewBody.querySelectorAll('.elements-component-code, .elements-preview-default').forEach(node => {
+        node.classList.add('elements-hidden');
+    });
+
+    if (!componentId) {
+        const defaultHint = previewBody.querySelector('.elements-preview-default');
+        if (defaultHint) {
+            defaultHint.classList.remove('elements-hidden');
+        }
+        return;
+    }
+
+    const comp = data.getComponentById(componentId);
+    if (!comp) {
+        return;
+    }
+    const node = previewBody.querySelector(`div[data-id="code-preview-${componentId}"]`);
+    if (!node) {
+        return;
+    }
+    const flavor = comp.flavors.length > 0 ? currentFlavor : '';
+    const placeholder = (selection.length > 0 ? selection : comp.text);
+    node.innerHTML = updateComponentCode(comp.code, componentId, placeholder, flavor);
+    node.classList.remove('elements-hidden');
+};
+
+/**
+ * Re-render the preview for the currently selected component.
+ *
+ * @param {obj} modal
+ */
+const refreshSelectedPreview = (modal) => {
+    if (selectedComponentId) {
+        showPreviewFor(modal, selectedComponentId);
+    } else {
+        showPreviewFor(modal, null);
+    }
+};
+
+/**
+ * Sync the dot indicators on a single card to current preferences.
+ *
+ * @param {HTMLElement} card
+ */
+const refreshCardDots = (card) => {
+    const comp = data.getComponentById(card.dataset.id);
+    if (!comp) {
+        return;
+    }
+    const flavor = comp.flavors.length > 0 ? currentFlavor : '';
+    const activeClasses = getVariantsClass(comp.name, flavor);
+    card.querySelectorAll('.elements-v-dot').forEach(dot => {
+        dot.classList.toggle('on', activeClasses.includes(dot.dataset.variantclass));
+    });
+};
+
+/**
+ * Update the summary line in the preview footer.
+ *
+ * @param {obj} modal
+ */
+const updatePreviewSummary = (modal) => {
+    const root = modal.getRoot()[0];
+    const summary = root.querySelector('[data-region="preview-summary"]');
+    if (!summary) {
+        return;
+    }
+    if (!selectedComponentId) {
+        summary.textContent = '';
+        return;
+    }
+    const comp = data.getComponentById(selectedComponentId);
+    if (!comp) {
+        summary.textContent = '';
+        return;
+    }
+    const parts = [comp.displayname];
+    const cat = data.getCategoryById(currentCategoryId);
+    if (cat) {
+        parts.push(cat.displayname);
+    }
+    if (currentFlavor) {
+        const chip = root.querySelector(
+            `.elements-flavor-chip[data-flavor="${currentFlavor}"][data-categoryid="${currentCategoryId}"]`
+        );
+        if (chip) {
+            parts.push(chip.textContent.trim());
+        }
+    }
+    summary.textContent = parts.join(' · ');
+};
+
+/**
+ * Reset selection state and disable Insert.
+ *
+ * @param {obj} modal
+ */
+const clearSelection = (modal) => {
+    selectedComponentId = null;
+    const root = modal.getRoot()[0];
+    root.querySelectorAll('.elementst-dialog-button.selected').forEach(node => {
+        node.classList.remove('selected');
+        node.setAttribute('aria-selected', 'false');
+    });
+    const insertBtn = root.querySelector('.elements-insert-btn');
+    if (insertBtn) {
+        insertBtn.disabled = true;
+    }
+    showPreviewFor(modal, null);
+    updatePreviewSummary(modal);
+};
+
+/**
+ * Insert the selected component into the editor.
+ *
+ * @param {obj} editor
+ * @param {obj} modal
+ */
+const handleInsertClick = (editor, modal) => {
+    if (!selectedComponentId) {
+        return;
+    }
+    const comp = data.getComponentById(selectedComponentId);
+    if (!comp) {
+        return;
+    }
+
+    const flavor = comp.flavors.length > 0 ? currentFlavor : '';
+    const placeholder = (selection.length > 0 ? selection : comp.text);
+    const randomId = generateRandomID();
+    const newNode = document.createElement('span');
+    newNode.dataset.id = randomId;
+    newNode.innerHTML = placeholder;
+    const componentCode = updateComponentCode(comp.code, selectedComponentId, newNode.outerHTML, flavor);
+
+    editor.selection.setContent(componentCode);
+    const nodeSel = editor.dom.select('span[data-id="' + randomId + '"]');
+    if (nodeSel?.[0]) {
+        editor.selection.select(nodeSel[0]);
+    }
+
+    modal.destroy();
+    editor.focus();
+    editor.undoManager.add();
+};
+
+/**
+ * Modal close — persist selections.
  *
  * @param {obj} editor
  */
 const handleModalHidden = (editor) => {
     editor.targetElm.closest('body').classList.remove('elements-modal-no-preview');
-    if (currentCategoryId != 0 && currentFlavorId != 0) {
+    if (currentCategoryId) {
         savePreferences([
             {type: Preferences.category, value: currentCategoryId},
             {type: Preferences.category_flavors, value: JSON.stringify(lastFlavor)},
@@ -294,10 +474,8 @@ const handleModalHidden = (editor) => {
 const updateComponentCode = (componentCode, selectedButton, placeholder, flavor = '') => {
     componentCode = componentCode.replace('{{PLACEHOLDER}}', placeholder);
     const comp = data.getComponentById(selectedButton);
-    // Return active variants for current component.
     const variants = getVariantsClass(comp.name, flavor);
 
-    // Apply variants to html component.
     if (variants.length > 0) {
         componentCode = componentCode.replace('{{VARIANTS}}', variants.join(' '));
         componentCode = componentCode.replace('{{VARIANTSHTML}}', getVariantsHtml(comp.name, flavor));
@@ -315,203 +493,25 @@ const updateComponentCode = (componentCode, selectedButton, placeholder, flavor 
     componentCode = componentCode.replace('{{COMPONENT}}', 'elements-' + comp.name);
     componentCode = componentCode.replace('{{CATEGORY}}', 'elements-' + data.getCategoryById(currentCategoryId).name);
 
-    // Apply random IDs.
     componentCode = applyRandomID(componentCode);
-
-    // Apply lang strings.
     componentCode = applyLangStrings(componentCode);
 
     return componentCode;
 };
 
 /**
- * Handle a click in a component button.
- *
- * @param {MouseEvent} event The click event
- * @param {obj} editor
- * @param {obj} modal
- */
-const handleButtonClick = async(event, editor, modal) => {
-    const selectedButton = event.target.closest('button').dataset.id;
-
-    const comp = data.getComponentById(selectedButton);
-
-    // Component button.
-    if (comp) {
-        let componentCode = comp.code;
-        const placeholder = (selection.length > 0 ? selection : comp.text);
-
-        let flavor = comp.flavors.length > 0 ? currentFlavor : '';
-
-        // Create a new node to replace the placeholder.
-        const randomId = generateRandomID();
-        const newNode = document.createElement('span');
-        newNode.dataset.id = randomId;
-        newNode.innerHTML = placeholder;
-        componentCode = updateComponentCode(componentCode, selectedButton, newNode.outerHTML, flavor);
-        // Sets new content.
-        editor.selection.setContent(componentCode);
-
-        // Select text.
-        const nodeSel = editor.dom.select('span[data-id="' + randomId + '"]');
-        if (nodeSel?.[0]) {
-            editor.selection.select(nodeSel[0]);
-        }
-
-        modal.destroy();
-        editor.focus();
-        editor.undoManager.add();
-    }
-};
-
-/**
- * Handle a mouse events mouseenter/mouseleave in a component button.
- *
- * @param {MouseEvent} event The click event
- * @param {obj} modal
- * @param {bool} show
- */
-const handleButtonMouseEvent = (event, modal, show) => {
-    const selectedButton = event.target.closest('button').dataset.id;
-    const node = modal.getRoot()[0].querySelector('div[data-id="code-preview-' + selectedButton + '"]');
-    const previewDefault = modal.getRoot()[0].querySelector('div[data-id="code-preview-default"]');
-    const comp = data.getComponentById(selectedButton);
-
-    let flavor = comp.flavors.length > 0 ? currentFlavor : '';
-
-    const placeholder = (selection.length > 0 ? selection : comp.text);
-
-    node.innerHTML = updateComponentCode(comp.code, selectedButton, placeholder, flavor);
-
-    if (node) {
-        if (show) {
-            previewDefault.classList.toggle('elements-hidden');
-            node.classList.toggle('elements-hidden');
-        } else {
-            node.classList.toggle('elements-hidden');
-            previewDefault.classList.toggle('elements-hidden');
-        }
-    }
-};
-
-/**
- * Handle a mouse event within the variant buttons.
- *
- * @param {MouseEvent} event The mouseenter/mouseleave event
- * @param {obj} modal
- */
-const handleVariantClick = (event, modal) => {
-    event.stopPropagation();
-    const variant = event.target.closest('span');
-    const button = event.target.closest('button');
-    const comp = data.getComponentById(button.dataset.id);
-    const flavor = comp.flavors.length > 0 ? currentFlavor : '';
-
-    updateVariantComponentState(variant, button, modal, false, true);
-
-    const node = modal.getRoot()[0].querySelector('div[data-id="code-preview-' + button.dataset.id + '"]');
-    node.innerHTML = updateComponentCode(
-        comp.code,
-        button.dataset.id,
-        comp.text,
-        flavor
-    );
-};
-
-/**
- * Update a variant component UI.
- *
- * @param {obj} variant
- * @param {obj} button
- * @param {obj} modal
- * @param {bool} show
- * @param {bool} updateHtml
- */
-const updateVariantComponentState = (variant, button, modal, show, updateHtml) => {
-    const selectedVariant = variant.dataset.variantclass;
-    const selectedButton = button.dataset.id;
-    const componentClass = button.dataset.classcomponent;
-    const previewComponent = modal.getRoot()[0]
-        .querySelector('div[data-id="code-preview-' + button.dataset.id + '"] .' + componentClass);
-    const variantPreview = modal.getRoot()[0]
-        .querySelector('span[data-id="variantHTML-' + button.dataset.id + '"]');
-    const comp = data.getComponentById(selectedButton);
-    let variantsHtml = '';
-    let hasflavors = comp.flavors.length > 0;
-
-    if (previewComponent) {
-        if (updateHtml) {
-            if (variant.dataset.state == 'on') {
-                removeVariant(comp.name, variant.dataset.variant, hasflavors ? currentFlavor : '');
-                updateVariantButtonState(variant, false);
-                previewComponent.classList.remove(selectedVariant);
-            } else {
-                addVariant(comp.name, variant.dataset.variant, hasflavors ? currentFlavor : '');
-                updateVariantButtonState(variant, true);
-                previewComponent.classList.add(selectedVariant);
-            }
-
-            // Update variant preview HTML.
-            if (variantPreview) {
-                variantPreview.innerHTML = getVariantsHtml(comp.name, currentFlavor);
-            }
-        } else {
-            variantsHtml = getVariantsHtml(comp.name, currentFlavor);
-            if (show) {
-                previewComponent.classList.add(selectedVariant);
-                variantsHtml += getVariantHtml(variant.dataset.variant);
-            } else {
-                previewComponent.classList.remove(selectedVariant);
-            }
-
-            // Update variant preview HTML.
-            if (variantPreview) {
-                variantPreview.innerHTML = variantsHtml;
-            }
-        }
-    } else {
-        // Update variants preferences.
-        if (variant.dataset.state == 'on') {
-            removeVariant(comp.name, variant.dataset.variant, hasflavors ? currentFlavor : '');
-            updateVariantButtonState(variant, false);
-        } else {
-            addVariant(comp.name, variant.dataset.variant, hasflavors ? currentFlavor : '');
-            updateVariantButtonState(variant, true);
-        }
-    }
-};
-
-/**
- * Update a variant button UI.
- *
- * @param {obj} variant
- * @param {bool} activate
- */
-const updateVariantButtonState = (variant, activate) => {
-    if (activate) {
-        variant.dataset.state = 'on';
-        variant.classList.remove(variant.dataset.variant + '-variant-off');
-        variant.classList.add(variant.dataset.variant + '-variant-on');
-        variant.classList.add('on');
-    } else {
-        variant.dataset.state = 'off';
-        variant.classList.remove(variant.dataset.variant + '-variant-on');
-        variant.classList.add(variant.dataset.variant + '-variant-off');
-        variant.classList.remove('on');
-    }
-};
-
-/**
- * Show/hide buttons depend on selected context.
+ * Show only buttons of the active category.
  *
  * @param  {object} modal
  * @param  {String} context
  */
 const showCategoryButtons = (modal, context) => {
-    const showNodes = modal.getRoot()[0].querySelectorAll('button[data-type="' + context + '"]');
-    const hideNodes = modal.getRoot()[0].querySelectorAll('button[data-type]:not([data-type="' + context + '"])');
-
-    showNodes.forEach(node => node.classList.remove('elements-hidden'));
+    const showNodes = modal.getRoot()[0].querySelectorAll(`button[data-type="${context}"]`);
+    const hideNodes = modal.getRoot()[0].querySelectorAll(`button[data-type]:not([data-type="${context}"])`);
+    showNodes.forEach(node => {
+        node.classList.remove('elements-hidden');
+        refreshCardDots(node);
+    });
     hideNodes.forEach(node => node.classList.add('elements-hidden'));
 };
 
@@ -519,21 +519,19 @@ const showCategoryButtons = (modal, context) => {
  * Replace all localized strings.
  *
  * @param  {String} text
- * @return {String} String with lang tags replaced with a localized string.
+ * @return {String}
  */
 const applyLangStrings = (text) => {
     const compRegex = /{{#([^}]*)}}/g;
-
     [...text.matchAll(compRegex)].forEach(strLang => {
         text = text.replace('{{#' + strLang[1] + '}}', data.getLangString(strLang[1]));
     });
-
     return text;
 };
 
 /**
  * Generates a random string.
- * @return {string} A random string
+ * @return {string}
  */
 const generateRandomID = () => {
     const timestamp = new Date().getTime();
@@ -543,14 +541,12 @@ const generateRandomID = () => {
 /**
  * Replace all ID tags with a random string.
  * @param  {String} text
- * @return {String} String with all ID tags replaced with a random string.
+ * @return {String}
  */
 const applyRandomID = (text) => {
     const compRegex = /{{@ID}}/g;
-
     if (text.match(compRegex)) {
         text = text.replace(compRegex, generateRandomID());
     }
-
     return text;
 };
