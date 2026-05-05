@@ -19,21 +19,19 @@
 
     Modal to manage components within the Tiny Editor.
 
-    Classes required for JS:
-    * none
-
-    Data attributes required for JS:
-    * none
-
-    Context variables required for this template:
+    Three-axis layout: category rail (left), flavor chips + variant strip + component grid (main),
+    preview pane with explicit insert button (right). All interactivity is wired by amd/src/ui.js.
 
     Example context (json):
     {
+    "elementid": "elements-plugin-container",
+    "preview": true,
+    "canmanage": true,
     "buttons": [
         {
         "id": 1,
-        "name": "tip",
-        "type": 4,
+        "name": "Tip",
+        "type": "teachpals",
         "imageClass": "elements-teachpals-tip-icon",
         "htmlcode": "<div></div>",
         "variants": [
@@ -44,61 +42,31 @@
             "state": "off",
             "imageClass": "avatar2-variant-off",
             "variantclass": "elements-avatar2-variant",
-            "content": ""
+            "title": "Avatar 2"
             }
         ],
         "flavorlist": "robi-bot,horst-cloud",
-        "category": 4
-        },
-        {
-        "id": 2,
-        "name": "scenario",
-        "type": 4,
-        "imageClass": "elements-teachpals-scenario-icon",
-        "htmlcode": "<div></div>",
-        "variants": [
-            {
-            "id": 8,
-            "displayname": "Avatar 2",
-            "name": "avatar2",
-            "state": "off",
-            "imageClass": "avatar2-variant-off",
-            "variantclass": "elements-avatar2-variant",
-            "content": ""
-            }
-        ],
-        "flavorlist": "robi-bot,horst-cloud",
-        "category": 4
+        "category": "teachpals"
         }
     ],
     "categories": [
         {
         "categoryid": 4,
         "name": "Teach Pals",
+        "categoryname": "teachpals",
         "type": 4,
         "displayorder": 1,
+        "componentcount": 2,
+        "initial": "T",
         "flavors": [
-            {
-            "id": 1,
-            "name": "horst-cloud",
-            "displayname": "Horst und Woelkchen",
-            "factive": "active"
-            },
-            {
-            "id": 12,
-            "name": "robi-bot",
-            "displayname": "Robi und Bot"
-            }
+            {"id": 1, "name": "horst-cloud", "displayname": "Horst und Wölkchen"},
+            {"id": 12, "name": "robi-bot", "displayname": "Robi und Bot"}
         ],
         "hasFlavors": 2,
         "active": "active"
         }
-    ],
-    "preview": true,
-    "elementid": "elements-plugin-container",
-    "canmanage": true
+    ]
     }
-
 }}
 {{< core/modal }}
     {{$header}}
@@ -110,77 +78,125 @@
         {{/canmanage}}
     {{/header}}
     {{$body}}
-        <div id="{{elementid}}" class="elements-plugin-container">
-            <ul class="nav nav-tabs">
-                {{#categories}}
-                    {{#hasFlavors}}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{active}}" data-bs-toggle="dropdown" data-toggle="dropdown" data-categoryid="{{categoryid}}" data-categoryname="{{categoryname}}" href="#" role="button" aria-expanded="false">{{name}}</a>
-                        <div class="dropdown-menu">
-                            {{#flavors}}
-                                <a class="dropdown-item elements-category-flavor {{flavorClass}} {{factive}}" data-id="{{id}}" data-categoryname="{{categoryname}}" data-categoryid="{{categoryid}}" data-flavor="{{name}}" aria-controls="elements-buttons-grid"  href="#">{{displayname}}</a>
-                            {{/flavors}}
+        <div id="{{elementid}}" class="elements-plugin-container elements-modal-grid {{^preview}}elements-no-preview{{/preview}}">
+            <aside class="elements-rail" aria-label="{{#str}} category, tiny_elements {{/str}}">
+                <div class="elements-rail-list" role="tablist">
+                    {{#categories}}
+                        <div class="elements-rail-group" data-categoryid="{{categoryid}}">
+                            <button type="button"
+                                    class="elements-rail-item {{active}}"
+                                    role="tab"
+                                    aria-selected="{{#active}}true{{/active}}{{^active}}false{{/active}}"
+                                    data-categoryid="{{categoryid}}"
+                                    data-categoryname="{{categoryname}}"
+                                    data-hasflavors="{{hasFlavors}}">
+                                <span class="elements-rail-meta">
+                                    <span class="elements-rail-name">{{name}}</span>
+                                    <span class="elements-rail-count">{{#str}} componentcount, tiny_elements, {{componentcount}} {{/str}}</span>
+                                </span>
+                            </button>
+                            {{#hasFlavors}}
+                                <div class="elements-flavor-list"
+                                     data-categoryid="{{categoryid}}"
+                                     data-categoryname="{{categoryname}}"
+                                     {{^active}}hidden{{/active}}>
+                                    <button type="button"
+                                            class="elements-flavor-chip elements-flavor-none active"
+                                            data-categoryid="{{categoryid}}"
+                                            data-categoryname="{{categoryname}}"
+                                            data-flavor=""
+                                            aria-controls="elements-buttons-grid">
+                                        {{#str}} noflavor, tiny_elements {{/str}}
+                                    </button>
+                                    {{#flavors}}
+                                        <button type="button"
+                                                class="elements-flavor-chip elements-category-flavor"
+                                                data-id="{{id}}"
+                                                data-categoryid="{{categoryid}}"
+                                                data-categoryname="{{categoryname}}"
+                                                data-flavor="{{name}}"
+                                                aria-controls="elements-buttons-grid">
+                                            {{displayname}}
+                                        </button>
+                                    {{/flavors}}
+                                </div>
+                            {{/hasFlavors}}
                         </div>
-                    </li>
-                    {{/hasFlavors}}
-                    {{^hasFlavors}}
-                    <li class="nav-item">
-                        <a class="nav-link {{active}} elements-category no-flavors" href="#" data-id="{{id}}" data-categoryname="{{categoryname}}" data-categoryid="{{categoryid}}" data-filter="{{type}}" aria-controls="elements-buttons-grid">{{name}}</a>
-                    </li>
-                    {{/hasFlavors}}
-                {{/categories}}
-            </ul>
-            <div class="elements-buttons-preview {{^preview}}elements-no-preview{{/preview}}">
-                <div id="elements-buttons-grid" class="elements-buttons-grid">
-                    {{#buttons}}
-                        <button
-                            class="elementst-dialog-button {{imageClass}}"
-                            data-id="{{id}}"
-                            data-type="{{type}}"
-                            data-classcomponent="{{imageClass}}"
-                            data-flavorlist = "{{flavorlist}}"
-                            data-category="{{category}}"
-                        >
-                            <span class="elements-button-text">
-                                {{#icon}}
-                                    <i class="icon" style="background-image: url({{icon}});"></i>
-                                {{/icon}}
-                                {{{name}}}
-                            </span>
-                            <span class="elements-button-variants">
-                            {{#variants}}
-                                <span
-                                    class="elements-button-variant {{imageClass}} {{state}}"
-                                    data-id="{{id}}"
-                                    data-variant="{{name}}"
-                                    data-variantclass="{{variantclass}}"
-                                    data-state="{{state}}"
-                                    data-toggle="tooltip"
-                                    data-placement="top"
-                                    title="{{displayname}}"
-                                ></span>
-                            {{/variants}}
-                            </span>
-                        </button>
-                    {{/buttons}}
+                    {{/categories}}
                 </div>
-                {{#preview}}
-                    <div class="elements-code-preview">
-                        <div class="elements-text-preview">{{#str}} preview, tiny_elements {{/str}}</div>
-                        <div data-id="code-preview-default">
-                            <div class="elements-preview-default">{{#str}} previewdefault, tiny_elements {{/str}}</div>
-                        </div>
+            </aside>
+
+            <div class="elements-main">
+                <div class="elements-grid-wrap">
+                    <div id="elements-buttons-grid" class="elements-buttons-grid" role="listbox" aria-label="{{#str}} pluginname, tiny_elements {{/str}}">
                         {{#buttons}}
-                            <div data-id="code-preview-{{id}}" class="elements-component-code {{#css}}elements-component-custom-code{{/css}} elements-hidden" role="presentation" style="{{css}}">{{{htmlcode}}}</div>
+                            <button type="button"
+                                    class="elementst-dialog-button"
+                                    role="option"
+                                    aria-selected="false"
+                                    data-id="{{id}}"
+                                    data-type="{{type}}"
+                                    data-classcomponent="{{imageClass}}"
+                                    data-flavorlist="{{flavorlist}}"
+                                    data-category="{{category}}">
+                                <span class="elements-v-dots">
+                                    {{#variants}}
+                                        <span class="elements-v-dot {{state}}"
+                                              data-variant="{{name}}"
+                                              data-variantclass="{{variantclass}}"
+                                              title="{{displayname}}"
+                                              aria-label="{{displayname}}"></span>
+                                    {{/variants}}
+                                </span>
+                                <span class="elements-comp-icon {{imageClass}}" aria-hidden="true">
+                                    {{#icon}}<i class="icon" style="background-image: url({{icon}});"></i>{{/icon}}
+                                </span>
+                                <span class="elements-comp-name">{{{name}}}</span>
+                            </button>
                         {{/buttons}}
                     </div>
-                {{/preview}}
+                </div>
+
+                <div class="elements-variant-strip" data-region="variant-strip" hidden>
+                    <span class="elements-bar-label">{{#str}} variant, tiny_elements {{/str}}</span>
+                    <span class="elements-variant-target" data-region="variant-target"></span>
+                    <div class="elements-variant-chips" data-region="variant-chips"></div>
+                </div>
             </div>
+
+            {{#preview}}
+            <aside class="elements-preview" data-region="preview" aria-label="{{#str}} preview, tiny_elements {{/str}}">
+                <div class="elements-preview-head">
+                    <span class="elements-bar-label">{{#str}} preview, tiny_elements {{/str}}</span>
+                </div>
+                <div class="elements-preview-body">
+                    <div class="elements-preview-default" data-id="code-preview-default">
+                        {{#str}} previewdefault, tiny_elements {{/str}}
+                    </div>
+                    {{#buttons}}
+                        <div data-id="code-preview-{{id}}"
+                             class="elements-component-code {{#css}}elements-component-custom-code{{/css}} elements-hidden"
+                             role="presentation"
+                             style="{{css}}">{{{htmlcode}}}</div>
+                    {{/buttons}}
+                </div>
+                <div class="elements-preview-footer">
+                    <div class="elements-preview-summary" data-region="preview-summary"></div>
+                    <button type="button" class="btn btn-primary elements-insert-btn" data-region="insert" disabled>
+                        {{#str}} insertintoeditor, tiny_elements {{/str}}
+                    </button>
+                </div>
+            </aside>
+            {{/preview}}
+
+            {{^preview}}
+            <div class="elements-preview-footer elements-footer-inline">
+                <div class="elements-preview-summary" data-region="preview-summary"></div>
+                <button type="button" class="btn btn-primary elements-insert-btn" data-region="insert" disabled>
+                    {{#str}} insertintoeditor, tiny_elements {{/str}}
+                </button>
+            </div>
+            {{/preview}}
         </div>
     {{/body}}
 {{/ core/modal }}
-{{#js}}
-    require(['jquery'], function($) {
-      $('[data-toggle="tooltip"]').tooltip();
-    });
-{{/js}}

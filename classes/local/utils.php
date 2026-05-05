@@ -435,9 +435,11 @@ class utils {
      * @return string
      */
     public static function button_icon_css(string $buttonclass, string $iconurl, string $flavor = ''): string {
-        $flavor = empty($flavor) ? '' : '[data-flavor="' . $flavor . '"]';
+        $flavorattr = empty($flavor) ? '' : '[data-flavor="' . $flavor . '"]';
+        $flavorparent = empty($flavor) ? '' : '.elementst-dialog-button[data-flavor="' . $flavor . '"] ';
         return <<<CSS
-        .elements-{$buttonclass}-icon{$flavor} .elements-button-text::before {
+        .elements-{$buttonclass}-icon{$flavorattr} .elements-button-text::before,
+        {$flavorparent}.elements-comp-icon.elements-{$buttonclass}-icon::before {
             background-image: url('{$iconurl}');
             background-size: contain;
             background-repeat: no-repeat;

@@ -4,3 +4,20 @@ body.mce-content-body,
         display: block !important;
     }
 }
+
+.elements-modal,
+.elements-modal-no-preview {
+    .modal-body {
+        padding: 0;
+    }
+}
+
+.elements-flavor-chip,
+.elements-rail-item {
+    /* Scope our buttons to opt out of Moodle/Bootstrap default button reset. */
+    &,
+    &:focus,
+    &:active {
+        box-shadow: none;
+    }
+}

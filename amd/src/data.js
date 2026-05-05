@@ -96,6 +96,13 @@ export default class Data {
      */
     getCategories() {
         const cats = [];
+        const componentCounts = {};
+        this.components.forEach((component) => {
+            if (component === undefined) {
+                return;
+            }
+            componentCounts[component.categoryname] = (componentCounts[component.categoryname] || 0) + 1;
+        });
         // Iterate over contexts.
         this.categories.forEach((category) => {
             let categoryFlavors = this.getCategoryFlavors(category.name);
@@ -109,6 +116,7 @@ export default class Data {
                 displayorder: category.displayorder,
                 flavors: categoryFlavors,
                 hasFlavors: hasFlavors,
+                componentcount: componentCounts[category.name] || 0,
                 active: '',
             });
         });
