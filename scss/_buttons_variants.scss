@@ -1,4 +1,61 @@
-/* Flavor list (inside the rail, under the active category) */
+/* VARIANT STRIP — context-sensitive variant chips above the grid */
+
+.elements-variant-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    background: var(--elements-orange-soft);
+    border-top: 1px solid var(--elements-orange-soft-2);
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.elements-variant-strip .elements-bar-label {
+    color: var(--elements-orange-dark);
+}
+
+.elements-variant-target {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--elements-orange-dark);
+}
+
+.elements-variant-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.elements-variant-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid var(--elements-orange-soft-2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--elements-orange-dark);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 80ms;
+
+    &:hover {
+        background: #fff;
+    }
+
+    &.active {
+        background: var(--elements-orange);
+        border-color: var(--elements-orange);
+        color: #fff;
+    }
+}
+
+/* Flavor list (now inside the rail, under the active category) */
 
 .elements-flavor-chip {
     display: flex;

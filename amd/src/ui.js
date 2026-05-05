@@ -30,10 +30,12 @@ import {
 } from 'tiny_elements/options';
 import ModalEvents from 'core/modal_events';
 import {
+    addVariant,
     getVariantsClass,
     getVariantPreferences,
     getVariantsHtml,
     loadVariantPreferences,
+    removeVariant,
     setData as setVariantsData
 } from 'tiny_elements/variantslib';
 import {
@@ -49,6 +51,8 @@ let currentFlavorId = 0;
 let currentCategoryId = 1;
 let currentCategoryName = '';
 let selectedComponentId = null;
+let stripComponentId = null;
+let stripHideTimer = null;
 let lastFlavor = [];
 let selection = '';
 let data = {};
@@ -122,7 +126,21 @@ const displayDialogue = async(editor) => {
             node.addEventListener('mouseenter', (event) => handleCardMouseEvent(event, modal, true));
             node.addEventListener('mouseleave', (event) => handleCardMouseEvent(event, modal, false));
         }
+        const dotsContainer = node.querySelector('.elements-v-dots');
+        if (dotsContainer) {
+            dotsContainer.addEventListener('mouseenter', () => showVariantStripFor(modal, node.dataset.id));
+            dotsContainer.addEventListener('mouseleave', () => scheduleHideVariantStrip(modal));
+        }
+        node.querySelectorAll('.elements-v-dot').forEach(dot => {
+            dot.addEventListener('click', (event) => handleDotClick(event, modal));
+        });
     });
+
+    const strip = root.querySelector('[data-region="variant-strip"]');
+    if (strip) {
+        strip.addEventListener('mouseenter', () => cancelHideVariantStrip());
+        strip.addEventListener('mouseleave', () => scheduleHideVariantStrip(modal));
+    }
 
     const insertBtn = root.querySelector('.elements-insert-btn');
     if (insertBtn) {
@@ -249,15 +267,19 @@ const handleFlavorChipClick = (event, modal) => {
             refreshSelectedPreview(modal);
         }
     }
+    hideVariantStrip(modal);
 };
 
 /**
- * Handle a click on a component card — sets selection, enables Insert.
+ * Handle a click on a component card — sets selection, builds the variant strip, enables Insert.
  *
  * @param {MouseEvent} event
  * @param {obj} modal
  */
 const handleCardClick = (event, modal) => {
+    if (event.target.closest('.elements-v-dot')) {
+        return;
+    }
     const button = event.currentTarget;
     const root = modal.getRoot()[0];
 
@@ -349,6 +371,160 @@ const refreshSelectedPreview = (modal) => {
 };
 
 /**
+ * Reveal the variant strip below the grid, populated for the given component.
+ *
+ * @param {obj} modal
+ * @param {string} componentId
+ */
+const showVariantStripFor = (modal, componentId) => {
+    cancelHideVariantStrip();
+    const root = modal.getRoot()[0];
+    const strip = root.querySelector('[data-region="variant-strip"]');
+    const target = root.querySelector('[data-region="variant-target"]');
+    const chips = root.querySelector('[data-region="variant-chips"]');
+    if (!strip || !chips) {
+        return;
+    }
+
+    const comp = data.getComponentById(componentId);
+    if (!comp) {
+        return;
+    }
+    const variants = data.getComponentVariants(comp);
+    if (variants.length === 0) {
+        strip.setAttribute('hidden', '');
+        return;
+    }
+
+    if (stripComponentId === componentId && !strip.hasAttribute('hidden')) {
+        return;
+    }
+    stripComponentId = componentId;
+
+    const flavor = comp.flavors.length > 0 ? currentFlavor : '';
+    const activeClasses = getVariantsClass(comp.name, flavor);
+
+    chips.innerHTML = '';
+    if (target) {
+        target.textContent = comp.displayname;
+    }
+
+    variants.forEach(variant => {
+        const isOn = activeClasses.includes(variant.variantclass);
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'elements-variant-chip ' + (isOn ? 'active' : '');
+        chip.dataset.variant = variant.name;
+        chip.dataset.variantclass = variant.variantclass;
+        chip.dataset.state = isOn ? 'on' : 'off';
+        chip.title = variant.displayname || variant.name;
+        chip.textContent = variant.displayname || variant.name;
+        chip.addEventListener('click', () => handleVariantChipClick(chip, modal));
+        chips.appendChild(chip);
+    });
+
+    strip.removeAttribute('hidden');
+};
+
+const scheduleHideVariantStrip = (modal) => {
+    cancelHideVariantStrip();
+    stripHideTimer = setTimeout(() => hideVariantStrip(modal), 150);
+};
+
+const cancelHideVariantStrip = () => {
+    if (stripHideTimer) {
+        clearTimeout(stripHideTimer);
+        stripHideTimer = null;
+    }
+};
+
+const hideVariantStrip = (modal) => {
+    cancelHideVariantStrip();
+    const strip = modal.getRoot()[0].querySelector('[data-region="variant-strip"]');
+    if (strip) {
+        strip.setAttribute('hidden', '');
+    }
+    stripComponentId = null;
+};
+
+/**
+ * Toggle a variant on a card via dot click.
+ *
+ * @param {MouseEvent} event
+ * @param {obj} modal
+ */
+const handleDotClick = (event, modal) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const dot = event.currentTarget;
+    const card = dot.closest('.elementst-dialog-button');
+    if (!card) {
+        return;
+    }
+    toggleVariantForComponent(modal, card.dataset.id, dot.dataset.variant, dot.dataset.variantclass);
+};
+
+/**
+ * Toggle a variant via chip click in the strip.
+ *
+ * @param {HTMLElement} chip
+ * @param {obj} modal
+ */
+const handleVariantChipClick = (chip, modal) => {
+    if (!stripComponentId) {
+        return;
+    }
+    toggleVariantForComponent(modal, stripComponentId, chip.dataset.variant, chip.dataset.variantclass);
+};
+
+/**
+ * Core toggle: flip a variant on a component, sync dot, chip, and preview.
+ *
+ * @param {obj} modal
+ * @param {string} componentId
+ * @param {string} variantName
+ * @param {string} variantClass
+ */
+const toggleVariantForComponent = (modal, componentId, variantName, variantClass) => {
+    const comp = data.getComponentById(componentId);
+    if (!comp) {
+        return;
+    }
+    const flavor = comp.flavors.length > 0 ? currentFlavor : '';
+    const activeBefore = getVariantsClass(comp.name, flavor).includes(variantClass);
+    const turningOn = !activeBefore;
+
+    if (turningOn) {
+        addVariant(comp.name, variantName, flavor);
+    } else {
+        removeVariant(comp.name, variantName, flavor);
+    }
+
+    const card = modal.getRoot()[0].querySelector(`.elementst-dialog-button[data-id="${componentId}"]`);
+    if (card) {
+        const dot = card.querySelector(`.elements-v-dot[data-variantclass="${variantClass}"]`);
+        if (dot) {
+            dot.classList.toggle('on', turningOn);
+        }
+    }
+
+    if (stripComponentId === componentId) {
+        const chip = modal.getRoot()[0].querySelector(
+            `.elements-variant-chip[data-variantclass="${variantClass}"]`
+        );
+        if (chip) {
+            chip.dataset.state = turningOn ? 'on' : 'off';
+            chip.classList.toggle('active', turningOn);
+        }
+    }
+
+    if (selectedComponentId === componentId) {
+        refreshSelectedPreview(modal);
+    }
+    updatePreviewSummary(modal);
+};
+
+/**
  * Sync the dot indicators on a single card to current preferences.
  *
  * @param {HTMLElement} card
@@ -413,6 +589,14 @@ const clearSelection = (modal) => {
         node.classList.remove('selected');
         node.setAttribute('aria-selected', 'false');
     });
+    const strip = root.querySelector('[data-region="variant-strip"]');
+    if (strip) {
+        strip.setAttribute('hidden', '');
+    }
+    const chips = root.querySelector('[data-region="variant-chips"]');
+    if (chips) {
+        chips.innerHTML = '';
+    }
     const insertBtn = root.querySelector('.elements-insert-btn');
     if (insertBtn) {
         insertBtn.disabled = true;

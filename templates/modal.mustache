@@ -139,6 +139,15 @@
                                     data-classcomponent="{{imageClass}}"
                                     data-flavorlist="{{flavorlist}}"
                                     data-category="{{category}}">
+                                <span class="elements-v-dots">
+                                    {{#variants}}
+                                        <span class="elements-v-dot {{state}}"
+                                              data-variant="{{name}}"
+                                              data-variantclass="{{variantclass}}"
+                                              title="{{displayname}}"
+                                              aria-label="{{displayname}}"></span>
+                                    {{/variants}}
+                                </span>
                                 <span class="elements-comp-icon {{imageClass}}" aria-hidden="true">
                                     {{#icon}}<i class="icon" style="background-image: url({{icon}});"></i>{{/icon}}
                                 </span>
@@ -146,6 +155,12 @@
                             </button>
                         {{/buttons}}
                     </div>
+                </div>
+
+                <div class="elements-variant-strip" data-region="variant-strip" hidden>
+                    <span class="elements-bar-label">{{#str}} variant, tiny_elements {{/str}}</span>
+                    <span class="elements-variant-target" data-region="variant-target"></span>
+                    <div class="elements-variant-chips" data-region="variant-chips"></div>
                 </div>
             </div>
 

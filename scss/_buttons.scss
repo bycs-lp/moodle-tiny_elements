@@ -161,7 +161,7 @@
     cursor: pointer;
     text-align: left;
     color: var(--elements-gray-900);
-    min-height: 110px;
+    min-height: 120px;
     transition: border-color 100ms, box-shadow 100ms, transform 100ms;
 
     &:hover {
@@ -209,6 +209,42 @@
     font-weight: 600;
     line-height: 1.25;
     overflow-wrap: anywhere;
+}
+
+.elements-v-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 15px;
+}
+
+.elements-v-dot {
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    border-radius: 25%;
+    background: var(--elements-surface-2);
+    border: 1px solid var(--elements-border);
+    cursor: pointer;
+    transition: background 80ms, border-color 80ms, transform 80ms;
+
+    &:hover {
+        border-color: var(--elements-orange);
+        transform: scale(1.15);
+    }
+
+    &:focus,
+    &:focus-visible {
+        outline: none;
+        box-shadow: none;
+        border-color: var(--elements-orange);
+    }
+
+    &.on {
+        background: var(--elements-orange);
+        border-color: var(--elements-orange);
+    }
 }
 
 .elements-hidden {
