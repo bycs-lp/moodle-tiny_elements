@@ -122,6 +122,7 @@ const displayDialogue = async(editor) => {
 
     root.querySelectorAll('.elementst-dialog-button').forEach(node => {
         node.addEventListener('click', (event) => handleCardClick(event, modal));
+        node.addEventListener('dblclick', (event) => handleCardDblClick(event, editor, modal));
         if (data.getPreviewElements()) {
             node.addEventListener('mouseenter', (event) => handleCardMouseEvent(event, modal, true));
             node.addEventListener('mouseleave', (event) => handleCardMouseEvent(event, modal, false));
@@ -299,6 +300,21 @@ const handleCardClick = (event, modal) => {
     if (insertBtn) {
         insertBtn.disabled = false;
     }
+};
+
+/**
+ * Double-click on a card — same as a click + immediate insert.
+ *
+ * @param {MouseEvent} event
+ * @param {obj} editor
+ * @param {obj} modal
+ */
+const handleCardDblClick = (event, editor, modal) => {
+    if (event.target.closest('.elements-v-dot')) {
+        return;
+    }
+    selectedComponentId = event.currentTarget.dataset.id;
+    handleInsertClick(editor, modal);
 };
 
 /**
