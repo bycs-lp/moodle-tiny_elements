@@ -576,6 +576,8 @@ class manager {
     /**
      * This function deletes all data from the plugin tables and from the filesystem.
      * Use with caution!
+     *
+     * The deletion is unconditionally site wide and must only be reached from a system context gate.
      */
     public function wipe(): void {
         global $DB;
