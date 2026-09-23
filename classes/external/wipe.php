@@ -55,9 +55,11 @@ class wipe extends external_api {
         $contextid = $params['contextid'];
         $context = \core\context::instance_by_id($contextid);
         self::validate_context($context);
-        require_capability('tiny/elements:manage', $context);
+        // The wipe is unconditionally site wide, so it must be gated and performed at system context.
+        $systemcontext = \context_system::instance();
+        require_capability('tiny/elements:manage', $systemcontext);
 
-        $manager = new manager($context->id);
+        $manager = new manager($systemcontext->id);
         $manager->wipe();
 
         return [
