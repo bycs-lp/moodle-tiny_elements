@@ -30,6 +30,7 @@ require_login();
 $url = new moodle_url('/lib/editor/tiny/plugins/elements/preview.php', []);
 $PAGE->set_url($url);
 $PAGE->set_context(context_system::instance());
+require_capability('tiny/elements:manage', context_system::instance());
 $PAGE->set_heading($SITE->fullname);
 $PAGE->set_pagelayout('popup');
 
