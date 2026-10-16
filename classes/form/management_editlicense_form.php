@@ -142,8 +142,21 @@ class management_editlicense_form extends dynamic_form {
 
         $formdata = $this->get_data();
         $result = true;
+        // The modal does not submit the category id, so accept any file of the plugin's image area.
+        $areafiles = get_file_storage()->get_area_files(
+            \context_system::instance()->id,
+            'tiny_elements',
+            'images',
+            false,
+            'itemid, filepath, filename',
+            false
+        );
+        $allowedids = array_map(fn($f) => (int) $f->get_id(), $areafiles);
 
         for ($i = 0; $i < $formdata->itemcount; $i++) {
+            if (!in_array((int) $formdata->fileid[$i], $allowedids, true)) {
+                continue;
+            }
             $record = new \stdClass();
             $record->id = $formdata->fileid[$i];
             $record->author = $formdata->fileauthor[$i] ?? '';
