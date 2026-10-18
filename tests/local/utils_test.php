@@ -38,6 +38,7 @@ final class utils_test extends \advanced_testcase {
     public function test_get_complete_css_as_string(): void {
         global $DB;
         $this->resetAfterTest();
+        $this->setAdminUser();
 
         $compcatrecord1 = new stdClass();
         $compcatrecord1->name = 'testcategory1';

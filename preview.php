@@ -30,6 +30,7 @@ require_login();
 $url = new moodle_url('/lib/editor/tiny/plugins/elements/preview.php', []);
 $PAGE->set_url($url);
 $PAGE->set_context(context_system::instance());
+require_capability('tiny/elements:manage', context_system::instance());
 $PAGE->set_heading($SITE->fullname);
 $PAGE->set_pagelayout('popup');
 
@@ -38,8 +39,8 @@ echo $OUTPUT->header();
 $component  = required_param('component', PARAM_ALPHANUMEXT);
 $flavor  = required_param('flavor', PARAM_ALPHANUMEXT);
 
-$componentdata = $DB->get_record('tiny_elements_component', ['name' => $component]);
-$categorydata = $DB->get_record('tiny_elements_compcat', ['name' => $componentdata->categoryname]);
+$componentdata = $DB->get_record('tiny_elements_component', ['name' => $component], '*', MUST_EXIST);
+$categorydata = $DB->get_record('tiny_elements_compcat', ['name' => $componentdata->categoryname], '*', MUST_EXIST);
 $flavordata = $DB->get_record('tiny_elements_flavor', ['name' => $flavor]);
 
 $variant = '';
