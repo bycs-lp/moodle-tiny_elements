@@ -37,26 +37,17 @@ class wipe extends external_api {
      * @return external_function_parameters
      */
     public static function execute_parameters(): external_function_parameters {
-        return new external_function_parameters([
-            'contextid' => new external_value(PARAM_INT, 'Context id', VALUE_REQUIRED),
-        ]);
+        return new external_function_parameters([]);
     }
 
     /**
      * Implementation of web service tiny_elements_wipe
      *
-     * @param int $contextid the context id
      * @return array result array
      */
-    public static function execute(int $contextid): array {
-        $params = self::validate_parameters(self::execute_parameters(), [
-            'contextid' => $contextid,
-        ]);
-        $contextid = $params['contextid'];
-        $context = \core\context::instance_by_id($contextid);
-        self::validate_context($context);
-        // The wipe is unconditionally site wide, so it must be gated and performed at system context.
+    public static function execute(): array {
         $systemcontext = \context_system::instance();
+        self::validate_context($systemcontext);
         require_capability('tiny/elements:manage', $systemcontext);
 
         $manager = new manager($systemcontext->id);
