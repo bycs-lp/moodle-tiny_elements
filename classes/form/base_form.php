@@ -45,7 +45,11 @@ abstract class base_form extends dynamic_form {
     protected function codemirror_present(): bool {
         $pluginmanager = \core_plugin_manager::instance();
         $plugins = $pluginmanager->get_enabled_plugins('editor');
-        return in_array('codemirror', $plugins);
+        if (in_array('codemirror', $plugins)) {
+            \editor_codemirror\form\MoodleQuickForm_codemirror::register();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -169,33 +173,6 @@ abstract class base_form extends dynamic_form {
         $jsel = array_key_exists('js', $form->_elementIndex) ? $form->_elements[$form->_elementIndex['js']] : null;
         $htmlel = array_key_exists('content', $form->_elementIndex) ? $form->_elements[$form->_elementIndex['content']] : null;
         $codeel = array_key_exists('code', $form->_elementIndex) ? $form->_elements[$form->_elementIndex['code']] : null;
-
-        if ($cssel && $cssel->_type == 'editor') {
-            $formdata->css = [
-                'text' => $formdata->css,
-                'format' => 90,
-            ];
-        }
-
-        if ($jsel && $jsel->_type == 'editor') {
-            $formdata->js = [
-                'text' => $formdata->js,
-                'format' => 91,
-            ];
-        }
-
-        if ($htmlel && $htmlel->_type == 'editor') {
-            $formdata->content = [
-                'text' => $formdata->content,
-                'format' => 92,
-            ];
-        }
-        if ($codeel && $codeel->_type == 'editor') {
-            $formdata->code = [
-                'text' => $formdata->code,
-                'format' => 92,
-            ];
-        }
     }
 
     /**
