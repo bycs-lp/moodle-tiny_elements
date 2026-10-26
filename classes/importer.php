@@ -333,6 +333,15 @@ class importer {
         $record['iconurl'] = utils::update_pluginfile_tags_bulk($categorymap, $record['iconurl'] ?? '');
 
         $current = $DB->get_record('tiny_elements_component', ['name' => $record['name']]);
+
+        // The js is delivered on every page of the site, so only site administrators may import it.
+        if (!is_siteadmin()) {
+            if ($record['js'] !== ($current->js ?? '')) {
+                $this->importresults[] = get_string('importjsignored', 'tiny_elements', $record['name']);
+            }
+            $record['js'] = $current->js ?? '';
+        }
+
         if ($current) {
             $record['id'] = $current->id;
             if (!$this->dryrun) {

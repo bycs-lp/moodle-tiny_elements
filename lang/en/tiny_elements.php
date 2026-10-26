@@ -95,6 +95,7 @@ $string['hideforstudents'] = 'Hide for students';
 $string['iconurl'] = 'Icon URL';
 $string['import'] = 'Import';
 $string['import_simulation'] = 'Import simulation';
+$string['importjsignored'] = 'The JavaScript of component "{$a}" was not imported, because only site administrators can import JavaScript.';
 $string['js'] = 'JS';
 $string['linktomanagerdesc'] = 'Go to <a href="{$a}">management page</a> to edit categories, components, flavors and variants.';
 $string['linktomanagername'] = 'Link to management';
