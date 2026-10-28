@@ -55,11 +55,13 @@ class get_elements_data extends external_api {
             'isstudent' => $isstudent,
         ]);
         $contextid = $params['contextid'];
-        $isstudent = $params['isstudent'];
         $context = \core\context::instance_by_id($contextid);
         self::validate_context($context);
 
         require_capability('tiny/elements:viewplugin', $context);
+
+        // The client flag may only narrow the result, never reveal teacher-only elements.
+        $isstudent = $params['isstudent'] || !has_capability('tiny/elements:showteachercomponents', $context);
 
         return \tiny_elements\local\utils::get_elements_data($isstudent);
     }
