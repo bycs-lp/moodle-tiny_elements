@@ -18,6 +18,7 @@ namespace tiny_elements\local;
 
 use core\hook\output\before_http_headers;
 use stdClass;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Test class for the utils functions.
@@ -26,6 +27,7 @@ use stdClass;
  * @copyright  2024 ISB Bayern
  * @author     Philipp Memmel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tiny_elements\local\utils
  */
 final class utils_test extends \advanced_testcase {
     /**
@@ -35,8 +37,9 @@ final class utils_test extends \advanced_testcase {
      * @covers \tiny_elements\local\utils::purge_css_cache
      * @covers \tiny_elements\local\utils::rebuild_css_cache
      */
+    #[Group('baseline')]
     public function test_get_complete_css_as_string(): void {
-        global $DB;
+        global $CFG, $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -92,6 +95,8 @@ final class utils_test extends \advanced_testcase {
         $flavorrecord3->css = '#testflavor3{color:red}';
         $flavorrecord3->hideforstudents = 1;
         $flavorrecord3id = $DB->insert_record('tiny_elements_flavor', $flavorrecord3);
+
+        $CFG->forcelogin = false;
 
         $starttime = time();
         $this->mock_clock_with_frozen($starttime);
