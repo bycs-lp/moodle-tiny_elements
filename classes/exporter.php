@@ -184,10 +184,10 @@ class exporter {
             $conditionscomponents['categoryname'] = $categoryname;
         }
 
-        $compcats = $DB->get_records(constants::TABLES['compcat'], $conditionscategories);
+        $compcats = $DB->get_records(constants::TABLES['compcat'], $conditionscategories, 'displayorder, name');
         $this->write_elements($xmlwriter, constants::TABLES['compcat'], $compcats);
 
-        $components = $DB->get_records(constants::TABLES['component'], $conditionscomponents);
+        $components = $DB->get_records(constants::TABLES['component'], $conditionscomponents, 'displayorder, name');
         $this->write_elements($xmlwriter, constants::TABLES['component'], $components);
 
         return [
@@ -216,7 +216,7 @@ class exporter {
             [$sql, $params] = $DB->get_in_or_equal($componentnames, SQL_PARAMS_QM, 'param', true, '');
         }
         $compflavors = $DB->get_records_sql(
-            "SELECT * FROM {" . constants::TABLES['compflavor'] . "} WHERE componentname " . $sql,
+            "SELECT * FROM {" . constants::TABLES['compflavor'] . "} WHERE componentname " . $sql . " ORDER BY componentname, flavorname",
             $params
         );
         $this->write_elements($xmlwriter, constants::TABLES['compflavor'], $compflavors);
@@ -226,7 +226,7 @@ class exporter {
         if (!empty($categoryname)) {
             [$sql, $params] = $DB->get_in_or_equal($flavornames, SQL_PARAMS_QM, 'param', true, '');
         }
-        $flavors = $DB->get_records_sql("SELECT * FROM {" . constants::TABLES['flavor'] . "} WHERE name " . $sql, $params);
+        $flavors = $DB->get_records_sql("SELECT * FROM {" . constants::TABLES['flavor'] . "} WHERE name " . $sql . " ORDER BY displayorder, name", $params);
         $this->write_elements($xmlwriter, constants::TABLES['flavor'], $flavors);
 
         $sql = ' = componentname';
@@ -234,7 +234,7 @@ class exporter {
             [$sql, $params] = $DB->get_in_or_equal($componentnames, SQL_PARAMS_QM, 'param', true, '0');
         }
         $compvariants = $DB->get_records_sql(
-            "SELECT * FROM {" . constants::TABLES['compvariant'] . "} WHERE componentname " . $sql,
+            "SELECT * FROM {" . constants::TABLES['compvariant'] . "} WHERE componentname " . $sql . " ORDER BY componentname, variant",
             $params
         );
         $this->write_elements($xmlwriter, constants::TABLES['compvariant'], $compvariants);
@@ -244,7 +244,7 @@ class exporter {
         if (!empty($categoryname)) {
             [$sql, $params] = $DB->get_in_or_equal($variantnames, SQL_PARAMS_QM, 'param', true, '');
         }
-        $variants = $DB->get_records_sql("SELECT * FROM {" . constants::TABLES['variant'] . "} WHERE name " . $sql, $params);
+        $variants = $DB->get_records_sql("SELECT * FROM {" . constants::TABLES['variant'] . "} WHERE name " . $sql . " ORDER BY name", $params);
         $this->write_elements($xmlwriter, constants::TABLES['variant'], $variants);
     }
 
