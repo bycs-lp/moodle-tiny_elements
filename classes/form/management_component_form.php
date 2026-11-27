@@ -61,7 +61,12 @@ class management_component_form extends base_form {
             $mform->setDefault('categoryname', $this->_ajaxformdata['categoryname']);
         }
 
-        $mform->addElement($this->codemirror_present() ? 'editor' : 'textarea', 'code', get_string('code', 'tiny_elements'));
+        $mform->addElement(
+            $this->codemirror_present() ? 'codemirror' : 'textarea',
+            'code',
+            get_string('code', 'tiny_elements'),
+            ['data-codemirror-language' => 'html']
+        );
         $mform->setType('code', PARAM_RAW);
         $mform->addHelpButton('code', 'code', 'tiny_elements');
 
@@ -89,7 +94,12 @@ class management_component_form extends base_form {
         $mform->addElement('text', 'displayorder', get_string('displayorder', 'tiny_elements'));
         $mform->setType('displayorder', PARAM_INT);
 
-        $mform->addElement($this->codemirror_present() ? 'editor' : 'textarea', 'css', get_string('css', 'tiny_elements'));
+        $mform->addElement(
+            $this->codemirror_present() ? 'codemirror' : 'textarea',
+            'css',
+            get_string('css', 'tiny_elements'),
+            ['data-codemirror-language' => 'css']
+        );
         $mform->setType('css', PARAM_RAW);
 
         $group = [];
