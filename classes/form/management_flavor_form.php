@@ -57,7 +57,7 @@ class management_flavor_form extends base_form {
         $mform->setType('displayorder', PARAM_INT);
 
         $mform->addElement(
-            $this->codemirror_present() ? 'editor' : 'textarea',
+            $this->codemirror_present() ? 'codemirror' : 'textarea',
             'css',
             get_string('css', 'tiny_elements'),
             ['data-codemirror-language' => 'css']
